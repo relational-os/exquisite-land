@@ -1,9 +1,15 @@
-import React from 'react';
+import Surface from "@app/components/surface";
+import React from "react";
+import Link from "next/link";
+import ConnectWalletButton from "@app/components/connectWalletButton";
 
 const IndexPage = () => {
   return (
     <div className="index">
-      Index
+      <Surface />
+      <Link href="/edit">
+        <a>Editor</a>
+      </Link>
       <style jsx>{`
         .index {
         }
