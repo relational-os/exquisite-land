@@ -1,7 +1,6 @@
 import Surface from "@app/components/surface";
 import React from "react";
 import Link from "next/link";
-import ConnectWalletButton from "@app/components/connectWalletButton";
 
 const IndexPage = () => {
   return (

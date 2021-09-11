@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import CanvasDraw from "react-canvas-draw";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import Tile from "./Tile";
-import { ZoomControls } from "./utils/zoomControls";
 import Modal from "react-modal";
 import Editor from "./Editor";
 
