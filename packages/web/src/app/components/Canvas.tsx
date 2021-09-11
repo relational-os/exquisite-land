@@ -23,7 +23,7 @@ const customStyles = {
 
 Modal.setAppElement("#__next");
 
-const Surface = () => {
+const Canvas = () => {
   const [x, setX] = useState<number>();
   const [y, setY] = useState<number>();
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -94,4 +94,4 @@ const Surface = () => {
   );
 };
 
-export default Surface;
+export default Canvas;

@@ -2,6 +2,7 @@ import create from "zustand";
 
 type UniverseState = {
   canvases: CanvasState[];
+  activeCanvas: number;
 };
 
 type CanvasState = {
@@ -36,7 +37,13 @@ const useStore = create<UniverseState>((set) => ({
       tiles: {},
       pallete: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
     },
+    {
+      id: 1,
+      tiles: {},
+      pallete: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
+    },
   ],
+  activeCanvas: 0,
 }));
 
 export default useStore;

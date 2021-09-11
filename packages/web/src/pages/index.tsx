@@ -1,11 +1,11 @@
-import Surface from "@app/components/Surface";
+import Canvas from "@app/components/Canvas";
 import React from "react";
 import Link from "next/link";
 
 const IndexPage = () => {
   return (
     <div className="index">
-      <Surface />
+      <Canvas />
       <Link href="/edit">
         <a>Editor</a>
       </Link>

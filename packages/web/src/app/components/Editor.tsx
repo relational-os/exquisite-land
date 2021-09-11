@@ -23,13 +23,13 @@ const Editor = ({
 
     let svg = await canvasRef.current.exportSvg();
     console.log("saving svg to state", svg);
-    useStore.setState((current) => {
-      current.canvases[0].tiles[`${x}-${y}`] = {
+    useStore.setState((state) => {
+      state.canvases[state.activeCanvas].tiles[`${x}-${y}`] = {
         svg,
         status: TileStatus.DRAWN,
         type: TileType.SOLO,
       };
-      return current;
+      return state;
     });
 
     closeModal();
