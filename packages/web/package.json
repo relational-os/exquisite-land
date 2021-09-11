@@ -2,7 +2,7 @@
   "name": "@exquisiteland/web",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next"
   },
   "dependencies": {
