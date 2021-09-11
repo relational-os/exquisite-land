@@ -10,7 +10,7 @@ const Tile = ({
   y: number;
   handleTileClick: () => void;
 }) => {
-  let tile = useStore((state) => state.tiles[`${x}-${y}`]);
+  let tile = useStore((state) => state.canvases[0].tiles[`${x}-${y}`]);
 
   return (
     <div className="tile" onClick={(e) => handleTileClick()}>

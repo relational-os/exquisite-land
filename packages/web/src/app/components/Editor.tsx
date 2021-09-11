@@ -11,7 +11,7 @@ const Editor = ({
   y: number;
   closeModal: () => void;
 }) => {
-  const pallete = useStore((state) => state.pallete);
+  const pallete = useStore((state) => state.canvases[0].pallete);
   const [activeColor, setActiveColor] = useState("#000");
 
   async function handleSave() {
@@ -24,7 +24,7 @@ const Editor = ({
     let svg = await canvasRef.current.exportSvg();
     console.log("saving svg to state", svg);
     useStore.setState((current) => {
-      current.tiles[`${x}-${y}`] = {
+      current.canvases[0].tiles[`${x}-${y}`] = {
         svg,
         status: TileStatus.DRAWN,
         type: TileType.SOLO,
