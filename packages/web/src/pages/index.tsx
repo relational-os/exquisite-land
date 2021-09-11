@@ -1,11 +1,12 @@
 import Surface from "@app/components/surface";
 import React from "react";
 import Link from "next/link";
-import ConnectWalletButton from "@app/components/connectWalletButton";
+import Header from "@app/components/header";
 
 const IndexPage = () => {
   return (
     <div className="index">
+      <Header />
       <Surface />
       <Link href="/edit">
         <a>Editor</a>
