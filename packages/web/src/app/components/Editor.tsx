@@ -26,6 +26,10 @@ const Editor = ({
     activeBrushSize / 2
   }px" fill="${activeColor.replace("#", "%23")}"/></svg>'`;
 
+  function handleClear() {
+    canvasRef.current?.resetCanvas();
+  }
+
   async function handleSave() {
     console.log(`tile(${x}, ${y}) saved!`);
 
@@ -113,7 +117,10 @@ const Editor = ({
         Eraser
       </label>
 
-      <button onClick={handleSave}>Save</button>
+      <div>
+        <button onClick={handleClear}>Clear Tile</button>
+        <button onClick={handleSave}>Save</button>
+      </div>
       <style jsx>{`
         .editor {
         }
