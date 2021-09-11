@@ -4,7 +4,6 @@ import ConnectWalletButton from "./connectWalletButton";
 const Header = () => {
   return (
     <div className="header">
-      <ConnectWalletButton />
       <style jsx>{`
         .header {
         }
