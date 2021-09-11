@@ -10,10 +10,11 @@ const Tile = ({
   y: number;
   handleTileClick: () => void;
 }) => {
-  let svg = useStore((state) => state.svgs[`${x}-${y}`]);
+  let tile = useStore((state) => state.tiles[`${x}-${y}`]);
+
   return (
     <div className="tile" onClick={(e) => handleTileClick()}>
-      {svg && <div dangerouslySetInnerHTML={{ __html: svg }}></div>}
+      {tile?.svg && <div dangerouslySetInnerHTML={{ __html: tile.svg }}></div>}
       <style jsx>{`
         .tile {
           border: lightblue 1px solid;
