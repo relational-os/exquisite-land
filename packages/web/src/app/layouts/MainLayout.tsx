@@ -9,12 +9,22 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         }
       `}</style>
       <style jsx global>{`
+        @font-face {
+          font-family: Aldi;
+          font-weight: regular;
+          src: url("/fonts/Aldi-Regular.otf") format("opentype");
+        }
+        @font-face {
+          font-family: Aldi;
+          font-weight: bold;
+          src: url("/fonts/Aldi-Bold.otf") format("opentype");
+        }
         * {
           box-sizing: border-box;
         }
         html,
         body {
-          font-family: ui-rounded, "SF Pro Rounded", -apple-system,
+          font-family: Aldi, ui-rounded, "SF Pro Rounded", -apple-system,
             BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
             "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
           margin: 0;
