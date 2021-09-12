@@ -5,11 +5,26 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
+
 contract Tile is ERC721, Ownable {
     uint8 constant MAX_CANVASES = 16;
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
     uint8 constant MAX_WIDTH = 100;
     uint8 constant MAX_HEIGHT = 100;
+
+    struct TilePathStroke { 
+       uint32 strokeColor;
+       uint32 strokeWidth;
+       uint256[2][] paths;
+    }
+    
+      struct TileDataContainer { 
+          mapping(uint => TilePathStroke) strokes;
+          bool isLocked;
+          uint strokeCount;
+      }
+    
+    bool allowEditing = true;
 
     string[][MAX_CANVASES] PALLETES = [
         ["#000", "akdlsjf;lak", "asdfasdf", "asdfas", "aaa"],
@@ -30,8 +45,9 @@ contract Tile is ERC721, Ownable {
         ["#000", "", "", "", ""]
     ];
 
-    mapping(uint8 => string) public canvasNames;
-    mapping(uint32 => string) public svgData;
+    mapping(uint32 => string) public canvasNames;
+    mapping(uint32 => TileDataContainer) public svgData;
+    mapping(uint32 => uint32[4]) seeds;
 
     modifier validTile(
         uint32 canvasId,
@@ -39,7 +55,7 @@ contract Tile is ERC721, Ownable {
         uint32 y
     ) {
         require(canvasId < MAX_CANVASES && canvasId >= 0);
-        require(x < MAX_WIDTH && x >= 0);
+        require(x < MAX_WIDTH && x >= 0, "You are out of horizontal bounds.");
         require(y < MAX_HEIGHT && y >= 0);
         _;
     }
@@ -52,36 +68,52 @@ contract Tile is ERC721, Ownable {
         uint32 y
     ) public onlyOwner validTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
-        _safeMint(msg.sender, tokenId);
+        // require(seedNearExistingSeeds(tokenId), "Seed is too far from other seeds.")
+        
+        for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) { 
+            if (seeds[canvasId][i] == 0) {
+                seeds[canvasId][i] = tokenId;
+                _safeMint(msg.sender, tokenId);
+                return;
+            }
+        }
+    }
+    
+    function inviteNeighbor(uint32 tokenId, uint32 inviteX, uint32 inviteY, address recipient) public {
+        require(ownerOf(tokenId) == msg.sender);
+        uint32 canvasId;
+        uint32 senderX;
+        uint32 senderY;
+        (canvasId, senderX, senderY) = getCoordinates(tokenId);
+        
+        uint32 targetTileId = generateTokenID(canvasId, inviteX, inviteY);
+        
+        require(ownerOf(targetTileId) == address(0), "Requested tile is already taken.");
+        require((senderX == inviteX - 1 && senderY == inviteY) || (senderX == inviteX + 1 && senderY == inviteY) || (senderY == inviteY - 1 && senderX == inviteX) || (senderY == inviteY + 1 && senderX == inviteX), "Requested tile is not a neighbor.");
+        
+        _safeMint(recipient, targetTileId);
+    }
+    
+    function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
+        return !svgData[tokenId].isLocked;
     }
 
     function createTile(
         uint32 canvasId,
         uint32 x,
         uint32 y,
-        string memory _svgData
+        TilePathStroke[] calldata strokes
     ) public validTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
         require(ownerOf(tokenId) == msg.sender);
-        svgData[tokenId] = _svgData;
-
-        // figure out neighbors and mint those if possible
-        if (y > 0) {
-            uint32 north = generateTokenID(canvasId, x, y - 1);
-            if (ownerOf(north) == address(0)) _safeMint(msg.sender, north);
+        require(allowEditing || targetTileIsBlank(tokenId), "Someone already drew that tile.");    
+        
+        for (uint32 i = 0; i < strokes.length; i++) {
+            svgData[tokenId].strokes[i] = strokes[i];
         }
-        if (y < MAX_HEIGHT) {
-            uint32 south = generateTokenID(canvasId, x, y + 1);
-            if (ownerOf(south) == address(0)) _safeMint(msg.sender, south);
-        }
-        if (x > 0) {
-            uint32 west = generateTokenID(canvasId, x - 1, y);
-            if (ownerOf(west) == address(0)) _safeMint(msg.sender, west);
-        }
-        if (x < MAX_WIDTH) {
-            uint32 east = generateTokenID(canvasId, x + 1, y);
-            if (ownerOf(east) == address(0)) _safeMint(msg.sender, east);
-        }
+        
+        svgData[tokenId].isLocked = true;
+        svgData[tokenId].strokeCount = strokes.length;
     }
 
     function generateTokenID(
@@ -116,4 +148,18 @@ contract Tile is ERC721, Ownable {
         require(canvasId < MAX_CANVASES);
         return PALLETES[canvasId];
     }
+    
+    function toggleAllowEditing() public onlyOwner {
+        allowEditing = !allowEditing;
+    }
+    
+    function tokenURI(uint256 tokenId) override public view returns (string memory) {
+        string memory outputSvg = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600000 600000" >';
+        
+        TileDataContainer data = svgData[tokenId];
+        for (uint32 i = 0; i < data.strokeCount; i++) {
+            outputSvg = abi.encodePacked(outputSvg, )
+        } 
+    }
+
 }
