@@ -11,10 +11,8 @@ interface EditorProps {
   closeModal: () => void;
 }
 
-const PATH_DECIMAL_MODIFIER = 1000;
-
 const Editor = ({ x, y, closeModal }: EditorProps) => {
-  const { palette, brush, brushColor, brushSize, setTile } = useEditor();
+  const { brush, brushColor, brushSize, setTile } = useEditor();
   const isEraseMode = brush === BrushType.ERASER;
   const color = isEraseMode ? "pink" : brushColor;
   const fillColor = color.replace("#", "%23");
@@ -31,50 +29,30 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     if (!canvasRef.current) return;
 
     let svg = await canvasRef.current.exportSvg();
-    let paths = await canvasRef.current.exportPaths();
 
-    const result = await fetch("/api/optimize", {
+    if (!svg) return;
+
+    const optimizedSvg = await fetch("/api/optimize", {
       method: "POST",
       body: svg,
     })
       .then((res) => res.json())
       .then((s) => s.data as string);
-    console.log("opt len", result.length);
-    console.log("svg len", svg.length);
 
-    console.log("paths", paths);
-
-    const paletteMap = palette.reduce(
-      (previous: Record<string, number>, hex: string, index: number) => {
-        previous[hex] = index;
-        return previous;
-      },
-      {}
+    const svgElement = new DOMParser().parseFromString(
+      optimizedSvg,
+      "text/xml"
     );
-
-    // TODO: add to SOL contract
-    const strokeMap: Record<number, number> = { 4: 0, 16: 1 };
-
-    let packagedPaths = paths.map((path) => {
-      let strokeColor = path.strokeColor;
-      let strokeWidth = path.strokeWidth;
-      let strokePaths = path.paths;
-
-      let outputPaths = strokePaths.map((strokePath) => [
-        strokePath.x * PATH_DECIMAL_MODIFIER,
-        strokePath.y * PATH_DECIMAL_MODIFIER,
-      ]);
-
-      return {
-        strokeColor: paletteMap[strokeColor],
-        strokeWidth: strokeMap[strokeWidth],
-        paths: outputPaths,
-      };
-    });
-
-    console.log("packagedPaths", packagedPaths);
-
-    setTile({ x, y, svg: result });
+    const pathStrings: string[] = [];
+    const pathElements = svgElement.getElementsByTagName("path");
+    for (const pathElement of pathElements) {
+      let pathString = pathElement.getAttribute("d");
+      if (!pathString) continue;
+      console.log(pathString.replace(/(\.\d{0,})/g, ""));
+      pathStrings.push(pathString);
+    }
+    let paths = await canvasRef.current.exportPaths();
+    setTile({ x, y, svg: optimizedSvg, paths });
     closeModal();
   }
   const canvasRef = useRef<ReactSketchCanvas>(null);

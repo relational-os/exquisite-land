@@ -1,5 +1,5 @@
 import { NextApiHandler } from "next";
-const { optimize } = require("svgo");
+import { optimize } from "svgo";
 
 const api: NextApiHandler = async (req, res) => {
   console.log("api hit");
@@ -7,11 +7,22 @@ const api: NextApiHandler = async (req, res) => {
   //   console.log(req.body);
   const svgString = req.body;
 
-  console.log(svgString);
-  const output = optimize(svgString);
-  console.log(output.data);
+  const svgOutput = optimize(svgString, {
+    plugins: [
+      {
+        name: "preset-default",
+        params: {
+          overrides: {
+            // or disable plugins
+            removeViewBox: false,
+            collapseGroups: false,
+          },
+        },
+      },
+    ],
+  }).data;
 
-  return res.json({ data: output.data });
+  return res.json({ data: svgOutput });
 };
 
 export default api;

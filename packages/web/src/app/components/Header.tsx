@@ -1,9 +1,9 @@
-import useStore from "@app/features/State";
-import React from "react";
-import ConnectWalletButton from "./ConnectWalletButton";
+import useStore from '@app/features/State';
+import React from 'react';
+import ConnectWalletButton from './ConnectWalletButton';
 
 const Header = () => {
-  const canvases = useStore((state) => state.canvases);
+  const canvases = useStore(state => state.canvases);
 
   const setActiveCanvas = (id: number) => {
     useStore.setState({ activeCanvas: id });
@@ -13,8 +13,8 @@ const Header = () => {
     <div className="header">
       <ConnectWalletButton />
 
-      <select onChange={(e) => setActiveCanvas(parseInt(e.target.value))}>
-        {canvases.map((canvas) => {
+      <select onChange={e => setActiveCanvas(parseInt(e.target.value))}>
+        {canvases.map(canvas => {
           return (
             <option key={canvas.id} value={canvas.id}>
               Canvas {`${canvas.id}`}
