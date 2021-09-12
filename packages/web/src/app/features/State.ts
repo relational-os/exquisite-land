@@ -1,4 +1,4 @@
-import create from "zustand";
+import create from 'zustand';
 
 type UniverseState = {
   canvases: CanvasState[];
@@ -13,15 +13,15 @@ type CanvasState = {
 };
 
 export enum TileStatus {
-  BLANK = "BLANK",
-  INVITE = "INVITE",
-  DRAWABLE = "DRAWABLE",
-  DRAWN = "DRAWN",
+  BLANK = 'BLANK',
+  INVITE = 'INVITE',
+  DRAWABLE = 'DRAWABLE',
+  DRAWN = 'DRAWN'
 }
 
 export enum TileType {
-  SOLO = "SOLO",
-  COMMONS = "COMMONS",
+  SOLO = 'SOLO',
+  COMMONS = 'COMMONS'
 }
 
 type TileState = {
@@ -30,20 +30,20 @@ type TileState = {
   svg?: string;
 };
 
-const useStore = create<UniverseState>((set) => ({
+const useStore = create<UniverseState>(set => ({
   canvases: [
     {
       id: 0,
       tiles: {},
-      palette: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
+      palette: ['#000', '#2A9D8F', '#E9C46A', '#F4A261', '#E76F51']
     },
     {
       id: 1,
       tiles: {},
-      palette: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
-    },
+      palette: ['#000', '#009D8F', '#00C46A', '#00A261', '#006F51']
+    }
   ],
-  activeCanvas: 0,
+  activeCanvas: 0
 }));
 
 export default useStore;

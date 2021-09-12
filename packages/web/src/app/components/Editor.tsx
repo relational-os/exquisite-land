@@ -1,22 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
-import useStore, { TileStatus, TileType } from "../features/State";
-
-const PATH_DECIMAL_MODIFIER = 1000;
+import { useWallet } from '@gimmixorg/use-wallet';
+import React, { useEffect, useRef, useState } from 'react';
+import { ReactSketchCanvas } from 'react-sketch-canvas';
+import { Tile__factory } from 'src/sdk/factories/Tile__factory';
+import useStore, { TileStatus, TileType } from '../features/State';
 
 const Editor = ({
   x,
   y,
-  closeModal,
+  closeModal
 }: {
   x: number;
   y: number;
   closeModal: () => void;
 }) => {
-  const palette = useStore((state) => state.canvases[0].palette);
-  const [activeColor, setActiveColor] = useState("#000");
+  const { provider } = useWallet();
+
+  const activeCanvasId = useStore(state => state.activeCanvas);
+  const palette = useStore(state => state.canvases[state.activeCanvas].palette);
+  const [activeColor, setActiveColor] = useState('#000');
   const [activeBrushSize, setActiveBrushSize] = useState(4);
-  const [activeTool, setActiveTool] = useState<"pen" | "eraser">("pen");
+  const [activeTool, setActiveTool] = useState<'pen' | 'eraser'>('pen');
 
   // prettier-ignore
   const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 32 32" width="32" height="32"><circle r="${activeBrushSize / 2}" cx="16" cy="16" fill="${activeColor.replace("#", "%23")}"/></svg>'`;
@@ -27,6 +30,8 @@ const Editor = ({
   }
 
   async function handleSave() {
+    if (!provider) return alert('Not logged in');
+
     console.log(`tile(${x}, ${y}) saved!`);
 
     if (!canvasRef.current) {
@@ -34,8 +39,20 @@ const Editor = ({
     }
 
     let svg = await canvasRef.current.exportSvg();
+
+    if (!svg) return;
+    const svgElement = new DOMParser().parseFromString(svg, 'text/xml');
+    const pathStrings: string[] = [];
+    const pathElements = svgElement.getElementsByTagName('path');
+    for (const pathElement of pathElements) {
+      let pathString = pathElement.getAttribute('d');
+      if (!pathString) continue;
+      console.log(pathString.replace(/(\.\d{0,})/g, ''));
+      pathStrings.push(pathString);
+    }
+
     let paths = await canvasRef.current.exportPaths();
-    console.log("paths", paths);
+    // console.log('paths', paths);
 
     const paletteMap = palette.reduce(
       (previous: Record<string, number>, hex: string, index: number) => {
@@ -48,32 +65,44 @@ const Editor = ({
     // TODO: add to SOL contract
     const strokeMap: Record<number, number> = { 4: 0, 16: 1 };
 
-    let packagedPaths = paths.map((path) => {
+    let packagedPaths = paths.map((path, i) => {
       let strokeColor = path.strokeColor;
       let strokeWidth = path.strokeWidth;
-      let strokePaths = path.paths;
-
-      let outputPaths = strokePaths.map((strokePath) => [
-        strokePath.x * PATH_DECIMAL_MODIFIER,
-        strokePath.y * PATH_DECIMAL_MODIFIER,
-      ]);
-
       return {
         strokeColor: paletteMap[strokeColor],
         strokeWidth: strokeMap[strokeWidth],
-        paths: outputPaths,
+        path: pathStrings[i]
       };
     });
 
-    console.log("packagedPaths", packagedPaths);
+    console.log({ packagedPaths });
 
-    console.log("saving svg to state", svg);
+    // Initialize contract
+    const tileContract = Tile__factory.connect(
+      process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
+      provider.getSigner()
+    );
 
-    useStore.setState((state) => {
+    const tx = await tileContract.createTile(
+      activeCanvasId,
+      x,
+      y,
+      packagedPaths
+    );
+
+    const receipt = await tx.wait(2);
+
+    console.log(receipt);
+
+    console.log('packagedPaths', packagedPaths);
+
+    console.log('saving svg to state', svg);
+
+    useStore.setState(state => {
       state.canvases[state.activeCanvas].tiles[`${x}-${y}`] = {
         svg,
         status: TileStatus.DRAWN,
-        type: TileType.SOLO,
+        type: TileType.SOLO
       };
       return state;
     });
@@ -82,13 +111,13 @@ const Editor = ({
   }
   const canvasRef = useRef<ReactSketchCanvas>(null);
   const styles = {
-    border: "0.0625rem solid #9c9c9c",
-    borderRadius: "0.25rem",
+    border: '0.0625rem solid #9c9c9c',
+    borderRadius: '0.25rem'
   };
 
   useEffect(() => {
-    console.log("setting active tool to", activeTool == "eraser");
-    canvasRef.current?.eraseMode(activeTool == "eraser");
+    console.log('setting active tool to', activeTool == 'eraser');
+    canvasRef.current?.eraseMode(activeTool == 'eraser');
   }, [activeTool]);
 
   return (
@@ -105,7 +134,7 @@ const Editor = ({
       </div>
       <div className="color-picker">
         Color Picker
-        {palette.map((color) => {
+        {palette.map(color => {
           return (
             <div
               key={color}
@@ -132,8 +161,8 @@ const Editor = ({
         <input
           name="tool"
           type="radio"
-          checked={activeTool == "pen"}
-          onChange={() => setActiveTool("pen")}
+          checked={activeTool == 'pen'}
+          onChange={() => setActiveTool('pen')}
         />
         Pen
       </label>
@@ -141,8 +170,8 @@ const Editor = ({
         <input
           name="tool"
           type="radio"
-          checked={activeTool == "eraser"}
-          onChange={() => setActiveTool("eraser")}
+          checked={activeTool == 'eraser'}
+          onChange={() => setActiveTool('eraser')}
         />
         Eraser
       </label>

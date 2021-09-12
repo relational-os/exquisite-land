@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
-import { Greeter__factory } from '../typechain';
+import { Tile__factory } from '../typechain';
 
 async function start() {
   const args = require('minimist')(process.argv.slice(2));
@@ -20,18 +20,18 @@ async function start() {
     await fs.readFileSync(addressesPath).toString()
   );
 
-  if (addressBook.greeter)
+  if (addressBook.contract)
     throw new Error(
       "This would overwrite the address book. Clear it first if you'd like to deploy new instances."
     );
 
-  if (!addressBook.greeter) {
-    console.log('Deploying Greeter...');
-    const deployTxGreeter = await new Greeter__factory(wallet).deploy('Hello!');
-    console.log('Deploy TX: ', deployTxGreeter.deployTransaction.hash);
-    await deployTxGreeter.deployed();
-    console.log('Greeter deployed at ', deployTxGreeter.address);
-    addressBook.greeter = deployTxGreeter.address;
+  if (!addressBook.contract) {
+    console.log('Deploying contract...');
+    const deployTx = await new Tile__factory(wallet).deploy();
+    console.log('Deploy TX: ', deployTx.deployTransaction.hash);
+    await deployTx.deployed();
+    console.log('Contract deployed at ', deployTx.address);
+    addressBook.contract = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
   }
 

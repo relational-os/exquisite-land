@@ -3,32 +3,32 @@ pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
-
 
 contract Tile is ERC721, Ownable {
     uint8 constant MAX_CANVASES = 16;
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
     uint8 constant MAX_WIDTH = 100;
     uint8 constant MAX_HEIGHT = 100;
+    uint8 constant MAX_COLORS = 5;
+    uint8 constant MAX_BRUSH_SIZES = 2;
 
-    struct TilePathStroke { 
-       uint32 strokeColor;
-       uint32 strokeWidth;
-       uint256[2][] paths;
+    struct TilePathStroke {
+        uint32 strokeColor;
+        uint32 strokeWidth;
+        string path;
     }
-    
-      struct TileDataContainer { 
-          mapping(uint => TilePathStroke) strokes;
-          bool isLocked;
-          uint strokeCount;
-      }
-    
+
+    struct TileDataContainer {
+        mapping(uint256 => TilePathStroke) strokes;
+        bool isLocked;
+        uint256 strokeCount;
+    }
+
     bool allowEditing = true;
 
-    string[][MAX_CANVASES] PALLETES = [
-        ["#000", "akdlsjf;lak", "asdfasdf", "asdfas", "aaa"],
-        ["#000", "", "", "", ""],
+    string[][MAX_CANVASES] PALETTES = [
+        ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
+        ["#000", "#009D8F", "#00C46A", "#00A261", "#006F51"],
         ["#000", "", "", "", ""],
         ["#000", "", "", "", ""],
         ["#000", "", "", "", ""],
@@ -44,6 +44,8 @@ contract Tile is ERC721, Ownable {
         ["#000", "", "", "", ""],
         ["#000", "", "", "", ""]
     ];
+
+    uint8[2] BRUSH_SIZES = [4, 16];
 
     mapping(uint32 => string) public canvasNames;
     mapping(uint32 => TileDataContainer) public svgData;
@@ -69,8 +71,8 @@ contract Tile is ERC721, Ownable {
     ) public onlyOwner validTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
         // require(seedNearExistingSeeds(tokenId), "Seed is too far from other seeds.")
-        
-        for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) { 
+
+        for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) {
             if (seeds[canvasId][i] == 0) {
                 seeds[canvasId][i] = tokenId;
                 _safeMint(msg.sender, tokenId);
@@ -78,22 +80,36 @@ contract Tile is ERC721, Ownable {
             }
         }
     }
-    
-    function inviteNeighbor(uint32 tokenId, uint32 inviteX, uint32 inviteY, address recipient) public {
+
+    function inviteNeighbor(
+        uint32 tokenId,
+        uint32 inviteX,
+        uint32 inviteY,
+        address recipient
+    ) public {
         require(ownerOf(tokenId) == msg.sender);
         uint32 canvasId;
         uint32 senderX;
         uint32 senderY;
         (canvasId, senderX, senderY) = getCoordinates(tokenId);
-        
+
         uint32 targetTileId = generateTokenID(canvasId, inviteX, inviteY);
-        
-        require(ownerOf(targetTileId) == address(0), "Requested tile is already taken.");
-        require((senderX == inviteX - 1 && senderY == inviteY) || (senderX == inviteX + 1 && senderY == inviteY) || (senderY == inviteY - 1 && senderX == inviteX) || (senderY == inviteY + 1 && senderX == inviteX), "Requested tile is not a neighbor.");
-        
+
+        require(
+            ownerOf(targetTileId) == address(0),
+            "Requested tile is already taken."
+        );
+        require(
+            (senderX == inviteX - 1 && senderY == inviteY) ||
+                (senderX == inviteX + 1 && senderY == inviteY) ||
+                (senderY == inviteY - 1 && senderX == inviteX) ||
+                (senderY == inviteY + 1 && senderX == inviteX),
+            "Requested tile is not a neighbor."
+        );
+
         _safeMint(recipient, targetTileId);
     }
-    
+
     function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
         return !svgData[tokenId].isLocked;
     }
@@ -106,12 +122,15 @@ contract Tile is ERC721, Ownable {
     ) public validTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
         require(ownerOf(tokenId) == msg.sender);
-        require(allowEditing || targetTileIsBlank(tokenId), "Someone already drew that tile.");    
-        
+        require(
+            allowEditing || targetTileIsBlank(tokenId),
+            "Someone already drew that tile."
+        );
+
         for (uint32 i = 0; i < strokes.length; i++) {
             svgData[tokenId].strokes[i] = strokes[i];
         }
-        
+
         svgData[tokenId].isLocked = true;
         svgData[tokenId].strokeCount = strokes.length;
     }
@@ -144,22 +163,179 @@ contract Tile is ERC721, Ownable {
         return (canvasId, x, y);
     }
 
-    function getPallete(uint32 canvasId) public view returns (string[] memory) {
+    function getPalette(uint32 canvasId) public view returns (string[] memory) {
         require(canvasId < MAX_CANVASES);
-        return PALLETES[canvasId];
+        return PALETTES[canvasId];
     }
-    
+
     function toggleAllowEditing() public onlyOwner {
         allowEditing = !allowEditing;
     }
-    
-    function tokenURI(uint256 tokenId) override public view returns (string memory) {
-        string memory outputSvg = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600000 600000" >';
-        
-        TileDataContainer data = svgData[tokenId];
-        for (uint32 i = 0; i < data.strokeCount; i++) {
-            outputSvg = abi.encodePacked(outputSvg, )
-        } 
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        TileDataContainer storage data = svgData[uint32(tokenId)];
+
+        (uint32 canvasId, uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
+
+        // string[] memory parts;
+
+        string
+            memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600" >';
+
+        for (uint32 i = 1; i < data.strokeCount + 1; i++) {
+            string memory strokePath = data.strokes[i - 1].path;
+
+            require(
+                data.strokes[i - 1].strokeColor >= 0 &&
+                    data.strokes[i - 1].strokeColor < MAX_COLORS,
+                "Stroke color out of range"
+            );
+            string memory strokeColor = PALETTES[canvasId][
+                data.strokes[i - 1].strokeColor
+            ];
+
+            require(
+                data.strokes[i - 1].strokeWidth >= 0 &&
+                    data.strokes[i - 1].strokeWidth < MAX_BRUSH_SIZES,
+                "Stroke color out of range"
+            );
+            uint8 strokeWidth = BRUSH_SIZES[data.strokes[i - 1].strokeWidth];
+
+            output = string(
+                abi.encodePacked(
+                    output,
+                    '<path d="',
+                    strokePath,
+                    '" fill="none" stroke-linecap="round" stroke="',
+                    strokeColor,
+                    '" stroke-width="',
+                    toString(strokeWidth),
+                    '"></path>'
+                )
+            );
+        }
+
+        output = string(abi.encodePacked(output, "</svg>"));
+
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{"name": "Canvas #',
+                        toString(canvasId),
+                        " ",
+                        toString(x),
+                        " ",
+                        toString(y),
+                        '", "description": "Blank for now", "image": "data:image/svg+xml;base64,',
+                        Base64.encode(bytes(output)),
+                        '"}'
+                    )
+                )
+            )
+        );
+        output = string(
+            abi.encodePacked("data:application/json;base64,", json)
+        );
+
+        return output;
     }
 
+    function toString(uint256 value) internal pure returns (string memory) {
+        // Inspired by OraclizeAPI's implementation - MIT license
+        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
+
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
+    }
+}
+
+/// [MIT License]
+/// @title Base64
+/// @notice Provides a function for encoding some bytes in base64
+/// @author Brecht Devos <brecht@loopring.org>
+library Base64 {
+    bytes internal constant TABLE =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+    /// @notice Encodes some bytes to the base64 representation
+    function encode(bytes memory data) internal pure returns (string memory) {
+        uint256 len = data.length;
+        if (len == 0) return "";
+
+        // multiply by 4/3 rounded up
+        uint256 encodedLen = 4 * ((len + 2) / 3);
+
+        // Add some extra buffer at the end
+        bytes memory result = new bytes(encodedLen + 32);
+
+        bytes memory table = TABLE;
+
+        assembly {
+            let tablePtr := add(table, 1)
+            let resultPtr := add(result, 32)
+
+            for {
+                let i := 0
+            } lt(i, len) {
+
+            } {
+                i := add(i, 3)
+                let input := and(mload(add(data, i)), 0xffffff)
+
+                let out := mload(add(tablePtr, and(shr(18, input), 0x3F)))
+                out := shl(8, out)
+                out := add(
+                    out,
+                    and(mload(add(tablePtr, and(shr(12, input), 0x3F))), 0xFF)
+                )
+                out := shl(8, out)
+                out := add(
+                    out,
+                    and(mload(add(tablePtr, and(shr(6, input), 0x3F))), 0xFF)
+                )
+                out := shl(8, out)
+                out := add(
+                    out,
+                    and(mload(add(tablePtr, and(input, 0x3F))), 0xFF)
+                )
+                out := shl(224, out)
+
+                mstore(resultPtr, out)
+
+                resultPtr := add(resultPtr, 4)
+            }
+
+            switch mod(len, 3)
+            case 1 {
+                mstore(sub(resultPtr, 2), shl(240, 0x3d3d))
+            }
+            case 2 {
+                mstore(sub(resultPtr, 1), shl(248, 0x3d))
+            }
+
+            mstore(result, encodedLen)
+        }
+
+        return string(result);
+    }
 }
