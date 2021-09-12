@@ -1,8 +1,11 @@
 import create from "zustand";
+import { BrushType } from '@app/hooks/use-editor'
 
 type UniverseState = {
   canvases: CanvasState[];
   activeCanvas: number;
+  activeColor: number;
+  activeBrush: BrushType;
 };
 
 type CanvasState = {
@@ -44,6 +47,8 @@ const useStore = create<UniverseState>((set) => ({
     },
   ],
   activeCanvas: 0,
+  activeColor: 0,
+  activeBrush: BrushType.PAINTBRUSH,
 }));
 
 export default useStore;

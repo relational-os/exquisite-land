@@ -18,6 +18,12 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    borderWidth: 2,
+    padding: 0,
   },
 };
 
@@ -56,10 +62,7 @@ const Canvas = () => {
         contentLabel="Tile Editor Modal"
       >
         {x != undefined && y != undefined && (
-          <>
-            <span>hello! I am modal</span>
-            <Editor x={x} y={y} closeModal={closeModal}></Editor>
-          </>
+          <Editor x={x} y={y} closeModal={closeModal}></Editor>
         )}
       </Modal>
 
