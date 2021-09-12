@@ -213,13 +213,19 @@ interface TileInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "NeighborInvited(uint32,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "SeedCreated(uint32,address)": EventFragment;
+    "TileCreated(uint32,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NeighborInvited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SeedCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TileCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -693,6 +699,14 @@ export class Tile extends BaseContract {
       { owner: string; operator: string; approved: boolean }
     >;
 
+    NeighborInvited(
+      tokenId?: null,
+      recipient?: null
+    ): TypedEventFilter<
+      [number, string],
+      { tokenId: number; recipient: string }
+    >;
+
     OwnershipTransferred(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -700,6 +714,19 @@ export class Tile extends BaseContract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
+
+    SeedCreated(
+      tokenId?: null,
+      recipient?: null
+    ): TypedEventFilter<
+      [number, string],
+      { tokenId: number; recipient: string }
+    >;
+
+    TileCreated(
+      tokenId?: null,
+      sender?: null
+    ): TypedEventFilter<[number, string], { tokenId: number; sender: string }>;
 
     Transfer(
       from?: string | null,

@@ -1,0 +1,30 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Tile
+    network: mumbai
+    source:
+      address: "0xa1290B036c1B91d0eaEf07dea8eFeFd9Dd384947"
+      startBlock: 18849856
+      abi: Tile
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Tile
+        - Player
+        - Canvas
+      abis:
+        - name: Tile
+          file: ./abis/Tile.json
+      eventHandlers:
+        - event: SeedCreated(uint32,address)
+          handler: handleSeedCreated
+        - event: NeighborInvited(uint32,address)
+          handler: handleNeighborInvited
+        - event: TileCreated(uint32,address)
+          handler: handleTileCreated
+      file: ./src/tile.ts

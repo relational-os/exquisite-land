@@ -62,6 +62,10 @@ contract Tile is ERC721, Ownable {
         _;
     }
 
+    event SeedCreated(uint32 tokenId, address recipient);
+    event NeighborInvited(uint32 tokenId, address recipient);
+    event TileCreated(uint32 tokenId, address sender);
+
     constructor() ERC721("Tile", "TILE") {}
 
     function createSeed(
@@ -76,6 +80,7 @@ contract Tile is ERC721, Ownable {
             if (seeds[canvasId][i] == 0) {
                 seeds[canvasId][i] = tokenId;
                 _safeMint(msg.sender, tokenId);
+                emit SeedCreated(tokenId, msg.sender);
                 return;
             }
         }
@@ -108,6 +113,7 @@ contract Tile is ERC721, Ownable {
         );
 
         _safeMint(recipient, targetTileId);
+        emit NeighborInvited(targetTileId, recipient);
     }
 
     function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
@@ -133,6 +139,8 @@ contract Tile is ERC721, Ownable {
 
         svgData[tokenId].isLocked = true;
         svgData[tokenId].strokeCount = strokes.length;
+
+        emit TileCreated(tokenId, msg.sender);
     }
 
     function generateTokenID(

@@ -1,0 +1,27 @@
+type Canvas @entity {
+  id: ID!
+  name: String
+  tiles: [Tile!]! @derivedFrom(field: "canvas")
+  palette: [String!]!
+}
+
+type Tile @entity {
+  id: ID!
+  canvas: Canvas
+  owner: Player!
+  svg: String
+  x: BigInt!
+  y: BigInt!
+  status: TileStatus!
+}
+
+type Player @entity {
+  id: ID!
+  address: Bytes!
+  tiles: [Tile!]! @derivedFrom(field: "owner")
+}
+
+enum TileStatus {
+  LOCKED
+  UNLOCKED
+}
