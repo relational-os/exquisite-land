@@ -33,6 +33,15 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     let svg = await canvasRef.current.exportSvg();
     let paths = await canvasRef.current.exportPaths();
 
+    const result = await fetch("/api/optimize", {
+      method: "POST",
+      body: svg,
+    })
+      .then((res) => res.json())
+      .then((s) => s.data as string);
+    console.log("opt len", result.length);
+    console.log("svg len", svg.length);
+
     console.log("paths", paths);
 
     const paletteMap = palette.reduce(
@@ -65,7 +74,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
     console.log("packagedPaths", packagedPaths);
 
-    setTile({ x, y, svg });
+    setTile({ x, y, svg: result });
     closeModal();
   }
   const canvasRef = useRef<ReactSketchCanvas>(null);
