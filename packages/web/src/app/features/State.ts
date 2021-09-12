@@ -8,7 +8,7 @@ type UniverseState = {
 type CanvasState = {
   id: number;
   name?: string; // TBD in the future
-  pallete: string[];
+  palette: string[];
   tiles: Record<string, TileState>;
 };
 
@@ -35,12 +35,12 @@ const useStore = create<UniverseState>((set) => ({
     {
       id: 0,
       tiles: {},
-      pallete: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
+      palette: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
     },
     {
       id: 1,
       tiles: {},
-      pallete: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
+      palette: ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
     },
   ],
   activeCanvas: 0,

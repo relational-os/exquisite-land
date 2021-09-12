@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import useStore, { TileStatus, TileType } from "../features/State";
 
+const PATH_DECIMAL_MODIFIER = 1000;
+
 const Editor = ({
   x,
   y,
@@ -11,7 +13,7 @@ const Editor = ({
   y: number;
   closeModal: () => void;
 }) => {
-  const pallete = useStore((state) => state.canvases[0].pallete);
+  const palette = useStore((state) => state.canvases[0].palette);
   const [activeColor, setActiveColor] = useState("#000");
   const [activeBrushSize, setActiveBrushSize] = useState(4);
   const [activeTool, setActiveTool] = useState<"pen" | "eraser">("pen");
@@ -38,7 +40,41 @@ const Editor = ({
     }
 
     let svg = await canvasRef.current.exportSvg();
+    let paths = await canvasRef.current.exportPaths();
+    console.log("paths", paths);
+
+    const paletteMap = palette.reduce(
+      (previous: Record<string, number>, hex: string, index: number) => {
+        previous[hex] = index;
+        return previous;
+      },
+      {}
+    );
+
+    // TODO: add to SOL contract
+    const strokeMap: Record<number, number> = { 4: 0, 16: 1 };
+
+    let packagedPaths = paths.map((path) => {
+      let strokeColor = path.strokeColor;
+      let strokeWidth = path.strokeWidth;
+      let strokePaths = path.paths;
+
+      let outputPaths = strokePaths.map((strokePath) => [
+        strokePath.x * PATH_DECIMAL_MODIFIER,
+        strokePath.y * PATH_DECIMAL_MODIFIER,
+      ]);
+
+      return {
+        strokeColor: paletteMap[strokeColor],
+        strokeWidth: strokeMap[strokeWidth],
+        paths: outputPaths,
+      };
+    });
+
+    console.log("packagedPaths", packagedPaths);
+
     console.log("saving svg to state", svg);
+
     useStore.setState((state) => {
       state.canvases[state.activeCanvas].tiles[`${x}-${y}`] = {
         svg,
@@ -75,7 +111,7 @@ const Editor = ({
       </div>
       <div className="color-picker">
         Color Picker
-        {pallete.map((color) => {
+        {palette.map((color) => {
           return (
             <div
               key={color}
