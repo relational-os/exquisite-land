@@ -14,18 +14,11 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         }
         html,
         body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-            "Segoe UI Symbol";
+          font-family: ui-rounded, "SF Pro Rounded", -apple-system,
+            BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+            "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
           margin: 0;
           padding: 0;
-        }
-        body {
-           {
-            /* background-size: 200px 200px;
-          background-image: linear-gradient(to right, grey 1px, transparent 1px),
-            linear-gradient(to bottom, grey 1px, transparent 1px); */
-          }
         }
       `}</style>
     </div>

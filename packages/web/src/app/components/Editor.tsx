@@ -1,28 +1,24 @@
-import { useWallet } from '@gimmixorg/use-wallet';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ReactSketchCanvas } from 'react-sketch-canvas';
-import { Tile__factory } from 'src/sdk/factories/Tile__factory';
-import useStore, { TileStatus, TileType } from '../features/State';
+import useEditor, { BrushType } from '@app/hooks/use-editor';
+import ColorPicker from '@app/components/ColorPicker';
+import BrushPicker from '@app/components/BrushPicker';
+import Button, { ButtonSuccess } from '@app/components/Button';
 
-const Editor = ({
-  x,
-  y,
-  closeModal
-}: {
+interface EditorProps {
   x: number;
   y: number;
   closeModal: () => void;
-}) => {
-  const { provider } = useWallet();
+}
 
-  const activeCanvasId = useStore(state => state.activeCanvas);
-  const palette = useStore(state => state.canvases[state.activeCanvas].palette);
-  const [activeColor, setActiveColor] = useState('#000');
-  const [activeBrushSize, setActiveBrushSize] = useState(4);
-  const [activeTool, setActiveTool] = useState<'pen' | 'eraser'>('pen');
+const Editor = ({ x, y, closeModal }: EditorProps) => {
+  const { brush, brushColor, brushSize, setTile } = useEditor();
+  const isEraseMode = brush === BrushType.ERASER;
+  const color = isEraseMode ? 'pink' : brushColor;
+  const fillColor = color.replace('#', '%23');
 
   // prettier-ignore
-  const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 32 32" width="32" height="32"><circle r="${activeBrushSize / 2}" cx="16" cy="16" fill="${activeColor.replace("#", "%23")}"/></svg>'`;
+  const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 32 32" width="32" height="32"><circle r="${brushSize / 2}" cx="16" cy="16" fill="${fillColor}"/></svg>'`;
   const cursorOffset = 14; // this should be 16 to center the pointer, unclear why it's off by 2
 
   function handleClear() {
@@ -30,13 +26,7 @@ const Editor = ({
   }
 
   async function handleSave() {
-    if (!provider) return alert('Not logged in');
-
-    console.log(`tile(${x}, ${y}) saved!`);
-
-    if (!canvasRef.current) {
-      return;
-    }
+    if (!canvasRef.current) return;
 
     let svg = await canvasRef.current.exportSvg();
 
@@ -50,75 +40,16 @@ const Editor = ({
       console.log(pathString.replace(/(\.\d{0,})/g, ''));
       pathStrings.push(pathString);
     }
-
     let paths = await canvasRef.current.exportPaths();
-    // console.log('paths', paths);
-
-    const paletteMap = palette.reduce(
-      (previous: Record<string, number>, hex: string, index: number) => {
-        previous[hex] = index;
-        return previous;
-      },
-      {}
-    );
-
-    // TODO: add to SOL contract
-    const strokeMap: Record<number, number> = { 4: 0, 16: 1 };
-
-    let packagedPaths = paths.map((path, i) => {
-      let strokeColor = path.strokeColor;
-      let strokeWidth = path.strokeWidth;
-      return {
-        strokeColor: paletteMap[strokeColor],
-        strokeWidth: strokeMap[strokeWidth],
-        path: pathStrings[i]
-      };
-    });
-
-    console.log({ packagedPaths });
-
-    // Initialize contract
-    const tileContract = Tile__factory.connect(
-      process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
-      provider.getSigner()
-    );
-
-    const tx = await tileContract.createTile(
-      activeCanvasId,
-      x,
-      y,
-      packagedPaths
-    );
-
-    const receipt = await tx.wait(2);
-
-    console.log(receipt);
-
-    console.log('packagedPaths', packagedPaths);
-
-    console.log('saving svg to state', svg);
-
-    useStore.setState(state => {
-      state.canvases[state.activeCanvas].tiles[`${x}-${y}`] = {
-        svg,
-        status: TileStatus.DRAWN,
-        type: TileType.SOLO
-      };
-      return state;
-    });
-
+    setTile({ x, y, svg, paths });
     closeModal();
   }
   const canvasRef = useRef<ReactSketchCanvas>(null);
-  const styles = {
-    border: '0.0625rem solid #9c9c9c',
-    borderRadius: '0.25rem'
-  };
+  const canvasStyle = {}; // drop border style
 
   useEffect(() => {
-    console.log('setting active tool to', activeTool == 'eraser');
-    canvasRef.current?.eraseMode(activeTool == 'eraser');
-  }, [activeTool]);
+    canvasRef.current?.eraseMode(isEraseMode);
+  }, [brush]);
 
   return (
     <div className="editor">
@@ -127,90 +58,49 @@ const Editor = ({
           ref={canvasRef}
           height="600px"
           width="600px"
-          strokeWidth={activeBrushSize}
-          strokeColor={activeColor}
-          style={styles}
+          strokeWidth={brushSize}
+          eraserWidth={brushSize}
+          strokeColor={brushColor}
+          style={canvasStyle}
         />
-      </div>
-      <div className="color-picker">
-        Color Picker
-        {palette.map(color => {
-          return (
-            <div
-              key={color}
-              className="color-dot"
-              style={{ backgroundColor: color }}
-              onClick={() => setActiveColor(color)}
-            ></div>
-          );
-        })}
-      </div>
-      <div className="color-picker">
-        Brush Size
-        <div
-          className="small-brush"
-          onClick={() => setActiveBrushSize(4)}
-        ></div>
-        <div
-          className="large-brush"
-          onClick={() => setActiveBrushSize(16)}
-        ></div>
       </div>
 
-      <label>
-        <input
-          name="tool"
-          type="radio"
-          checked={activeTool == 'pen'}
-          onChange={() => setActiveTool('pen')}
-        />
-        Pen
-      </label>
-      <label>
-        <input
-          name="tool"
-          type="radio"
-          checked={activeTool == 'eraser'}
-          onChange={() => setActiveTool('eraser')}
-        />
-        Eraser
-      </label>
+      <div className="canvas-controls">
+        <ColorPicker />
+        <BrushPicker />
 
-      <div>
-        <button onClick={handleClear}>Clear Tile</button>
-        <button onClick={handleSave}>Save</button>
+        <div className="canvas-buttons">
+          <Button onClick={handleClear}>Clear</Button>
+          <ButtonSuccess onClick={handleSave}>Save</ButtonSuccess>
+        </div>
       </div>
+
       <style jsx>{`
         .editor {
+          display: flex;
+          flex-direction: column;
         }
 
         .canvas {
+          overflow: hidden;
           cursor: url(${circleSVG}) ${cursorOffset} ${cursorOffset}, auto;
         }
 
-        .color-picker {
-          display: flex;
-          gap: 0.5rem;
+        .canvas-controls {
+          display: grid;
+          padding: 16px;
+          background: hsl(0deg 0% 97%);
+          border-top: 2px solid hsl(0deg 0% 80%);
+          grid-template-columns: 1fr 1fr 1fr;
+          place-items: center;
         }
 
-        .color-dot {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-        }
-
-        .small-brush {
-          width: 16px;
-          height: 16px;
-          background-color: ${activeColor};
-          border-radius: 50%;
-        }
-
-        .large-brush {
-          width: 32px;
-          height: 32px;
-          background-color: ${activeColor};
-          border-radius: 50%;
+        .canvas-buttons {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          justify-content: stretch;
+          width: 100%;
+          gap: 8px;
         }
       `}</style>
     </div>
