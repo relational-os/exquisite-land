@@ -16,15 +16,9 @@ const Editor = ({
   const [activeBrushSize, setActiveBrushSize] = useState(4);
   const [activeTool, setActiveTool] = useState<"pen" | "eraser">("pen");
 
-  const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 ${
-    activeBrushSize * 2
-  } ${
-    activeBrushSize * 2
-  }" width="${activeBrushSize}px" height="${activeBrushSize}px"><circle cx="${
-    activeBrushSize / 2
-  }px" cy="${activeBrushSize / 2}px" r="${
-    activeBrushSize / 2
-  }px" fill="${activeColor.replace("#", "%23")}"/></svg>'`;
+  // prettier-ignore
+  const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 32 32" width="32" height="32"><circle r="${activeBrushSize / 2}" cx="16" cy="16" fill="${activeColor.replace("#", "%23")}"/></svg>'`;
+  const cursorOffset = 14; // this should be 16 to center the pointer, unclear why it's off by 2
 
   function handleClear() {
     canvasRef.current?.resetCanvas();
@@ -126,7 +120,7 @@ const Editor = ({
         }
 
         .canvas {
-          cursor: url(${circleSVG}) 6 6, auto;
+          cursor: url(${circleSVG}) ${cursorOffset} ${cursorOffset}, auto;
         }
 
         .color-picker {
