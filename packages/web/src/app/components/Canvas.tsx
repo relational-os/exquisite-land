@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import Tile from "./Tile";
-import Modal from "react-modal";
-import Editor from "./Editor";
-import useStore from "../features/State";
-import { useFetchCanvas, useFetchTile } from "@app/features/Graph";
+import React, { useState } from 'react';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import Tile from './Tile';
+import Modal from 'react-modal';
+import Editor from './Editor';
+import useStore from '../features/State';
+import { useFetchCanvas } from '@app/features/Graph';
 
 const width = Array(100);
 const height = Array(100);
@@ -14,29 +14,29 @@ for (var y = 0; y < height.length; y++) height[y] = y;
 
 const customStyles = {
   content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     borderWidth: 2,
-    padding: 0,
-  },
+    padding: 0
+  }
 };
 
-Modal.setAppElement("#__next");
+Modal.setAppElement('#__next');
 
 const Canvas = () => {
   const [x, setX] = useState<number>();
   const [y, setY] = useState<number>();
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  let activeCanvasID = useStore((state) => state.activeCanvas);
+  let activeCanvasID = useStore(state => state.activeCanvas);
   useFetchCanvas(activeCanvasID);
 
   function afterOpenModal() {
@@ -74,8 +74,8 @@ const Canvas = () => {
       <TransformWrapper>
         <TransformComponent>
           <div className="surface">
-            {width.map((y) => {
-              return height.map((x) => {
+            {width.map(y => {
+              return height.map(x => {
                 // this is a test of an svg (note it does not render nicely inside the component)
                 // return <Arweave width={200} height={200} key={j}></Arweave>;
                 return (

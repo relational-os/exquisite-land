@@ -1,18 +1,18 @@
-import React from "react";
-import useStore from "../features/State";
-import { useFetchTile } from "@app/features/Graph";
+import React from 'react';
+import useStore from '../features/State';
+import { useFetchTile } from '@app/features/Graph';
 
 const Tile = ({
   x,
   y,
-  handleTileClick,
+  handleTileClick
 }: {
   x: number;
   y: number;
   handleTileClick: () => void;
 }) => {
-  let activeCanvasID = useStore((state) => state.activeCanvas);
-  let { tile, error, refresh } = useFetchTile(activeCanvasID, x, y);
+  let activeCanvasID = useStore(state => state.activeCanvas);
+  let { tile } = useFetchTile(activeCanvasID, x, y);
 
   return (
     <div className="tile" onClick={handleTileClick}>
