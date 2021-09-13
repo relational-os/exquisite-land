@@ -1,4 +1,4 @@
-export default () => (
+const PaintBrush = () => (
   <svg
     aria-hidden="true"
     focusable="false"
@@ -14,3 +14,5 @@ export default () => (
     ></path>
   </svg>
 );
+
+export default PaintBrush;

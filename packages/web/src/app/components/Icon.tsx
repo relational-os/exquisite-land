@@ -1,9 +1,9 @@
-import Check from "@app/icons/Check";
-import Eraser from "@app/icons/Eraser";
-import PaintBrush from "@app/icons/PaintBrush";
-import Palette from "@app/icons/Palette";
-import Pencil from "@app/icons/Pencil";
-import Times from "@app/icons/Times";
+import Check from '@app/icons/Check';
+import Eraser from '@app/icons/Eraser';
+import PaintBrush from '@app/icons/PaintBrush';
+import Palette from '@app/icons/Palette';
+import Pencil from '@app/icons/Pencil';
+import Times from '@app/icons/Times';
 
 interface IconProps {
   name: IconName;
@@ -11,30 +11,32 @@ interface IconProps {
 }
 
 type IconName =
-  | "check"
-  | "eraser"
-  | "paint-brush"
-  | "palette"
-  | "pencil"
-  | "times";
+  | 'check'
+  | 'eraser'
+  | 'paint-brush'
+  | 'palette'
+  | 'pencil'
+  | 'times';
 
-export default (props: IconProps) => {
+const Icon = (props: IconProps) => {
   return <IconSwitch name={props.name} />;
 };
 
+export default Icon;
+
 const IconSwitch = ({ name }: { name: IconName }) => {
   switch (name.toLowerCase()) {
-    case "check":
+    case 'check':
       return <Check />;
-    case "eraser":
+    case 'eraser':
       return <Eraser />;
-    case "paint-brush":
+    case 'paint-brush':
       return <PaintBrush />;
-    case "palette":
+    case 'palette':
       return <Palette />;
-    case "pencil":
+    case 'pencil':
       return <Pencil />;
-    case "times":
+    case 'times':
       return <Times />;
     default:
       throw new Error(`Invalid icon name: ${name}`);
