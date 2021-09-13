@@ -15,6 +15,7 @@ const ColorPicker = () => {
       <style jsx>{`
         .color-picker {
           display: flex;
+          flex-direction: column;
           gap: 6px;
         }
       `}</style>

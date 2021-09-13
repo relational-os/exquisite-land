@@ -76,11 +76,20 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         />
       </div>
 
-      <div className="canvas-controls">
-        <ColorPicker />
+      <div className="canvas-aside-left">
         <BrushPicker />
+        <ColorPicker />
+      </div>
 
-        <div className="canvas-buttons">
+      <div className="canvas-aside-right"></div>
+
+      <div className="canvas-footer">
+        <div className="canvas-footer-left">
+          {/* <Button style={{ width: 35 }} disabled>
+            i
+          </Button> */}
+        </div>
+        <div className="canvas-footer-right">
           <Button onClick={handleClear}>Clear</Button>
           <ButtonSuccess onClick={handleSave}>Save</ButtonSuccess>
         </div>
@@ -88,29 +97,56 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
       <style jsx>{`
         .editor {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: 64px 600px 64px;
+          grid-template-rows: 600px 64px;
+          grid-template-areas:
+            "aside-left canvas aside-right"
+            "aside-left canvas-footer aside-right";
         }
 
         .canvas {
           overflow: hidden;
+          grid-area: canvas;
           cursor: url(${circleSVG}) ${cursorOffset} ${cursorOffset}, auto;
+          border: 2px solid hsl(0deg 0% 80%);
         }
 
-        .canvas-controls {
-          display: grid;
+        .canvas-aside-left,
+        .canvas-aside-right {
+          display: flex;
+          padding: 16px 0;
+          flex-direction: column;
+          gap: 24px;
+          align-items: center;
+        }
+
+        .canvas-aside-left {
+          grid-area: aside-left;
+        }
+
+        .canvas-aside-right {
+          grid-area: aside-right;
+        }
+
+        .canvas-footer {
+          display: flex;
           padding: 16px;
           background: hsl(0deg 0% 97%);
-          border-top: 2px solid hsl(0deg 0% 80%);
-          grid-template-columns: 1fr 1fr 1fr;
-          place-items: center;
+          align-items: center;
+          justify-content: space-between;
+          grid-area: canvas-footer;
+          border: 2px solid hsl(0deg 0% 80%);
+          border-top: 0;
+          border-bottom-left-radius: 32px;
+          border-bottom-right-radius: 32px;
         }
 
-        .canvas-buttons {
+        .canvas-footer-right {
           display: grid;
           grid-template-columns: 1fr 1fr;
           justify-content: stretch;
-          width: 100%;
+          width: 200px;
           gap: 8px;
         }
       `}</style>
