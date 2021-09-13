@@ -12,6 +12,7 @@ let query = gql`
       status
       canvas {
         id
+        palette
       }
       owner {
         id
@@ -22,6 +23,20 @@ let query = gql`
 `;
 
 // TODO: pagination
+
+export const useFetchPalette = (
+  canvasID: number,
+  swrOptions?: Partial<SWRConfiguration>
+) => {
+  const { data, error, mutate } = useSWR(
+    [canvasID, "canvas-fetch"],
+    (canvasID) => request(graphURL, query, { canvas: `${canvasID}` }),
+    { revalidateOnMount: true, ...swrOptions }
+  );
+  let palette = data?.tiles[0].canvas.palette;
+
+  return { palette, error, refresh: mutate };
+};
 
 export const useFetchTile = (
   canvasID: number,

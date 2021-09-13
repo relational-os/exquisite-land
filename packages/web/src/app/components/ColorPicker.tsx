@@ -1,13 +1,17 @@
 import React from "react";
+import { useFetchPalette } from "@app/features/Graph";
+import useStore from "@app/features/State";
 import useEditor from "@app/hooks/use-editor";
 
 const ColorPicker = () => {
-  const { palette } = useEditor();
+  let activeCanvasID = useStore((state) => state.activeCanvas);
+  const { palette, error, refresh } = useFetchPalette(activeCanvasID);
+  console.log({ palette });
 
   return (
     <>
       <div className="color-picker">
-        {palette.map((color) => (
+        {palette.map((color: string) => (
           <Swatch key={color} color={color} />
         ))}
       </div>

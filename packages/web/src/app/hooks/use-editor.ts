@@ -1,3 +1,4 @@
+import { useFetchPalette } from "@app/features/Graph";
 import useStore, { TileStatus, TileType } from "@app/features/State";
 import { useWallet } from "@gimmixorg/use-wallet";
 import { Tile__factory } from "src/sdk/factories/Tile__factory";
@@ -25,7 +26,7 @@ const useEditor = () => {
   const activeCanvas = useStore((state) => state.activeCanvas);
   const activeColor = useStore((state) => state.activeColor);
   const activeBrush = useStore((state) => state.activeBrush);
-  const palette = useStore((state) => state.canvases[activeCanvas].palette);
+  const { palette, error, refresh } = useFetchPalette(activeCanvas);
 
   const { provider } = useWallet();
 
