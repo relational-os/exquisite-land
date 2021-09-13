@@ -3,6 +3,7 @@ import { ReactSketchCanvas } from "react-sketch-canvas";
 import useEditor, { BrushType } from "@app/hooks/use-editor";
 import ColorPicker from "@app/components/ColorPicker";
 import BrushPicker from "@app/components/BrushPicker";
+import Inkwell from "@app/components/Inkwell";
 import Button, { ButtonSuccess } from "@app/components/Button";
 
 interface EditorProps {
@@ -11,8 +12,11 @@ interface EditorProps {
   closeModal: () => void;
 }
 
+const INKWELL_CAPACITY = 2000;
+
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const { brush, brushColor, brushSize, setTile } = useEditor();
+  const [inkUsed, setInkUsed] = React.useState(0);
   const isEraseMode = brush === BrushType.ERASER;
   const color = isEraseMode ? "pink" : brushColor;
   const fillColor = color.replace("#", "%23");
@@ -62,6 +66,15 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     canvasRef.current?.eraseMode(isEraseMode);
   }, [brush]);
 
+  useEffect(() => {
+    async function loadPaths() {
+      const paths = await canvasRef.current?.exportPaths();
+      console.log("paths", paths);
+      // setCanvasPaths(paths || null);
+    }
+    loadPaths();
+  }, [canvasRef.current]);
+
   return (
     <div className="editor">
       <div className="canvas">
@@ -72,6 +85,12 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           strokeWidth={brushSize}
           eraserWidth={brushSize}
           strokeColor={brushColor}
+          onUpdate={(paths) => {
+            const pointCount = paths.reduce((acc, path) => {
+              return (acc += path.paths.length);
+            }, 0);
+            setInkUsed(pointCount);
+          }}
           style={canvasStyle}
         />
       </div>
@@ -81,7 +100,9 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         <ColorPicker />
       </div>
 
-      <div className="canvas-aside-right"></div>
+      <div className="canvas-aside-right">
+        <Inkwell value={(INKWELL_CAPACITY - inkUsed) / INKWELL_CAPACITY} />
+      </div>
 
       <div className="canvas-footer">
         <div className="canvas-footer-left">
@@ -126,7 +147,10 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         }
 
         .canvas-aside-right {
+          display: grid;
+          height: 600px;
           grid-area: aside-right;
+          place-content: center;
         }
 
         .canvas-footer {
