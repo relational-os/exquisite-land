@@ -4,7 +4,7 @@ import Tile from "./Tile";
 import Modal from "react-modal";
 import Editor from "./Editor";
 import useStore from "../features/State";
-import { useFetchCanvas, useFetchTile } from "@app/features/Graph";
+import { useFetchCanvas } from "@app/features/Graph";
 
 const width = Array(100);
 const height = Array(100);
