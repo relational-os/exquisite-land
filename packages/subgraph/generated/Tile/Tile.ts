@@ -366,6 +366,25 @@ export class Tile extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toStringArray());
   }
 
+  getTileSVG(tokenId: BigInt): string {
+    let result = super.call("getTileSVG", "getTileSVG(uint32):(string)", [
+      ethereum.Value.fromUnsignedBigInt(tokenId)
+    ]);
+
+    return result[0].toString();
+  }
+
+  try_getTileSVG(tokenId: BigInt): ethereum.CallResult<string> {
+    let result = super.tryCall("getTileSVG", "getTileSVG(uint32):(string)", [
+      ethereum.Value.fromUnsignedBigInt(tokenId)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
   isApprovedForAll(owner: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",

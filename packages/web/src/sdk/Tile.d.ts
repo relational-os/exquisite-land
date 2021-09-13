@@ -30,6 +30,7 @@ interface TileInterface extends ethers.utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getCoordinates(uint32)": FunctionFragment;
     "getPalette(uint32)": FunctionFragment;
+    "getTileSVG(uint32)": FunctionFragment;
     "inviteNeighbor(uint32,uint32,uint32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -84,6 +85,10 @@ interface TileInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getPalette",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTileSVG",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -163,6 +168,7 @@ interface TileInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getPalette", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getTileSVG", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "inviteNeighbor",
     data: BytesLike
@@ -327,6 +333,11 @@ export class Tile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     inviteNeighbor(
       tokenId: BigNumberish,
       inviteX: BigNumberish,
@@ -467,6 +478,8 @@ export class Tile extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  getTileSVG(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
   inviteNeighbor(
     tokenId: BigNumberish,
     inviteX: BigNumberish,
@@ -600,6 +613,11 @@ export class Tile extends BaseContract {
       canvasId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string[]>;
+
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     inviteNeighbor(
       tokenId: BigNumberish,
@@ -793,6 +811,11 @@ export class Tile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     inviteNeighbor(
       tokenId: BigNumberish,
       inviteX: BigNumberish,
@@ -932,6 +955,11 @@ export class Tile extends BaseContract {
 
     getPalette(
       canvasId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTileSVG(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

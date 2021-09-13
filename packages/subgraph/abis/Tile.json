@@ -381,6 +381,25 @@
         "internalType": "uint32",
         "name": "tokenId",
         "type": "uint32"
+      }
+    ],
+    "name": "getTileSVG",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "tokenId",
+        "type": "uint32"
       },
       {
         "internalType": "uint32",

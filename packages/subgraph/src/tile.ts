@@ -3,15 +3,15 @@ import {
   BigInt,
   ByteArray,
   Bytes,
-  json,
-} from "@graphprotocol/graph-ts";
-import { Canvas, Player, Tile } from "../generated/schema";
+  json
+} from '@graphprotocol/graph-ts';
+import { Canvas, Player, Tile } from '../generated/schema';
 import {
   NeighborInvited,
   SeedCreated,
   Tile as TileContract,
-  TileCreated,
-} from "../generated/Tile/Tile";
+  TileCreated
+} from '../generated/Tile/Tile';
 
 function createTileToken(
   tokenId: BigInt,
@@ -49,7 +49,7 @@ function createTileToken(
 
   tile.x = x;
   tile.y = y;
-  tile.status = "UNLOCKED";
+  tile.status = 'UNLOCKED';
   tile.save();
 }
 
@@ -64,17 +64,6 @@ export function handleNeighborInvited(event: NeighborInvited): void {
 export function handleTileCreated(event: TileCreated): void {
   let tokenID = event.params.tokenId;
   let tile = Tile.load(tokenID.toString());
-
-  let uri = TileContract.bind(event.address).tokenURI(tokenID);
-  let uriData = json.fromBytes(ByteArray.fromUTF8(uri) as Bytes);
-
-  if (!uriData.isNull()) {
-    let object = uriData.toObject();
-
-    if (object.get("image")) {
-      tile.svg = object.get("image").toString();
-    }
-  }
-
+  tile.svg = TileContract.bind(event.address).getTileSVG(tokenID);
   tile.save();
 }

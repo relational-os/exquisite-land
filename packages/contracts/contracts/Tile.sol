@@ -186,50 +186,8 @@ contract Tile is ERC721, Ownable {
         override
         returns (string memory)
     {
-        TileDataContainer storage data = svgData[uint32(tokenId)];
-
         (uint32 canvasId, uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
-
-        // string[] memory parts;
-
-        string
-            memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600" >';
-
-        for (uint32 i = 1; i < data.strokeCount + 1; i++) {
-            string memory strokePath = data.strokes[i - 1].path;
-
-            require(
-                data.strokes[i - 1].strokeColor >= 0 &&
-                    data.strokes[i - 1].strokeColor < MAX_COLORS,
-                "Stroke color out of range"
-            );
-            string memory strokeColor = PALETTES[canvasId][
-                data.strokes[i - 1].strokeColor
-            ];
-
-            require(
-                data.strokes[i - 1].strokeWidth >= 0 &&
-                    data.strokes[i - 1].strokeWidth < MAX_BRUSH_SIZES,
-                "Stroke color out of range"
-            );
-            uint8 strokeWidth = BRUSH_SIZES[data.strokes[i - 1].strokeWidth];
-
-            output = string(
-                abi.encodePacked(
-                    output,
-                    '<path d="',
-                    strokePath,
-                    '" fill="none" stroke-linecap="round" stroke="',
-                    strokeColor,
-                    '" stroke-width="',
-                    toString(strokeWidth),
-                    '"></path>'
-                )
-            );
-        }
-
-        output = string(abi.encodePacked(output, "</svg>"));
-
+        string memory output = getTileSVG(canvasId);
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -251,6 +209,44 @@ contract Tile is ERC721, Ownable {
             abi.encodePacked("data:application/json;base64,", json)
         );
 
+        return output;
+    }
+
+    function getTileSVG(uint32 tokenId) public view returns (string memory) {
+        TileDataContainer storage data = svgData[uint32(tokenId)];
+        (uint32 canvasId, uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
+        string
+            memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600" >';
+        for (uint32 i = 1; i < data.strokeCount + 1; i++) {
+            string memory strokePath = data.strokes[i - 1].path;
+            require(
+                data.strokes[i - 1].strokeColor >= 0 &&
+                    data.strokes[i - 1].strokeColor < MAX_COLORS,
+                "Stroke color out of range"
+            );
+            string memory strokeColor = PALETTES[canvasId][
+                data.strokes[i - 1].strokeColor
+            ];
+            require(
+                data.strokes[i - 1].strokeWidth >= 0 &&
+                    data.strokes[i - 1].strokeWidth < MAX_BRUSH_SIZES,
+                "Stroke color out of range"
+            );
+            uint8 strokeWidth = BRUSH_SIZES[data.strokes[i - 1].strokeWidth];
+            output = string(
+                abi.encodePacked(
+                    output,
+                    '<path d="',
+                    strokePath,
+                    '" fill="none" stroke-linecap="round" stroke="',
+                    strokeColor,
+                    '" stroke-width="',
+                    toString(strokeWidth),
+                    '"></path>'
+                )
+            );
+        }
+        output = string(abi.encodePacked(output, "</svg>"));
         return output;
     }
 
