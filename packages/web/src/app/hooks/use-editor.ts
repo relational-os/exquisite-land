@@ -26,7 +26,7 @@ const useEditor = () => {
   const activeCanvas = useStore((state) => state.activeCanvas);
   const activeColor = useStore((state) => state.activeColor);
   const activeBrush = useStore((state) => state.activeBrush);
-  const { palette, error, refresh } = useFetchPalette(activeCanvas);
+  const { palette } = useFetchPalette(activeCanvas);
 
   const { provider } = useWallet();
 

@@ -5,7 +5,7 @@ import useEditor from "@app/hooks/use-editor";
 
 const ColorPicker = () => {
   let activeCanvasID = useStore((state) => state.activeCanvas);
-  const { palette, error, refresh } = useFetchPalette(activeCanvasID);
+  const { palette } = useFetchPalette(activeCanvasID);
   console.log({ palette });
 
   return (
