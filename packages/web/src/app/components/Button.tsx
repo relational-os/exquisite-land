@@ -9,10 +9,11 @@ const Button = React.forwardRef(function Button(
       <button ref={ref} {...props} className={`button ${props.className}`} />
       <style jsx>{`
         .button {
-          padding: 8px 16px;
+          padding: 8px 12px;
           border: 0;
           background: hsl(0deg 0% 90%);
-          font-size: 20px;
+          font-size: 16px;
+          font-weight: bold;
           font-family: inherit;
           border-radius: 16px;
           cursor: pointer;
