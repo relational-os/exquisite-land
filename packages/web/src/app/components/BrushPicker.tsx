@@ -14,6 +14,7 @@ const BrushPicker = () => {
       <style jsx>{`
         .brush-picker {
           display: flex;
+          flex-direction: column;
           gap: 16px;
         }
       `}</style>

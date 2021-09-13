@@ -15,6 +15,7 @@ const Button = React.forwardRef(function Button(
           font-size: 16px;
           font-weight: bold;
           font-family: inherit;
+          letter-spacing: -1px;
           border-radius: 16px;
           cursor: pointer;
           will-change: transform;
