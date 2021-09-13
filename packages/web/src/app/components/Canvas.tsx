@@ -3,6 +3,8 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import Tile from "./Tile";
 import Modal from "react-modal";
 import Editor from "./Editor";
+import useStore from "../features/State";
+import { useFetchCanvas, useFetchTile } from "@app/features/Graph";
 
 const width = Array(100);
 const height = Array(100);
@@ -33,6 +35,9 @@ const Canvas = () => {
   const [x, setX] = useState<number>();
   const [y, setY] = useState<number>();
   const [modalIsOpen, setIsOpen] = useState(false);
+
+  let activeCanvasID = useStore((state) => state.activeCanvas);
+  useFetchCanvas(activeCanvasID);
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.

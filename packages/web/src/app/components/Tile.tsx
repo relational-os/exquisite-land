@@ -1,5 +1,6 @@
 import React from "react";
 import useStore from "../features/State";
+import { useFetchTile } from "@app/features/Graph";
 
 const Tile = ({
   x,
@@ -10,12 +11,11 @@ const Tile = ({
   y: number;
   handleTileClick: () => void;
 }) => {
-  let tile = useStore(
-    (state) => state.canvases[state.activeCanvas].tiles[`${x}-${y}`]
-  );
+  let activeCanvasID = useStore((state) => state.activeCanvas);
+  let { tile, error, refresh } = useFetchTile(activeCanvasID, x, y);
 
   return (
-    <div className="tile" onClick={(e) => handleTileClick()}>
+    <div className="tile" onClick={handleTileClick}>
       {tile?.svg && <div dangerouslySetInnerHTML={{ __html: tile.svg }}></div>}
       <style jsx>{`
         .tile {
@@ -29,4 +29,4 @@ const Tile = ({
   );
 };
 
-export default Tile;
+export default React.memo(Tile);
