@@ -1,48 +1,27 @@
-import React, { useState } from "react";
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import Tile from "./Tile";
-import Modal from "react-modal";
-import Editor from "./Editor";
-import useStore from "../features/State";
-import { useFetchCanvas } from "@app/features/Graph";
-
-const width = Array(100);
-const height = Array(100);
-
-for (var x = 0; x < width.length; x++) width[x] = x;
-for (var y = 0; y < height.length; y++) height[y] = y;
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    background: "transparent",
-    border: 0,
-    padding: 0,
-  },
-};
-
-Modal.setAppElement("#__next");
+import React, { CSSProperties, useEffect, useState } from 'react';
+import { FixedSizeGrid as Grid } from 'react-window';
+import Tile from './Tile';
+import Editor from './Editor';
+import useStore from '../features/State';
+import { useFetchCanvas } from '@app/features/Graph';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import Modal from 'react-modal';
+Modal.setAppElement('#__next');
 
 const Canvas = () => {
   const [x, setX] = useState<number>();
   const [y, setY] = useState<number>();
-  const [modalIsOpen, setIsOpen] = useState(false);
-
-  let activeCanvasID = useStore((state) => state.activeCanvas);
+  const [size, setSize] = useState(200);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const activeCanvasID = useStore(state => state.activeCanvas);
   useFetchCanvas(activeCanvasID);
 
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    // subtitle.style.color = '#f00';
-  }
+  useEffect(() => {
+    setIsModalOpen(false);
+  }, [activeCanvasID]);
 
   function closeModal() {
-    setIsOpen(false);
+    setIsModalOpen(false);
     setX(undefined);
     setY(undefined);
   }
@@ -51,52 +30,102 @@ const Canvas = () => {
     console.log(`tile ${x}, ${y} clicked!`);
     setX(x);
     setY(y);
-    setIsOpen(true);
+    setIsModalOpen(true);
   }
+
+  const zoomIn = () => setSize(s => s * 1.25);
+  const zoomOut = () => setSize(s => Math.max(0, s / 1.25));
 
   return (
     <>
       <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
+        isOpen={isModalOpen}
         onRequestClose={closeModal}
-        style={customStyles}
+        style={modalStyles}
         contentLabel="Tile Editor Modal"
+        closeTimeoutMS={200}
       >
         {x != undefined && y != undefined && (
           <Editor x={x} y={y} closeModal={closeModal}></Editor>
         )}
       </Modal>
-
-      <TransformWrapper>
-        <TransformComponent>
-          <div className="surface">
-            {width.map((y) => {
-              return height.map((x) => {
-                // this is a test of an svg (note it does not render nicely inside the component)
-                // return <Arweave width={200} height={200} key={j}></Arweave>;
-                return (
-                  <Tile
-                    key={`tile-${x}-${y}`}
-                    x={x}
-                    y={y}
-                    handleTileClick={() => handleTileClick(x, y)}
-                  />
-                );
-              });
-            })}
-          </div>
-        </TransformComponent>
-      </TransformWrapper>
+      <div className="surface">
+        <AutoSizer>
+          {({ height, width }: { width: number; height: number }) => (
+            <Grid
+              width={width}
+              height={height}
+              columnCount={100}
+              rowCount={100}
+              columnWidth={size}
+              rowHeight={size}
+            >
+              {({
+                columnIndex,
+                rowIndex,
+                style
+              }: {
+                columnIndex: number;
+                rowIndex: number;
+                style: CSSProperties;
+              }) => (
+                <Tile
+                  x={columnIndex}
+                  y={rowIndex}
+                  handleTileClick={() => handleTileClick(columnIndex, rowIndex)}
+                  style={style}
+                />
+              )}
+            </Grid>
+          )}
+        </AutoSizer>
+      </div>
+      <div className="controls">
+        <button onClick={zoomIn}>Zoom In</button>
+        <button onClick={zoomOut}>Zoom Out</button>
+      </div>
       <style jsx>{`
         .surface {
-          display: grid;
-          grid-template-rows: repeat(100, 200px);
-          grid-template-columns: repeat(100, 200px);
+          width: 100vw;
+          height: 100vh;
+        }
+        .controls {
+          position: fixed;
+          bottom: 0;
+          right: 0;
+          padding: 20px;
+        }
+      `}</style>
+      <style jsx global>{`
+        .ReactModal__Overlay {
+          opacity: 0;
+          transition: opacity 200ms ease-in-out;
+        }
+
+        .ReactModal__Overlay--after-open {
+          opacity: 1;
+        }
+
+        .ReactModal__Overlay--before-close {
+          opacity: 0;
         }
       `}</style>
     </>
   );
+};
+
+const modalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    background: 'transparent',
+    border: 0,
+    padding: 0
+  }
 };
 
 export default Canvas;

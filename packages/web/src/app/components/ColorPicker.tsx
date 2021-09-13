@@ -1,13 +1,11 @@
-import React from "react";
-import { useFetchPalette } from "@app/features/Graph";
-import useStore from "@app/features/State";
-import useEditor from "@app/hooks/use-editor";
+import React from 'react';
+import useStore from '@app/features/State';
+import useEditor from '@app/hooks/use-editor';
+import PALETTES from 'src/constants/Palettes';
 
 const ColorPicker = () => {
-  let activeCanvasID = useStore((state) => state.activeCanvas);
-  const { palette } = useFetchPalette(activeCanvasID);
-  console.log({ palette });
-
+  let activeCanvasID = useStore(state => state.activeCanvas);
+  const palette = PALETTES[activeCanvasID];
   return (
     <>
       <div className="color-picker">
@@ -33,7 +31,7 @@ interface SwatchProps {
 
 const Swatch = ({ color }: SwatchProps) => {
   const { brushColor, setBrushColor } = useEditor();
-  const borderColor = color === brushColor ? "dodgerblue" : "hsl(0deg 0% 80%)";
+  const borderColor = color === brushColor ? 'dodgerblue' : 'hsl(0deg 0% 80%)';
 
   return (
     <>
