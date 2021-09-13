@@ -27,22 +27,21 @@ contract Tile is ERC721, Ownable {
     bool allowEditing = true;
 
     string[][MAX_CANVASES] PALETTES = [
-        ["#000", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51"],
-        ["#000", "#009D8F", "#00C46A", "#00A261", "#006F51"],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""],
-        ["#000", "", "", "", ""]
+        ["#000", "#23577a", "#38a3a4", "#57cc99", "#7fed99", "#c7f9cc"],
+        ["#000", "#cdb4db", "#ffc8dd", "#ffafcd", "#bde0fd", "#a2d2ff"],
+        ["#000", "#79addc", "#ffbf9f", "#ffee92", "#fcf5c7", "#aef7b6"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"],
+        ["#000", "#", "#", "#", "#", "#"]
     ];
 
     uint8[2] BRUSH_SIZES = [4, 16];
@@ -85,6 +84,36 @@ contract Tile is ERC721, Ownable {
             }
         }
     }
+    
+    function inviteIsValid(
+        uint32 senderX,
+        uint32 senderY,
+        uint32 inviteX,
+        uint32 inviteY
+        ) public pure returns (bool) {
+            bool checkWest;
+            
+            if (inviteX > 0) {
+                checkWest = ((senderX == inviteX - 1) && (senderY == inviteY));
+            } else {
+                checkWest = false;
+            }
+            
+            bool checkEast = ((senderX == inviteX + 1) && (senderY == inviteY));
+            
+            bool checkSouth;
+            
+            if (inviteY > 0) {
+              checkSouth = ((senderY == inviteY - 1) && (senderX == inviteX));  
+            } else {
+                checkSouth = false;
+            }
+            
+            bool checkNorth = ((senderY == inviteY + 1) && (senderX == inviteX));
+            
+            return (checkWest || checkEast || checkSouth || checkNorth);
+        }
+
 
     function inviteNeighbor(
         uint32 tokenId,
@@ -92,7 +121,7 @@ contract Tile is ERC721, Ownable {
         uint32 inviteY,
         address recipient
     ) public {
-        require(ownerOf(tokenId) == msg.sender);
+        require(ownerOf(tokenId) == msg.sender, "You are not the owner of that tile.");
         uint32 canvasId;
         uint32 senderX;
         uint32 senderY;
@@ -101,16 +130,11 @@ contract Tile is ERC721, Ownable {
         uint32 targetTileId = generateTokenID(canvasId, inviteX, inviteY);
 
         require(
-            ownerOf(targetTileId) == address(0),
+            !_exists(targetTileId),
             "Requested tile is already taken."
         );
-        require(
-            (senderX == inviteX - 1 && senderY == inviteY) ||
-                (senderX == inviteX + 1 && senderY == inviteY) ||
-                (senderY == inviteY - 1 && senderX == inviteX) ||
-                (senderY == inviteY + 1 && senderX == inviteX),
-            "Requested tile is not a neighbor."
-        );
+        
+        require(inviteIsValid(senderX, senderY, inviteX, inviteY), "Target tile is not a neighbor.");
 
         _safeMint(recipient, targetTileId);
         emit NeighborInvited(targetTileId, recipient);
@@ -119,6 +143,7 @@ contract Tile is ERC721, Ownable {
     function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
         return !svgData[tokenId].isLocked;
     }
+    
 
     function createTile(
         uint32 canvasId,
@@ -164,9 +189,9 @@ contract Tile is ERC721, Ownable {
         uint32 x = (tokenId & (0x0000FF00)) >> 8;
         uint32 y = (tokenId & (0x000000FF));
 
-        require(canvasId < MAX_CANVASES && canvasId >= 0);
-        require(x < MAX_WIDTH && x >= 0);
-        require(y < MAX_HEIGHT && y >= 0);
+        require(canvasId < MAX_CANVASES && canvasId >= 0, "Canvas ID out of accepted range.");
+        require(x < MAX_WIDTH && x >= 0, "Tile is out of horizontal bounds.");
+        require(y < MAX_HEIGHT && y >= 0, "Tile is out of vertical bounds.");
 
         return (canvasId, x, y);
     }
