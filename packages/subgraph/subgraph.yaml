@@ -6,7 +6,7 @@ dataSources:
     name: Tile
     network: mumbai
     source:
-      address: '0x6eAE7ACb92365181320C63bf2b9a79748137c325'
+      address: '0xF6EbdD58C99799FAA1b7c9d2e691FB7e336CAC9A'
       startBlock: 18849856
       abi: Tile
     mapping:
