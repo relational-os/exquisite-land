@@ -12,7 +12,7 @@ interface EditorProps {
   closeModal: () => void;
 }
 
-const INKWELL_CAPACITY = 2000;
+const INKWELL_CAPACITY = 1000;
 
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const { brush, brushColor, brushSize, setTile } = useEditor();

@@ -20,7 +20,7 @@ const Inkwell = ({ value }: InkwellProps) => {
         }
 
         .inkwell[value]::-webkit-progress-value {
-          background: rgb(${255 - value * 255}, ${value * 255}, 0);
+          background: rgb(${255 - value * 255}, ${value * 255}, 64);
         }
 
         .inkwell[value]::-webkit-progress-bar {
