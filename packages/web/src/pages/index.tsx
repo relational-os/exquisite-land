@@ -1,14 +1,10 @@
-import Canvas from "@app/components/Canvas";
-import React from "react";
-import Link from "next/link";
+import Canvas from '@app/components/Canvas';
+import React from 'react';
 
 const IndexPage = () => {
   return (
     <div className="index">
       <Canvas />
-      <Link href="/edit">
-        <a>Editor</a>
-      </Link>
       <style jsx>{`
         .index {
         }

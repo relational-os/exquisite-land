@@ -1,42 +1,28 @@
-import { request, gql } from "graphql-request";
-import useSWR, { SWRConfiguration } from "swr";
+import { request, gql } from 'graphql-request';
+import useSWR, { SWRConfiguration } from 'swr';
 
-const graphURL = "https://api.thegraph.com/subgraphs/name/shahruz/mydemograph";
+const graphURL = 'https://api.thegraph.com/subgraphs/name/shahruz/mydemograph';
 
 let query = gql`
-  query TilesQuery($canvas: String) {
-    tiles(first: 500, where: { canvas: $canvas }) {
+  query CanvasQuery($canvas: String) {
+    canvas(id: $canvas) {
       id
-      x
-      y
-      status
-      canvas {
+      palette
+      tiles(first: 500) {
         id
-        palette
+        x
+        y
+        status
+        svg
+        owner {
+          id
+        }
       }
-      owner {
-        id
-      }
-      svg
     }
   }
 `;
 
 // TODO: pagination
-
-export const useFetchPalette = (
-  canvasID: number,
-  swrOptions?: Partial<SWRConfiguration>
-) => {
-  const { data, error, mutate } = useSWR(
-    [canvasID, "canvas-fetch"],
-    (canvasID) => request(graphURL, query, { canvas: `${canvasID}` }),
-    { revalidateOnMount: true, ...swrOptions }
-  );
-  let palette = data?.tiles[0].canvas.palette;
-
-  return { palette, error, refresh: mutate };
-};
 
 export const useFetchTile = (
   canvasID: number,
@@ -45,14 +31,13 @@ export const useFetchTile = (
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    [canvasID, "canvas-fetch"],
-    (canvasID) => request(graphURL, query, { canvas: `${canvasID}` }),
+    [canvasID, 'canvas-fetch'],
+    canvasID => request(graphURL, query, { canvas: `${canvasID}` }),
     { revalidateOnMount: true, ...swrOptions }
   );
-  let tile = data?.tiles.find((tile: any) => {
+  const tile = data?.canvas?.tiles.find((tile: any) => {
     return tile.x == x && tile.y == y;
   });
-
   return { tile, error, refresh: mutate };
 };
 
@@ -62,8 +47,8 @@ export const useFetchCanvas = (
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    [canvasID, "canvas-fetch"],
-    (canvasID) => request(graphURL, query, { canvas: `${canvasID}` }),
+    [canvasID, 'canvas-fetch'],
+    canvasID => request(graphURL, query, { canvas: `${canvasID}` }),
     { revalidateOnMount: true, ...swrOptions }
   );
   return { data, error, refresh: mutate };
