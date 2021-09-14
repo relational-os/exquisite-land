@@ -4,6 +4,8 @@ pragma solidity ^0.8.2;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "./InflateLib.sol";
+
 contract Tile is ERC721, Ownable {
     uint8 constant MAX_CANVASES = 16;
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
@@ -15,7 +17,8 @@ contract Tile is ERC721, Ownable {
     struct TilePathStroke {
         uint32 strokeColor;
         uint32 strokeWidth;
-        string path;
+        bytes path;
+        uint256 pathLenBytes;
     }
 
     struct TileDataContainer {
@@ -84,36 +87,35 @@ contract Tile is ERC721, Ownable {
             }
         }
     }
-    
+
     function inviteIsValid(
         uint32 senderX,
         uint32 senderY,
         uint32 inviteX,
         uint32 inviteY
-        ) public pure returns (bool) {
-            bool checkWest;
-            
-            if (inviteX > 0) {
-                checkWest = ((senderX == inviteX - 1) && (senderY == inviteY));
-            } else {
-                checkWest = false;
-            }
-            
-            bool checkEast = ((senderX == inviteX + 1) && (senderY == inviteY));
-            
-            bool checkSouth;
-            
-            if (inviteY > 0) {
-              checkSouth = ((senderY == inviteY - 1) && (senderX == inviteX));  
-            } else {
-                checkSouth = false;
-            }
-            
-            bool checkNorth = ((senderY == inviteY + 1) && (senderX == inviteX));
-            
-            return (checkWest || checkEast || checkSouth || checkNorth);
+    ) public pure returns (bool) {
+        bool checkWest;
+
+        if (inviteX > 0) {
+            checkWest = ((senderX == inviteX - 1) && (senderY == inviteY));
+        } else {
+            checkWest = false;
         }
 
+        bool checkEast = ((senderX == inviteX + 1) && (senderY == inviteY));
+
+        bool checkSouth;
+
+        if (inviteY > 0) {
+            checkSouth = ((senderY == inviteY - 1) && (senderX == inviteX));
+        } else {
+            checkSouth = false;
+        }
+
+        bool checkNorth = ((senderY == inviteY + 1) && (senderX == inviteX));
+
+        return (checkWest || checkEast || checkSouth || checkNorth);
+    }
 
     function inviteNeighbor(
         uint32 tokenId,
@@ -121,7 +123,11 @@ contract Tile is ERC721, Ownable {
         uint32 inviteY,
         address recipient
     ) public {
-        require(ownerOf(tokenId) == msg.sender, "You are not the owner of that tile.");
+        require(
+            ownerOf(tokenId) == msg.sender,
+            "You are not the owner of that tile."
+        );
+        require(msg.sender != recipient, "You cannot invite yourself");
         uint32 canvasId;
         uint32 senderX;
         uint32 senderY;
@@ -129,12 +135,12 @@ contract Tile is ERC721, Ownable {
 
         uint32 targetTileId = generateTokenID(canvasId, inviteX, inviteY);
 
+        require(!_exists(targetTileId), "Requested tile is already taken.");
+
         require(
-            !_exists(targetTileId),
-            "Requested tile is already taken."
+            inviteIsValid(senderX, senderY, inviteX, inviteY),
+            "Target tile is not a neighbor."
         );
-        
-        require(inviteIsValid(senderX, senderY, inviteX, inviteY), "Target tile is not a neighbor.");
 
         _safeMint(recipient, targetTileId);
         emit NeighborInvited(targetTileId, recipient);
@@ -143,7 +149,6 @@ contract Tile is ERC721, Ownable {
     function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
         return !svgData[tokenId].isLocked;
     }
-    
 
     function createTile(
         uint32 canvasId,
@@ -189,7 +194,10 @@ contract Tile is ERC721, Ownable {
         uint32 x = (tokenId & (0x0000FF00)) >> 8;
         uint32 y = (tokenId & (0x000000FF));
 
-        require(canvasId < MAX_CANVASES && canvasId >= 0, "Canvas ID out of accepted range.");
+        require(
+            canvasId < MAX_CANVASES && canvasId >= 0,
+            "Canvas ID out of accepted range."
+        );
         require(x < MAX_WIDTH && x >= 0, "Tile is out of horizontal bounds.");
         require(y < MAX_HEIGHT && y >= 0, "Tile is out of vertical bounds.");
 
@@ -240,24 +248,39 @@ contract Tile is ERC721, Ownable {
     function getTileSVG(uint32 tokenId) public view returns (string memory) {
         TileDataContainer storage data = svgData[uint32(tokenId)];
         (uint32 canvasId, uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
+
+        // Build Output SVG
         string
             memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600" >';
+
+        // Go through each path drawn in the tile and construct the SVG
         for (uint32 i = 1; i < data.strokeCount + 1; i++) {
-            string memory strokePath = data.strokes[i - 1].path;
+            TilePathStroke memory strokeData = data.strokes[i - 1];
+
+            (InflateLib.ErrorCode err, bytes memory result) = InflateLib.puff(
+                strokeData.path,
+                strokeData.pathLenBytes
+            );
+            string memory strokePath = string(result);
+
+            // Validate and set the color for this path
             require(
-                data.strokes[i - 1].strokeColor >= 0 &&
-                    data.strokes[i - 1].strokeColor < MAX_COLORS,
+                strokeData.strokeColor >= 0 &&
+                    strokeData.strokeColor < MAX_COLORS,
                 "Stroke color out of range"
             );
             string memory strokeColor = PALETTES[canvasId][
-                data.strokes[i - 1].strokeColor
+                strokeData.strokeColor
             ];
+
+            // Validate and set the width for this path
             require(
-                data.strokes[i - 1].strokeWidth >= 0 &&
-                    data.strokes[i - 1].strokeWidth < MAX_BRUSH_SIZES,
+                strokeData.strokeWidth >= 0 &&
+                    strokeData.strokeWidth < MAX_BRUSH_SIZES,
                 "Stroke color out of range"
             );
-            uint8 strokeWidth = BRUSH_SIZES[data.strokes[i - 1].strokeWidth];
+            uint8 strokeWidth = BRUSH_SIZES[strokeData.strokeWidth];
+
             output = string(
                 abi.encodePacked(
                     output,
@@ -271,6 +294,7 @@ contract Tile is ERC721, Ownable {
                 )
             );
         }
+
         output = string(abi.encodePacked(output, "</svg>"));
         return output;
     }

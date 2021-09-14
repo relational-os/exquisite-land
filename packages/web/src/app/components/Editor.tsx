@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { ReactSketchCanvas } from 'react-sketch-canvas';
-import useEditor, { BrushType } from '@app/hooks/use-editor';
-import ColorPicker from '@app/components/ColorPicker';
-import BrushPicker from '@app/components/BrushPicker';
-import Inkwell from '@app/components/Inkwell';
-import Button, { ButtonSuccess } from '@app/components/Button';
+import React, { useEffect, useRef } from "react";
+import { ReactSketchCanvas } from "react-sketch-canvas";
+import useEditor, { BrushType } from "@app/hooks/use-editor";
+import ColorPicker from "@app/components/ColorPicker";
+import BrushPicker from "@app/components/BrushPicker";
+import Inkwell from "@app/components/Inkwell";
+import Button, { ButtonSuccess } from "@app/components/Button";
 
 interface EditorProps {
   x: number;
@@ -18,8 +18,11 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
   const { brush, brushColor, brushSize, setTile } = useEditor();
   const [inkUsed, setInkUsed] = React.useState(0);
   const isEraseMode = brush === BrushType.ERASER;
-  const color = isEraseMode ? 'pink' : brushColor;
-  const fillColor = color.replace('#', '%23');
+  const color = isEraseMode ? "pink" : brushColor;
+  const fillColor = color.replace("#", "%23");
+
+  const canvasRef = useRef<ReactSketchCanvas>(null);
+  const canvasStyle = {}; // drop border style
 
   // prettier-ignore
   const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 32 32" width="32" height="32"><circle r="${brushSize / 2}" cx="16" cy="16" fill="${fillColor}"/></svg>'`;
@@ -34,19 +37,17 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     const svg = await canvasRef.current.exportSvg();
     if (!svg) return;
 
-    const optimizedSvg = await fetch('/api/optimize', {
-      method: 'POST',
-      body: svg
+    const optimizedSvg = await fetch("/api/optimize", {
+      method: "POST",
+      body: svg,
     })
-      .then(res => res.json())
-      .then(s => s.data as string);
+      .then((res) => res.json())
+      .then((s) => s.data as string);
 
     const paths = await canvasRef.current.exportPaths();
     setTile({ x, y, svg: optimizedSvg, paths });
     closeModal();
   }
-  const canvasRef = useRef<ReactSketchCanvas>(null);
-  const canvasStyle = {}; // drop border style
 
   useEffect(() => {
     canvasRef.current?.eraseMode(isEraseMode);
@@ -55,7 +56,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
   useEffect(() => {
     async function loadPaths() {
       const paths = await canvasRef.current?.exportPaths();
-      console.log('paths', paths);
+      console.log("paths", paths);
       // setCanvasPaths(paths || null);
     }
     loadPaths();
@@ -71,7 +72,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           strokeWidth={brushSize}
           eraserWidth={brushSize}
           strokeColor={brushColor}
-          onUpdate={paths => {
+          onUpdate={(paths) => {
             const pointCount = paths.reduce((acc, path) => {
               return (acc += path.paths.length);
             }, 0);
@@ -108,8 +109,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           grid-template-columns: 64px 600px 64px;
           grid-template-rows: 600px 64px;
           grid-template-areas:
-            'aside-left canvas aside-right'
-            'aside-left canvas-footer aside-right';
+            "aside-left canvas aside-right"
+            "aside-left canvas-footer aside-right";
         }
 
         .canvas {

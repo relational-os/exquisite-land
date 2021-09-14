@@ -5,6 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ relational-os/exquisite-land",
+    "deploy-test": "graph deploy --node https://api.thegraph.com/deploy/ relational-os/exquisite-land-canary",
     "create-local": "graph create --node http://localhost:8020/ relational-os/exquisite-land",
     "remove-local": "graph remove --node http://localhost:8020/ relational-os/exquisite-land",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 relational-os/exquisite-land"

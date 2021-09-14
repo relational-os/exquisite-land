@@ -31,6 +31,7 @@ interface TileInterface extends ethers.utils.Interface {
     "getCoordinates(uint32)": FunctionFragment;
     "getPalette(uint32)": FunctionFragment;
     "getTileSVG(uint32)": FunctionFragment;
+    "inviteIsValid(uint32,uint32,uint32,uint32)": FunctionFragment;
     "inviteNeighbor(uint32,uint32,uint32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -68,7 +69,12 @@ interface TileInterface extends ethers.utils.Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
-      { strokeColor: BigNumberish; strokeWidth: BigNumberish; path: string }[]
+      {
+        strokeColor: BigNumberish;
+        strokeWidth: BigNumberish;
+        path: BytesLike;
+        pathLenBytes: BigNumberish;
+      }[]
     ]
   ): string;
   encodeFunctionData(
@@ -90,6 +96,10 @@ interface TileInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getTileSVG",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "inviteIsValid",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "inviteNeighbor",
@@ -169,6 +179,10 @@ interface TileInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getPalette", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getTileSVG", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "inviteIsValid",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "inviteNeighbor",
     data: BytesLike
@@ -306,7 +320,8 @@ export class Tile extends BaseContract {
       strokes: {
         strokeColor: BigNumberish;
         strokeWidth: BigNumberish;
-        path: string;
+        path: BytesLike;
+        pathLenBytes: BigNumberish;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -337,6 +352,14 @@ export class Tile extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     inviteNeighbor(
       tokenId: BigNumberish,
@@ -451,7 +474,8 @@ export class Tile extends BaseContract {
     strokes: {
       strokeColor: BigNumberish;
       strokeWidth: BigNumberish;
-      path: string;
+      path: BytesLike;
+      pathLenBytes: BigNumberish;
     }[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -479,6 +503,14 @@ export class Tile extends BaseContract {
   ): Promise<string[]>;
 
   getTileSVG(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  inviteIsValid(
+    senderX: BigNumberish,
+    senderY: BigNumberish,
+    inviteX: BigNumberish,
+    inviteY: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   inviteNeighbor(
     tokenId: BigNumberish,
@@ -587,7 +619,8 @@ export class Tile extends BaseContract {
       strokes: {
         strokeColor: BigNumberish;
         strokeWidth: BigNumberish;
-        path: string;
+        path: BytesLike;
+        pathLenBytes: BigNumberish;
       }[],
       overrides?: CallOverrides
     ): Promise<void>;
@@ -618,6 +651,14 @@ export class Tile extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     inviteNeighbor(
       tokenId: BigNumberish,
@@ -784,7 +825,8 @@ export class Tile extends BaseContract {
       strokes: {
         strokeColor: BigNumberish;
         strokeWidth: BigNumberish;
-        path: string;
+        path: BytesLike;
+        pathLenBytes: BigNumberish;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -813,6 +855,14 @@ export class Tile extends BaseContract {
 
     getTileSVG(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -931,7 +981,8 @@ export class Tile extends BaseContract {
       strokes: {
         strokeColor: BigNumberish;
         strokeWidth: BigNumberish;
-        path: string;
+        path: BytesLike;
+        pathLenBytes: BigNumberish;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -960,6 +1011,14 @@ export class Tile extends BaseContract {
 
     getTileSVG(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
