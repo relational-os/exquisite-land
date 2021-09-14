@@ -269,7 +269,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct Tile.TilePathStroke[]",
+        "internalType": "struct ExquisiteLand.TilePathStroke[]",
         "name": "strokes",
         "type": "tuple[]"
       }
@@ -392,6 +392,40 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "senderX",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "senderY",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "inviteX",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "inviteY",
+        "type": "uint32"
+      }
+    ],
+    "name": "inviteIsValid",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -570,6 +604,19 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "granter",
+        "type": "address"
+      }
+    ],
+    "name": "setLandGranter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes4",
         "name": "interfaceId",
         "type": "bytes4"
@@ -581,30 +628,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "name": "svgData",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "isLocked",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "strokeCount",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",

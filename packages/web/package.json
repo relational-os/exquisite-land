@@ -6,6 +6,7 @@
     "start": "next"
   },
   "dependencies": {
+    "@ethersproject/abstract-signer": "^5.4.1",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/wallet": "^5.4.0",
@@ -39,7 +40,6 @@
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
     "@types/svgo": "^2.4.1",
-    "prisma": "^3.0.2",
     "typescript": "^4.1.3"
   }
 }

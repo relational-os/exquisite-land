@@ -19,7 +19,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface TileInterface extends ethers.utils.Interface {
+interface ExquisiteLandInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -40,8 +40,8 @@ interface TileInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setLandGranter(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "svgData(uint32)": FunctionFragment;
     "symbol()": FunctionFragment;
     "targetTileIsBlank(uint32)": FunctionFragment;
     "toggleAllowEditing()": FunctionFragment;
@@ -123,12 +123,12 @@ interface TileInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
+    functionFragment: "setLandGranter",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "svgData",
-    values: [BigNumberish]
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
@@ -202,10 +202,13 @@ interface TileInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setLandGranter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "svgData", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "targetTileIsBlank",
@@ -244,7 +247,7 @@ interface TileInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class Tile extends BaseContract {
+export class ExquisiteLand extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -285,7 +288,7 @@ export class Tile extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: TileInterface;
+  interface: ExquisiteLandInterface;
 
   functions: {
     approve(
@@ -403,17 +406,15 @@ export class Tile extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setLandGranter(
+      granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    svgData(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [boolean, BigNumber] & { isLocked: boolean; strokeCount: BigNumber }
-    >;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -550,17 +551,15 @@ export class Tile extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setLandGranter(
+    granter: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  svgData(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [boolean, BigNumber] & { isLocked: boolean; strokeCount: BigNumber }
-  >;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -695,17 +694,12 @@ export class Tile extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setLandGranter(granter: string, overrides?: CallOverrides): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    svgData(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [boolean, BigNumber] & { isLocked: boolean; strokeCount: BigNumber }
-    >;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -905,12 +899,15 @@ export class Tile extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setLandGranter(
+      granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    svgData(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1060,13 +1057,13 @@ export class Tile extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
+    setLandGranter(
+      granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    svgData(
-      arg0: BigNumberish,
+    supportsInterface(
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

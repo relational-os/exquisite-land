@@ -8,8 +8,9 @@ export type { IERC721 } from "./IERC721";
 export type { IERC721Receiver } from "./IERC721Receiver";
 export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
+export type { ExquisiteLand } from "./ExquisiteLand";
+export type { ILandGranter } from "./ILandGranter";
 export type { LandGranter } from "./LandGranter";
-export type { Tile } from "./Tile";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
@@ -18,5 +19,6 @@ export { IERC721__factory } from "./factories/IERC721__factory";
 export { IERC721Receiver__factory } from "./factories/IERC721Receiver__factory";
 export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
+export { ExquisiteLand__factory } from "./factories/ExquisiteLand__factory";
+export { ILandGranter__factory } from "./factories/ILandGranter__factory";
 export { LandGranter__factory } from "./factories/LandGranter__factory";
-export { Tile__factory } from "./factories/Tile__factory";

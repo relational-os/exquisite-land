@@ -1,9 +1,9 @@
 import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import { verifyMessage } from '@ethersproject/wallet';
-import { Tile__factory } from '@sdk/factories/Tile__factory';
+import { ExquisiteLand__factory } from '@sdk/factories/ExquisiteLand__factory';
 
 export const getOwnerAddress = () => {
-  const contract = Tile__factory.connect(
+  const contract = ExquisiteLand__factory.connect(
     process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
     getJsonRpcProvider()
   );

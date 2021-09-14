@@ -204,7 +204,7 @@
     "@ethersproject/transactions" "^5.4.0"
     "@ethersproject/web" "^5.4.0"
 
-"@ethersproject/abstract-signer@5.4.1", "@ethersproject/abstract-signer@^5.4.0":
+"@ethersproject/abstract-signer@5.4.1", "@ethersproject/abstract-signer@^5.4.0", "@ethersproject/abstract-signer@^5.4.1":
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/@ethersproject/abstract-signer/-/abstract-signer-5.4.1.tgz#e4e9abcf4dd4f1ba0db7dff9746a5f78f355ea81"
   integrity sha512-SkkFL5HVq1k4/25dM+NWP9MILgohJCgGv5xT5AcRruGz4ILpfHeBtO/y6j+Z3UN/PAjDeb4P7E51Yh8wcGNLGA==
@@ -637,11 +637,6 @@
   integrity sha512-R5wEmm8nbuQU0YGGmYVjEc0OHtYsuXdpRG+Ut/3wZ9XAvQWyThN08bTh2cBJgoZxHQUPtvRfeQuxcAgLuiBISg==
   dependencies:
     "@napi-rs/triples" "^1.0.3"
-
-"@prisma/engines@2.31.0-32.2452cc6313d52b8b9a96999ac0e974d0aedf88db":
-  version "2.31.0-32.2452cc6313d52b8b9a96999ac0e974d0aedf88db"
-  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.31.0-32.2452cc6313d52b8b9a96999ac0e974d0aedf88db.tgz#b6cf70bc05dd2a62168a16f3ea58a1b011074621"
-  integrity sha512-Q9CwN6e5E5Abso7J3A1fHbcF4NXGRINyMnf7WQ07fXaebxTTARY5BNUzy2Mo5uH82eRVO5v7ImNuR044KTjLJg==
 
 "@trysound/sax@0.1.1":
   version "0.1.1"
@@ -2515,13 +2510,6 @@ prettier@^2.3.2:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.0.tgz#85bdfe0f70c3e777cf13a4ffff39713ca6f64cba"
   integrity sha512-DsEPLY1dE5HF3BxCRBmD4uYZ+5DCbvatnolqTqcxEgKVZnL2kUfyu7b8pPQ5+hTBkdhU9SLUmK0/pHb07RE4WQ==
-
-prisma@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/prisma/-/prisma-3.0.2.tgz#e86cb6abf4a815c7ac97b9d0ed383f01c253ce34"
-  integrity sha512-TyOCbtWGDVdWvsM1RhUzJXoGClXGalHhyYWIc5eizSF8T1ScGiOa34asBUdTnXOUBFSErbsqMNw40DHAteBm1A==
-  dependencies:
-    "@prisma/engines" "2.31.0-32.2452cc6313d52b8b9a96999ac0e974d0aedf88db"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

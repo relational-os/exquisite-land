@@ -1,7 +1,8 @@
 import { request, gql } from 'graphql-request';
 import useSWR, { SWRConfiguration } from 'swr';
 
-const graphURL = 'https://api.thegraph.com/subgraphs/name/shahruz/mydemograph';
+export const GRAPH_URL =
+  'https://api.thegraph.com/subgraphs/name/shahruz/mydemograph2';
 
 let query = gql`
   query CanvasQuery($canvas: String) {
@@ -32,7 +33,7 @@ export const useFetchTile = (
 ) => {
   const { data, error, mutate } = useSWR(
     [canvasID, 'canvas-fetch'],
-    canvasID => request(graphURL, query, { canvas: `${canvasID}` }),
+    canvasID => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
     { revalidateOnMount: true, ...swrOptions }
   );
   const tile = data?.canvas?.tiles.find((tile: any) => {
@@ -48,7 +49,7 @@ export const useFetchCanvas = (
 ) => {
   const { data, error, mutate } = useSWR(
     [canvasID, 'canvas-fetch'],
-    canvasID => request(graphURL, query, { canvas: `${canvasID}` }),
+    canvasID => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
     { revalidateOnMount: true, ...swrOptions }
   );
   return { data, error, refresh: mutate };

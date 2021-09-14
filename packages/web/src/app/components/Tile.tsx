@@ -14,7 +14,6 @@ const Tile = ({
   handleTileClick: () => void;
   style?: React.CSSProperties;
 }) => {
-  console.log('Tile rendering', x, y);
   const activeCanvasID = useStore(state => state.activeCanvas);
   const palette = PALETTES[activeCanvasID];
   const { tile } = useFetchTile(activeCanvasID, x, y);
@@ -23,7 +22,6 @@ const Tile = ({
       {tile?.svg && (
         <div className="svg" dangerouslySetInnerHTML={{ __html: tile.svg }} />
       )}
-
       <style jsx>{`
         .tile {
           position: relative;
@@ -46,4 +44,7 @@ const Tile = ({
   );
 };
 
-export default React.memo(Tile);
+export default React.memo(
+  Tile,
+  (prev, next) => prev.x === next.x && prev.y === next.y
+);

@@ -176,7 +176,7 @@ export class Transfer__Params {
   }
 }
 
-export class Tile__getCoordinatesResult {
+export class ExquisiteLand__getCoordinatesResult {
   value0: BigInt;
   value1: BigInt;
   value2: BigInt;
@@ -196,26 +196,9 @@ export class Tile__getCoordinatesResult {
   }
 }
 
-export class Tile__svgDataResult {
-  value0: boolean;
-  value1: BigInt;
-
-  constructor(value0: boolean, value1: BigInt) {
-    this.value0 = value0;
-    this.value1 = value1;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromBoolean(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    return map;
-  }
-}
-
-export class Tile extends ethereum.SmartContract {
-  static bind(address: Address): Tile {
-    return new Tile("Tile", address);
+export class ExquisiteLand extends ethereum.SmartContract {
+  static bind(address: Address): ExquisiteLand {
+    return new ExquisiteLand("ExquisiteLand", address);
   }
 
   balanceOf(owner: Address): BigInt {
@@ -312,14 +295,14 @@ export class Tile extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getCoordinates(tokenId: BigInt): Tile__getCoordinatesResult {
+  getCoordinates(tokenId: BigInt): ExquisiteLand__getCoordinatesResult {
     let result = super.call(
       "getCoordinates",
       "getCoordinates(uint32):(uint32,uint32,uint32)",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
-    return new Tile__getCoordinatesResult(
+    return new ExquisiteLand__getCoordinatesResult(
       result[0].toBigInt(),
       result[1].toBigInt(),
       result[2].toBigInt()
@@ -328,7 +311,7 @@ export class Tile extends ethereum.SmartContract {
 
   try_getCoordinates(
     tokenId: BigInt
-  ): ethereum.CallResult<Tile__getCoordinatesResult> {
+  ): ethereum.CallResult<ExquisiteLand__getCoordinatesResult> {
     let result = super.tryCall(
       "getCoordinates",
       "getCoordinates(uint32):(uint32,uint32,uint32)",
@@ -339,7 +322,7 @@ export class Tile extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Tile__getCoordinatesResult(
+      new ExquisiteLand__getCoordinatesResult(
         value[0].toBigInt(),
         value[1].toBigInt(),
         value[2].toBigInt()
@@ -383,6 +366,49 @@ export class Tile extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  inviteIsValid(
+    senderX: BigInt,
+    senderY: BigInt,
+    inviteX: BigInt,
+    inviteY: BigInt
+  ): boolean {
+    let result = super.call(
+      "inviteIsValid",
+      "inviteIsValid(uint32,uint32,uint32,uint32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(senderX),
+        ethereum.Value.fromUnsignedBigInt(senderY),
+        ethereum.Value.fromUnsignedBigInt(inviteX),
+        ethereum.Value.fromUnsignedBigInt(inviteY)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_inviteIsValid(
+    senderX: BigInt,
+    senderY: BigInt,
+    inviteX: BigInt,
+    inviteY: BigInt
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "inviteIsValid",
+      "inviteIsValid(uint32,uint32,uint32,uint32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(senderX),
+        ethereum.Value.fromUnsignedBigInt(senderY),
+        ethereum.Value.fromUnsignedBigInt(inviteX),
+        ethereum.Value.fromUnsignedBigInt(inviteY)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   isApprovedForAll(owner: Address, operator: Address): boolean {
@@ -481,27 +507,6 @@ export class Tile extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  svgData(param0: BigInt): Tile__svgDataResult {
-    let result = super.call("svgData", "svgData(uint32):(bool,uint256)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-
-    return new Tile__svgDataResult(result[0].toBoolean(), result[1].toBigInt());
-  }
-
-  try_svgData(param0: BigInt): ethereum.CallResult<Tile__svgDataResult> {
-    let result = super.tryCall("svgData", "svgData(uint32):(bool,uint256)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new Tile__svgDataResult(value[0].toBoolean(), value[1].toBigInt())
-    );
   }
 
   symbol(): string {
@@ -896,6 +901,36 @@ export class SetApprovalForAllCall__Outputs {
   _call: SetApprovalForAllCall;
 
   constructor(call: SetApprovalForAllCall) {
+    this._call = call;
+  }
+}
+
+export class SetLandGranterCall extends ethereum.Call {
+  get inputs(): SetLandGranterCall__Inputs {
+    return new SetLandGranterCall__Inputs(this);
+  }
+
+  get outputs(): SetLandGranterCall__Outputs {
+    return new SetLandGranterCall__Outputs(this);
+  }
+}
+
+export class SetLandGranterCall__Inputs {
+  _call: SetLandGranterCall;
+
+  constructor(call: SetLandGranterCall) {
+    this._call = call;
+  }
+
+  get granter(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetLandGranterCall__Outputs {
+  _call: SetLandGranterCall;
+
+  constructor(call: SetLandGranterCall) {
     this._call = call;
   }
 }

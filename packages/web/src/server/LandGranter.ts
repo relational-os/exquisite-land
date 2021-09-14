@@ -1,10 +1,11 @@
 import { ContractTransaction } from '@ethersproject/contracts';
 import { LandGranter__factory } from '@sdk/factories/LandGranter__factory';
-import { Tile__factory } from '@sdk/factories/Tile__factory';
+import { ExquisiteLand__factory } from '@sdk/factories/ExquisiteLand__factory';
 
 // @ts-ignore
 import steggy from 'steggy';
 import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { Wallet } from '@ethersproject/wallet';
 
 export const getTokenIDForCoin = (coinB64: string): number | null => {
   try {
@@ -21,7 +22,7 @@ export const checkTokenIdIsOwnedByLandGranter = async (
   tokenId: number
 ): Promise<boolean> => {
   try {
-    const contract = Tile__factory.connect(
+    const contract = ExquisiteLand__factory.connect(
       process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
       getJsonRpcProvider()
     );
@@ -41,9 +42,13 @@ export const grantLandTile = (
   tokenId: number,
   recipient: string
 ): Promise<ContractTransaction> => {
+  const wallet = new Wallet(
+    process.env.CONTRACT_OWNER_PRIVATE_KEY as string,
+    getJsonRpcProvider()
+  );
   const contract = LandGranter__factory.connect(
     process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string,
-    getJsonRpcProvider()
+    wallet
   );
   return contract.grant(tokenId, recipient);
 };

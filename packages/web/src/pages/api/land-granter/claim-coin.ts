@@ -1,13 +1,15 @@
 import {
   checkTokenIdIsOwnedByLandGranter,
-  getTokenIDForCoin
+  getTokenIDForCoin,
+  grantLandTile
 } from '@server/LandGranter';
 import { NextApiHandler } from 'next';
 
 const api: NextApiHandler = async (req, res) => {
-  const { coinB64 }: { coinB64?: string } = req.body;
+  const { coinB64, recipient }: { coinB64?: string; recipient?: string } =
+    req.body;
 
-  if (!coinB64)
+  if (!coinB64 || !recipient)
     return res.status(400).json({ error: 'Missing coin data or recipient.' });
 
   const tokenId = await getTokenIDForCoin(coinB64);
@@ -18,7 +20,9 @@ const api: NextApiHandler = async (req, res) => {
   if (!isGrantable)
     return res.status(400).json({ error: 'Coin has already been claimed.' });
 
-  return res.json({ tokenId });
+  const tx = await grantLandTile(tokenId, recipient);
+  const reciept = await tx.wait(1);
+  return res.json({ tx: reciept.transactionHash });
 };
 
 export default api;

@@ -3,12 +3,12 @@ schema:
   file: schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Tile
+    name: ExquisiteLand
     network: mumbai
     source:
-      address: "0xF6EbdD58C99799FAA1b7c9d2e691FB7e336CAC9A"
-      startBlock: 18849856
-      abi: Tile
+      address: "0x1795fe6B588E80A7313538EFf1E407344F7cAB08"
+      startBlock: 18902892
+      abi: ExquisiteLand
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -18,8 +18,8 @@ dataSources:
         - Player
         - Canvas
       abis:
-        - name: Tile
-          file: Tile/abis/Tile.json
+        - name: ExquisiteLand
+          file: ExquisiteLand/abis/ExquisiteLand.json
       eventHandlers:
         - event: SeedCreated(uint32,address)
           handler: handleSeedCreated
@@ -27,4 +27,6 @@ dataSources:
           handler: handleNeighborInvited
         - event: TileCreated(uint32,address)
           handler: handleTileCreated
-      file: Tile/Tile.wasm
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTileTransfer
+      file: ExquisiteLand/ExquisiteLand.wasm
