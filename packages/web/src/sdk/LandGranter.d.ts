@@ -62,11 +62,13 @@ interface LandGranterInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "LandGranted(uint256,address)": EventFragment;
+    "InviteCoinCreated(uint256)": EventFragment;
+    "InviteCoinUsed(uint256,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "LandGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InviteCoinCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InviteCoinUsed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
@@ -123,7 +125,7 @@ export class LandGranter extends BaseContract {
     onERC721Received(
       arg0: string,
       arg1: string,
-      arg2: BigNumberish,
+      tokenId: BigNumberish,
       arg3: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -149,7 +151,7 @@ export class LandGranter extends BaseContract {
   onERC721Received(
     arg0: string,
     arg1: string,
-    arg2: BigNumberish,
+    tokenId: BigNumberish,
     arg3: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -175,7 +177,7 @@ export class LandGranter extends BaseContract {
     onERC721Received(
       arg0: string,
       arg1: string,
-      arg2: BigNumberish,
+      tokenId: BigNumberish,
       arg3: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -191,7 +193,11 @@ export class LandGranter extends BaseContract {
   };
 
   filters: {
-    LandGranted(
+    InviteCoinCreated(
+      tokenId?: null
+    ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+
+    InviteCoinUsed(
       tokenId?: null,
       recipient?: null
     ): TypedEventFilter<
@@ -218,7 +224,7 @@ export class LandGranter extends BaseContract {
     onERC721Received(
       arg0: string,
       arg1: string,
-      arg2: BigNumberish,
+      tokenId: BigNumberish,
       arg3: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -245,7 +251,7 @@ export class LandGranter extends BaseContract {
     onERC721Received(
       arg0: string,
       arg1: string,
-      arg2: BigNumberish,
+      tokenId: BigNumberish,
       arg3: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

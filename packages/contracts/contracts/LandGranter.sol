@@ -2,17 +2,32 @@
 
 pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LandGranter is ERC721Holder, Ownable {
+contract LandGranter is IERC721Receiver, Ownable {
     IERC721 private _exquisiteLand;
 
-    event LandGranted(uint256 tokenId, address recipient);
+    event InviteCoinCreated(uint256 tokenId);
+    event InviteCoinUsed(uint256 tokenId, address recipient);
 
     constructor(address exquisiteLandAddress) {
         _exquisiteLand = IERC721(exquisiteLandAddress);
+    }
+
+    function onERC721Received(
+        address,
+        address,
+        uint256 tokenId,
+        bytes memory
+    ) public override returns (bytes4) {
+        require(
+            _exquisiteLand.ownerOf(tokenId) == address(this),
+            "Not owner of token"
+        );
+        emit InviteCoinCreated(tokenId);
+        return this.onERC721Received.selector;
     }
 
     function grant(uint256 tokenId, address recipient) public onlyOwner {
@@ -21,6 +36,6 @@ contract LandGranter is ERC721Holder, Ownable {
             "I don't have this token."
         );
         _exquisiteLand.safeTransferFrom(address(this), recipient, tokenId);
-        emit LandGranted(tokenId, recipient);
+        emit InviteCoinUsed(tokenId, recipient);
     }
 }
