@@ -29,15 +29,14 @@ interface BrushProps {
 const Brush = ({ type }: BrushProps) => {
   const { brush, setBrush } = useEditor();
   const isActive = type === brush;
-  const color = isActive ? "dodgerblue" : "hsl(0deg 0% 20%)";
-  const opacity = isActive ? 1 : 0.25;
+  const transform = isActive ? "scale(1.25)" : "scale(1)";
 
   return (
     <>
       <button
         className="brush-button"
         onClick={() => setBrush(type)}
-        style={{ color, opacity }}
+        style={{ transform }}
       >
         <BrushIcon type={type} />
       </button>
@@ -53,13 +52,12 @@ const Brush = ({ type }: BrushProps) => {
           height: 2rem;
           border: 0;
           background: transparent;
-          will-change: opacity, color, transform;
-          transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out,
-            transform 0.2s ease-in-out;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
         }
 
         .brush-button:hover {
-          transform: scale(1.2);
+          transform: scale(1.25) !important;
         }
       `}</style>
     </>

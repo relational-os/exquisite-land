@@ -1,19 +1,19 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
-import Tile from './Tile';
-import Editor from './Editor';
-import useStore from '../features/State';
-import { useFetchCanvas } from '@app/features/Graph';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import Modal from 'react-modal';
-Modal.setAppElement('#__next');
+import React, { CSSProperties, useEffect, useState } from "react";
+import { FixedSizeGrid as Grid } from "react-window";
+import Tile from "./Tile";
+import Editor from "./Editor";
+import useStore from "../features/State";
+import { useFetchCanvas } from "@app/features/Graph";
+import AutoSizer from "react-virtualized-auto-sizer";
+import Modal from "react-modal";
+Modal.setAppElement("#__next");
 
 const Canvas = () => {
   const [x, setX] = useState<number>();
   const [y, setY] = useState<number>();
   const [size, setSize] = useState(200);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const activeCanvasID = useStore(state => state.activeCanvas);
+  const activeCanvasID = useStore((state) => state.activeCanvas);
   useFetchCanvas(activeCanvasID);
 
   useEffect(() => {
@@ -33,8 +33,8 @@ const Canvas = () => {
     setIsModalOpen(true);
   }
 
-  const zoomIn = () => setSize(s => s * 1.25);
-  const zoomOut = () => setSize(s => Math.max(0, s / 1.25));
+  const zoomIn = () => setSize((s) => s * 1.25);
+  const zoomOut = () => setSize((s) => Math.max(0, s / 1.25));
 
   return (
     <>
@@ -63,7 +63,7 @@ const Canvas = () => {
               {({
                 columnIndex,
                 rowIndex,
-                style
+                style,
               }: {
                 columnIndex: number;
                 rowIndex: number;
@@ -115,17 +115,20 @@ const Canvas = () => {
 };
 
 const modalStyles = {
+  overlay: {
+    backgroundColor: "rgba(255, 255, 255, 0.98)",
+  },
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    background: 'transparent',
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    background: "transparent",
     border: 0,
-    padding: 0
-  }
+    padding: 0,
+  },
 };
 
 export default Canvas;

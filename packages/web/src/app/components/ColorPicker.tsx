@@ -1,16 +1,18 @@
-import React from 'react';
-import useStore from '@app/features/State';
-import useEditor from '@app/hooks/use-editor';
-import PALETTES from 'src/constants/Palettes';
+import React from "react";
+import useStore from "@app/features/State";
+import useEditor from "@app/hooks/use-editor";
+import PALETTES from "src/constants/Palettes";
+import Swatch from "@app/components/Swatch";
 
 const ColorPicker = () => {
-  let activeCanvasID = useStore(state => state.activeCanvas);
+  let activeCanvasID = useStore((state) => state.activeCanvas);
   const palette = PALETTES[activeCanvasID];
+
   return (
     <>
       <div className="color-picker">
         {palette.map((color: string) => (
-          <Swatch key={color} color={color} />
+          <SwatchButton key={color} color={color} />
         ))}
       </div>
 
@@ -29,40 +31,52 @@ interface SwatchProps {
   color: string;
 }
 
-const Swatch = ({ color }: SwatchProps) => {
+const SwatchButton = ({ color }: SwatchProps) => {
   const { brushColor, setBrushColor } = useEditor();
-  const borderColor = color === brushColor ? 'dodgerblue' : 'hsl(0deg 0% 80%)';
+  const isActive = color === brushColor;
+  const transform = isActive ? "scale(1.25)" : "scale(1)";
+  const activeStyle = {
+    position: "absolute" as "absolute",
+    fill: "white",
+    transform: "scale(0.2)",
+    opacity: isActive ? 1 : 0,
+    transition: "opacity 0.2s ease-in-out",
+  };
 
   return (
     <>
       <button
         className="color-swatch-button"
         onClick={() => setBrushColor(color)}
-        style={{ borderColor }}
+        style={{ transform }}
       >
-        <div className="color-swatch" style={{ background: color }} />
+        <Swatch style={activeStyle} />
+        <Swatch style={{ fill: color }} />
       </button>
       <style jsx>{`
         .color-swatch-button {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           padding: 4px;
           cursor: pointer;
           width: 2rem;
           height: 2rem;
-          border: 2px solid hsl(0deg 0% 80%);
-          background: white;
+          border: 0;
+          background: transparent;
           border-radius: 50%;
-          will-change: border-color, transform;
-          transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
         }
 
         .color-swatch-button:hover {
-          transform: scale(1.1);
+          transform: scale(1.25) !important;
         }
 
-        .color-swatch {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
+        .swatch-active {
+          position: absolute;
+          transform: scale(0.2);
         }
       `}</style>
     </>

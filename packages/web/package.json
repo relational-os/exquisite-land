@@ -11,6 +11,7 @@
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/wallet": "^5.4.0",
     "@gimmixorg/use-wallet": "^0.0.25",
+    "@svgr/webpack": "^5.5.0",
     "graphql": "^15.5.3",
     "graphql-request": "^3.5.0",
     "next": "^11.0.0",
