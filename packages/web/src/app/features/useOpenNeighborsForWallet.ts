@@ -21,7 +21,6 @@ const useOpenNeighborsForWallet = () => {
 
   useEffect(() => {
     (async () => {
-      console.log('tiles effect');
       if (!tiles) return;
       const openNeighbors = [];
       for (const tile of tiles) {
@@ -70,7 +69,6 @@ const useOpenNeighborsForWallet = () => {
             tokenId: generateTokenID(tile.canvas.id, tile.x - 1, tile.y),
             ownTokenId: parseInt(tile.id)
           });
-        console.log({ westOpen, eastOpen, northOpen, southOpen });
       }
       setOpenNeighbors(openNeighbors);
     })();

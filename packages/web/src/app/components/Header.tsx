@@ -13,6 +13,7 @@ const Header = () => {
   const { account } = useWallet();
   const { tiles } = useTilesInWallet(account);
   const openNeighbors = useOpenNeighborsForWallet();
+  console.log({ userOwnedTiles: tiles, openNeighbors });
   return (
     <div className="header">
       <ConnectWalletButton />
