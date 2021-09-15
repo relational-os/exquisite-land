@@ -1,24 +1,19 @@
-import {
-  Address,
-  BigInt,
-  ByteArray,
-  Bytes,
-  json
-} from '@graphprotocol/graph-ts';
+import { Address, BigInt, ByteArray, Bytes } from '@graphprotocol/graph-ts';
 import { Canvas, Player, Tile } from '../generated/schema';
 import {
   NeighborInvited,
   SeedCreated,
-  Tile as TileContract,
-  TileCreated
-} from '../generated/Tile/Tile';
+  ExquisiteLand,
+  TileCreated,
+  Transfer
+} from '../generated/ExquisiteLand/ExquisiteLand';
 
 function createTileToken(
   tokenId: BigInt,
   recipient: Address,
   address: Address
 ): void {
-  let contract = TileContract.bind(address);
+  let contract = ExquisiteLand.bind(address);
 
   let results = contract.getCoordinates(tokenId);
 
@@ -64,6 +59,35 @@ export function handleNeighborInvited(event: NeighborInvited): void {
 export function handleTileCreated(event: TileCreated): void {
   let tokenID = event.params.tokenId;
   let tile = Tile.load(tokenID.toString());
-  tile.svg = TileContract.bind(event.address).getTileSVG(tokenID);
+  tile.svg = ExquisiteLand.bind(event.address).getTileSVG(tokenID);
+  tile.status = 'LOCKED';
   tile.save();
+}
+
+export function handleTileTransfer(event: Transfer): void {
+  let fromAddress = event.params.from;
+  let toAddress = event.params.to;
+  let tokenId = event.params.tokenId;
+
+  let fromId = fromAddress.toHex();
+  let fromWallet = Player.load(fromId);
+  if (!fromWallet) {
+    fromWallet = new Player(fromId);
+    fromWallet.address = fromAddress;
+    fromWallet.save();
+  }
+
+  let toId = toAddress.toHex();
+  let toWallet = Player.load(toId);
+  if (!toWallet) {
+    toWallet = new Player(toId);
+    toWallet.address = toAddress;
+    toWallet.save();
+  }
+
+  let tile = Tile.load(tokenId.toString());
+  if (tile != null) {
+    tile.owner = toWallet.id;
+    tile.save();
+  }
 }

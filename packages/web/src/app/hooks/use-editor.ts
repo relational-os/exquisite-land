@@ -1,7 +1,7 @@
 import useStore from '@app/features/State';
 import { useWallet } from '@gimmixorg/use-wallet';
 import PALETTES from 'src/constants/Palettes';
-import { Tile__factory } from 'src/sdk/factories/Tile__factory';
+import { ExquisiteLand__factory } from 'src/sdk/factories/ExquisiteLand__factory';
 
 export enum BrushType {
   PENCIL = 0,
@@ -76,7 +76,7 @@ const useEditor = () => {
       });
 
     console.log('posting to chain');
-    const tileContract = Tile__factory.connect(
+    const tileContract = ExquisiteLand__factory.connect(
       process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
       provider.getSigner()
     );

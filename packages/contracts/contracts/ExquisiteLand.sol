@@ -4,28 +4,34 @@ pragma solidity ^0.8.2;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Tile is ERC721, Ownable {
+contract ExquisiteLand is ERC721, Ownable {
+    // * Constants * //
     uint8 constant MAX_CANVASES = 16;
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
     uint8 constant MAX_WIDTH = 100;
     uint8 constant MAX_HEIGHT = 100;
-    uint8 constant MAX_COLORS = 5;
+    uint8 constant MAX_COLORS = 6;
     uint8 constant MAX_BRUSH_SIZES = 2;
 
+    // * Addresses * //
+    address private _landGranter;
+
+    // * Struct definitions * //
     struct TilePathStroke {
         uint32 strokeColor;
         uint32 strokeWidth;
         string path;
     }
-
     struct TileDataContainer {
         mapping(uint256 => TilePathStroke) strokes;
         bool isLocked;
         uint256 strokeCount;
     }
 
+    // * Admin controls * //
     bool allowEditing = true;
 
+    // * SVG Presets * //
     string[][MAX_CANVASES] PALETTES = [
         ["#000", "#23577a", "#38a3a4", "#57cc99", "#7fed99", "#c7f9cc"],
         ["#000", "#cdb4db", "#ffc8dd", "#ffafcd", "#bde0fd", "#a2d2ff"],
@@ -43,14 +49,24 @@ contract Tile is ERC721, Ownable {
         ["#000", "#", "#", "#", "#", "#"],
         ["#000", "#", "#", "#", "#", "#"]
     ];
-
     uint8[2] BRUSH_SIZES = [4, 16];
 
+    // * Canvas Data Storage * //
     mapping(uint32 => string) public canvasNames;
-    mapping(uint32 => TileDataContainer) public svgData;
+    mapping(uint32 => TileDataContainer) private _svgData;
     mapping(uint32 => uint32[4]) seeds;
 
-    modifier validTile(
+    // * Event definitions * //
+    event SeedCreated(uint32 tokenId, address recipient);
+    event NeighborInvited(uint32 tokenId, address recipient);
+    event TileCreated(uint32 tokenId, address sender);
+
+    // * Modifiers * //
+    modifier isInitialized() {
+        require(_landGranter != address(0), "Not initialized");
+        _;
+    }
+    modifier isValidTile(
         uint32 canvasId,
         uint32 x,
         uint32 y
@@ -61,59 +77,26 @@ contract Tile is ERC721, Ownable {
         _;
     }
 
-    event SeedCreated(uint32 tokenId, address recipient);
-    event NeighborInvited(uint32 tokenId, address recipient);
-    event TileCreated(uint32 tokenId, address sender);
+    // * Constructor * //
+    constructor() ERC721("Exquisite Land", "TILE") {}
 
-    constructor() ERC721("Tile", "TILE") {}
-
+    // * Tile Creation Methods * //
     function createSeed(
         uint32 canvasId,
         uint32 x,
         uint32 y
-    ) public onlyOwner validTile(canvasId, x, y) {
+    ) public onlyOwner isInitialized isValidTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
         // require(seedNearExistingSeeds(tokenId), "Seed is too far from other seeds.")
-
         for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) {
             if (seeds[canvasId][i] == 0) {
                 seeds[canvasId][i] = tokenId;
-                _safeMint(msg.sender, tokenId);
-                emit SeedCreated(tokenId, msg.sender);
+                _safeMint(_landGranter, tokenId);
+                emit SeedCreated(tokenId, _landGranter);
                 return;
             }
         }
     }
-    
-    function inviteIsValid(
-        uint32 senderX,
-        uint32 senderY,
-        uint32 inviteX,
-        uint32 inviteY
-        ) public pure returns (bool) {
-            bool checkWest;
-            
-            if (inviteX > 0) {
-                checkWest = ((senderX == inviteX - 1) && (senderY == inviteY));
-            } else {
-                checkWest = false;
-            }
-            
-            bool checkEast = ((senderX == inviteX + 1) && (senderY == inviteY));
-            
-            bool checkSouth;
-            
-            if (inviteY > 0) {
-              checkSouth = ((senderY == inviteY - 1) && (senderX == inviteX));  
-            } else {
-                checkSouth = false;
-            }
-            
-            bool checkNorth = ((senderY == inviteY + 1) && (senderX == inviteX));
-            
-            return (checkWest || checkEast || checkSouth || checkNorth);
-        }
-
 
     function inviteNeighbor(
         uint32 tokenId,
@@ -121,36 +104,29 @@ contract Tile is ERC721, Ownable {
         uint32 inviteY,
         address recipient
     ) public {
-        require(ownerOf(tokenId) == msg.sender, "You are not the owner of that tile.");
-        uint32 canvasId;
-        uint32 senderX;
-        uint32 senderY;
-        (canvasId, senderX, senderY) = getCoordinates(tokenId);
-
-        uint32 targetTileId = generateTokenID(canvasId, inviteX, inviteY);
-
         require(
-            !_exists(targetTileId),
-            "Requested tile is already taken."
+            ownerOf(tokenId) == msg.sender,
+            "You are not the owner of that tile."
         );
-        
-        require(inviteIsValid(senderX, senderY, inviteX, inviteY), "Target tile is not a neighbor.");
-
+        (uint32 canvasId, uint32 senderX, uint32 senderY) = getCoordinates(
+            tokenId
+        );
+        uint32 targetTileId = generateTokenID(canvasId, inviteX, inviteY);
+        require(!_exists(targetTileId), "Requested tile is already taken.");
+        require(
+            inviteIsValid(senderX, senderY, inviteX, inviteY),
+            "Target tile is not a neighbor."
+        );
         _safeMint(recipient, targetTileId);
         emit NeighborInvited(targetTileId, recipient);
     }
-
-    function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
-        return !svgData[tokenId].isLocked;
-    }
-    
 
     function createTile(
         uint32 canvasId,
         uint32 x,
         uint32 y,
         TilePathStroke[] calldata strokes
-    ) public validTile(canvasId, x, y) {
+    ) public isValidTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
         require(ownerOf(tokenId) == msg.sender);
         require(
@@ -159,20 +135,44 @@ contract Tile is ERC721, Ownable {
         );
 
         for (uint32 i = 0; i < strokes.length; i++) {
-            svgData[tokenId].strokes[i] = strokes[i];
+            _svgData[tokenId].strokes[i] = strokes[i];
         }
 
-        svgData[tokenId].isLocked = true;
-        svgData[tokenId].strokeCount = strokes.length;
+        _svgData[tokenId].isLocked = true;
+        _svgData[tokenId].strokeCount = strokes.length;
 
         emit TileCreated(tokenId, msg.sender);
+    }
+
+    // * Helper methods * //
+    function inviteIsValid(
+        uint32 senderX,
+        uint32 senderY,
+        uint32 inviteX,
+        uint32 inviteY
+    ) public pure returns (bool) {
+        bool checkWest;
+        if (inviteX > 0)
+            checkWest = ((senderX == inviteX - 1) && (senderY == inviteY));
+        else checkWest = false;
+        bool checkEast = ((senderX == inviteX + 1) && (senderY == inviteY));
+        bool checkSouth;
+        if (inviteY > 0)
+            checkSouth = ((senderY == inviteY - 1) && (senderX == inviteX));
+        else checkSouth = false;
+        bool checkNorth = ((senderY == inviteY + 1) && (senderX == inviteX));
+        return (checkWest || checkEast || checkSouth || checkNorth);
+    }
+
+    function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
+        return !_svgData[tokenId].isLocked;
     }
 
     function generateTokenID(
         uint32 canvasId,
         uint32 x,
         uint32 y
-    ) public pure validTile(canvasId, x, y) returns (uint32) {
+    ) public pure isValidTile(canvasId, x, y) returns (uint32) {
         return (canvasId << 16) | (x << 8) | y;
     }
 
@@ -189,7 +189,10 @@ contract Tile is ERC721, Ownable {
         uint32 x = (tokenId & (0x0000FF00)) >> 8;
         uint32 y = (tokenId & (0x000000FF));
 
-        require(canvasId < MAX_CANVASES && canvasId >= 0, "Canvas ID out of accepted range.");
+        require(
+            canvasId < MAX_CANVASES && canvasId >= 0,
+            "Canvas ID out of accepted range."
+        );
         require(x < MAX_WIDTH && x >= 0, "Tile is out of horizontal bounds.");
         require(y < MAX_HEIGHT && y >= 0, "Tile is out of vertical bounds.");
 
@@ -201,10 +204,16 @@ contract Tile is ERC721, Ownable {
         return PALETTES[canvasId];
     }
 
+    // * Admin Only Methods * //
+    function setLandGranter(address granter) public onlyOwner {
+        _landGranter = granter;
+    }
+
     function toggleAllowEditing() public onlyOwner {
         allowEditing = !allowEditing;
     }
 
+    // * Public Read Methods * //
     function tokenURI(uint256 tokenId)
         public
         view
@@ -238,7 +247,7 @@ contract Tile is ERC721, Ownable {
     }
 
     function getTileSVG(uint32 tokenId) public view returns (string memory) {
-        TileDataContainer storage data = svgData[uint32(tokenId)];
+        TileDataContainer storage data = _svgData[uint32(tokenId)];
         (uint32 canvasId, uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
         string
             memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600" >';
@@ -275,6 +284,7 @@ contract Tile is ERC721, Ownable {
         return output;
     }
 
+    // * Other Helpers * //
     function toString(uint256 value) internal pure returns (string memory) {
         // Inspired by OraclizeAPI's implementation - MIT license
         // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
@@ -310,19 +320,14 @@ library Base64 {
     function encode(bytes memory data) internal pure returns (string memory) {
         uint256 len = data.length;
         if (len == 0) return "";
-
         // multiply by 4/3 rounded up
         uint256 encodedLen = 4 * ((len + 2) / 3);
-
         // Add some extra buffer at the end
         bytes memory result = new bytes(encodedLen + 32);
-
         bytes memory table = TABLE;
-
         assembly {
             let tablePtr := add(table, 1)
             let resultPtr := add(result, 32)
-
             for {
                 let i := 0
             } lt(i, len) {
@@ -353,7 +358,6 @@ library Base64 {
 
                 resultPtr := add(resultPtr, 4)
             }
-
             switch mod(len, 3)
             case 1 {
                 mstore(sub(resultPtr, 2), shl(240, 0x3d3d))
@@ -364,7 +368,6 @@ library Base64 {
 
             mstore(result, encodedLen)
         }
-
         return string(result);
     }
 }
