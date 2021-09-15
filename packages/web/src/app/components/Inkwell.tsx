@@ -1,4 +1,5 @@
 import React from "react";
+import InkwellOutline from "@app/graphics/inkwell-outline.svg";
 
 interface InkwellProps {
   value: number;
@@ -7,28 +8,42 @@ interface InkwellProps {
 const Inkwell = ({ value }: InkwellProps) => {
   return (
     <>
-      <progress className="inkwell" value={value} />
+      <div className="inkwell-mask">
+        <progress className="inkwell" value={value} />
+        <InkwellOutline style={{ position: "absolute" }} />
+      </div>
       <style jsx>{`
         .inkwell {
+          position: absolute;
           transform: rotate(-90deg);
-          height: 32px;
+          height: 64px;
           width: calc(600px - 32px);
           appearance: none;
           -webkit-appearance: none;
-          border-radius: 16px;
           overflow: hidden;
         }
 
         .inkwell[value]::-webkit-progress-value {
-          background: rgb(${255 - value * 255}, ${value * 255}, 64);
+          background: hsl(${value * 120}, 90%, 80%);
         }
 
         .inkwell[value]::-webkit-progress-bar {
           background: hsl(0deg 0% 90%);
         }
+
+        .inkwell-mask {
+          display: flex;
+          position: relative;
+          justify-content: center;
+          align-items: center;
+          width: 64px;
+          height: 568px;
+          mask-image: url(/graphics/inkwell-mask.svg);
+        }
       `}</style>
     </>
   );
 };
-
+// green 255 > 0.5
+// red 255 < 0.5
 export default Inkwell;
