@@ -9,7 +9,7 @@ const Button = React.forwardRef(function Button(
 			<button ref={ref} {...props} className={`button ${props.className}`} />
 			<style jsx>{`
 				.button {
-					padding: 8px 12px;
+					padding: 8px 16px;
 					border: 0;
 					background: hsl(0deg 0% 90%);
 					font-size: 24px;
@@ -22,7 +22,7 @@ const Button = React.forwardRef(function Button(
 				}
 
 				.button:hover {
-					transform: scale(1.05);
+					box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
 				}
 			`}</style>
 		</>

@@ -125,9 +125,18 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 						);
 					})}
 				</div>
+			</div>
 
-				<Button onClick={handleClear}>Clear</Button>
-				<ButtonSuccess onClick={handleSave}>Save</ButtonSuccess>
+			<div className="canvas-aside-right">
+				<div className="preview"></div>
+			</div>
+
+			<div className="canvas-footer">
+				<Button onClick={handleClear}>reset</Button>
+				<div className="canvas-footer-right">
+					<Button>cancel</Button>
+					<ButtonSuccess onClick={handleSave}>save</ButtonSuccess>
+				</div>
 			</div>
 
 			<style jsx>{`
@@ -158,8 +167,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
 				.editor {
 					display: grid;
-					grid-template-columns: 64px 600px 64px;
-					grid-template-rows: 600px 64px;
+					grid-template-columns: 150px auto 150px;
+					grid-template-rows: auto 64px;
 					grid-template-areas:
 						"aside-left canvas aside-right"
 						"aside-left canvas-footer aside-right";
@@ -168,7 +177,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 				.canvas-aside-left,
 				.canvas-aside-right {
 					display: flex;
-					padding: 4px 10px;
+					padding: 0 14px;
 					flex-direction: column;
 					gap: 20px;
 					align-items: center;
@@ -176,27 +185,23 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
 				.canvas-aside-left {
 					grid-area: aside-left;
-					p
 				}
 
 				.canvas-aside-right {
 					display: grid;
-					height: 600px;
 					grid-area: aside-right;
-					place-content: center;
+					align-items: flex-start;
+					width: 30%;
 				}
 
 				.canvas-footer {
 					display: flex;
-					padding: 16px;
-					background: hsl(0deg 0% 97%);
+					padding: 0;
 					align-items: center;
 					justify-content: space-between;
 					grid-area: canvas-footer;
-					border: 2px solid hsl(0deg 0% 80%);
-					border-top: 0;
-					border-bottom-left-radius: 32px;
-					border-bottom-right-radius: 32px;
+					box-sizing: border-box;
+					margin-top: 14px;
 				}
 
 				.canvas-footer-right {
@@ -207,11 +212,23 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 					gap: 8px;
 				}
 
+				.preview {
+					width: 128px;
+					height: 128px;
+					border: 2px solid #b2bfd0;
+					border-radius: 4px;
+					image-rendering: pixelated;
+				}
+
 				.color-palette {
 					display: grid;
 					grid-template-columns: 50% 50%;
-					grid-gap: 4px;
-					column-gap: 2px;
+					grid-gap: 5px;
+					column-gap: 3px;
+					margin-left: 62px;
+				}
+
+				.tool-bar {
 				}
 			`}</style>
 		</div>
