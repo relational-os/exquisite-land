@@ -43,39 +43,36 @@ const useEditor = () => {
     if (!provider) return alert('Not signed in.');
 
     // Format for solidity
-    const svgElement = new DOMParser().parseFromString(svg, 'text/xml');
-    const pathStrings: string[] = [];
-    const pathElements = svgElement.getElementsByTagName('path');
-    for (const pathElement of pathElements) {
-      let pathString = pathElement.getAttribute('d');
-      if (!pathString) continue;
-      pathStrings.push(pathString);
+    let svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 32 32" >';
+    for (x = 0; x < pixels.length; x++) {
+      console.log("x", x, "pixels[x]", pixels[x]);
+      for (y = 0; y < pixels[x].length; y++) {
+        svg += `<rect x="${x}" y="${y}" style="fill:${palette[y]}" width="1" height="1"/>`;
+      }
     }
+    svg += "</svg>";
 
-    const paletteMap = palette.reduce(
-      (previous: Record<string, number>, hex: string, index: number) => {
-        previous[hex] = index;
-        return previous;
-      },
-      {}
-    );
-    const strokeMap: Record<number, number> = { 4: 0, 16: 1 };
+    console.log({ svg });
 
-    let packagedPaths = paths
-      .map((path, i) => {
-        let strokeColor = path.strokeColor;
-        let strokeWidth = path.strokeWidth;
-        return {
-          strokeColor: paletteMap[strokeColor],
-          strokeWidth: strokeMap[strokeWidth],
-          path: pathStrings[i]
-        };
-      })
-      .filter(path => {
-        return path.path != undefined;
-      });
+    // TODO: generate SVG
 
-    console.log('posting to chain');
+    // const paletteMap = palette.reduce(
+    //   (previous: Record<string, number>, hex: string, index: number) => {
+    //     previous[hex] = index;
+    //     return previous;
+    //   },
+    //   {}
+    // );
+
+    // TODO: fill array in with bg color?
+    var pixelsFlat = pixels.reduce(function (prev, next) {
+      return prev.concat(next);
+    });
+
+    console.log({ pixelsFlat });
+    const ipfsHash = await useUploadTilePixels(svg);
+
     const tileContract = ExquisiteLand__factory.connect(
       process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
       provider.getSigner()
@@ -87,7 +84,7 @@ const useEditor = () => {
       useStore.getState().activeCanvas,
       x,
       y,
-      packagedPaths
+      ipfsHash
     );
 
     const receipt = await tx.wait(2);
