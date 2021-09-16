@@ -32,7 +32,7 @@ interface SwatchProps {
 }
 
 const SwatchButton = ({ color }: SwatchProps) => {
-  const { brushColor, setBrushColor } = useEditor();
+  const { brushColor, setActiveColor } = useEditor();
   const isActive = color === brushColor;
   const transform = isActive ? "scale(1.25)" : "scale(1)";
   const activeStyle = {
@@ -47,7 +47,7 @@ const SwatchButton = ({ color }: SwatchProps) => {
     <>
       <button
         className="color-swatch-button"
-        onClick={() => setBrushColor(color)}
+        onClick={() => setActiveColor(color)}
         style={{ transform }}
       >
         <Swatch style={activeStyle} />

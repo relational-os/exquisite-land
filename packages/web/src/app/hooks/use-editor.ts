@@ -1,87 +1,53 @@
-import useStore from '@app/features/State';
-import { useWallet } from '@gimmixorg/use-wallet';
-import PALETTES from 'src/constants/Palettes';
-import { ExquisiteLand__factory } from 'src/sdk/factories/ExquisiteLand__factory';
-
-export enum BrushType {
-  PENCIL = 0,
-  PAINTBRUSH = 1,
-  ERASER = 2
-}
-
-export const BrushSize = {
-  [BrushType.PENCIL]: 4,
-  [BrushType.PAINTBRUSH]: 16,
-  [BrushType.ERASER]: 16
-};
+import useStore from "@app/features/State";
+import { useWallet } from "@gimmixorg/use-wallet";
+import PALETTES from "src/constants/Palettes";
+import { ExquisiteLand__factory } from "src/sdk/factories/ExquisiteLand__factory";
 
 interface SetTileProps {
-  svg: string;
-  paths: any[];
+  pixels: number[][];
   x: number;
   y: number;
 }
 
+const DEFAULT_FILL = 0;
+const PIXELS = 32;
+
 const useEditor = () => {
-  const activeCanvas = useStore(state => state.activeCanvas);
-  const activeColor = useStore(state => state.activeColor);
-  const activeBrush = useStore(state => state.activeBrush);
+  const activeCanvas = useStore((state) => state.activeCanvas);
+  const activeColor = useStore((state) => state.activeColor);
+  const { provider } = useWallet();
 
   const palette = PALETTES[activeCanvas];
 
-  const { provider } = useWallet();
-
-  const setBrush = (id: number) => {
-    useStore.setState({ activeBrush: id });
-  };
-
-  const setBrushColor = (hex: string) => {
+  const setActiveColor = (hex: string) => {
     useStore.setState({ activeColor: palette.indexOf(hex) });
   };
 
-  const setTile = async ({ x, y, svg, paths }: SetTileProps) => {
-    if (!provider) return alert('Not signed in.');
+  const setTile = async ({ x, y, pixels }: SetTileProps) => {
+    if (!provider) return alert("Not signed in.");
 
-    // Format for solidity
-    const svgElement = new DOMParser().parseFromString(svg, 'text/xml');
-    const pathStrings: string[] = [];
-    const pathElements = svgElement.getElementsByTagName('path');
-    for (const pathElement of pathElements) {
-      let pathString = pathElement.getAttribute('d');
-      if (!pathString) continue;
-      pathStrings.push(pathString);
+    let outputPixels: Array<number> = [];
+    for (x = 0; x < PIXELS; x++) {
+      if (pixels[x]) {
+        outputPixels = outputPixels.concat(
+          pixels[x],
+          Array(PIXELS - pixels[x].length).fill(DEFAULT_FILL)
+        );
+      } else {
+        outputPixels = outputPixels.concat(Array(PIXELS).fill(0));
+      }
     }
 
-    const paletteMap = palette.reduce(
-      (previous: Record<string, number>, hex: string, index: number) => {
-        previous[hex] = index;
-        return previous;
-      },
-      {}
-    );
-    const strokeMap: Record<number, number> = { 4: 0, 16: 1 };
+    console.log("we have le pixels", outputPixels);
+    return;
 
-    let packagedPaths = paths
-      .map((path, i) => {
-        let strokeColor = path.strokeColor;
-        let strokeWidth = path.strokeWidth;
-        return {
-          strokeColor: paletteMap[strokeColor],
-          strokeWidth: strokeMap[strokeWidth],
-          path: pathStrings[i]
-        };
-      })
-      .filter(path => {
-        return path.path != undefined;
-      });
-
-    console.log('posting to chain');
+    console.log("posting to chain");
     const tileContract = ExquisiteLand__factory.connect(
       process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
       provider.getSigner()
     );
 
-    console.log(useStore.getState().activeCanvas, x, y, packagedPaths);
+    console.log(useStore.getState().activeCanvas, x, y, pixels);
 
     const tx = await tileContract.createTile(
       useStore.getState().activeCanvas,
@@ -99,12 +65,9 @@ const useEditor = () => {
 
   return {
     palette,
-    brush: activeBrush,
-    brushColor: palette[activeColor],
-    brushSize: BrushSize[activeBrush],
-    setBrush,
-    setBrushColor,
-    setTile
+    activeColor,
+    setActiveColor,
+    setTile,
   };
 };
 

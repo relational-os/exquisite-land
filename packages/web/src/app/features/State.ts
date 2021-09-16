@@ -1,10 +1,8 @@
-import create from 'zustand';
-import { BrushType } from '@app/hooks/use-editor';
+import create from "zustand";
 
 type UniverseState = {
   activeCanvas: number;
   activeColor: number;
-  activeBrush: BrushType;
 };
 
 // type CanvasState = {
@@ -21,21 +19,20 @@ type UniverseState = {
 // };
 
 export enum TileStatus {
-  BLANK = 'BLANK',
-  INVITE = 'INVITE',
-  DRAWABLE = 'DRAWABLE',
-  DRAWN = 'DRAWN'
+  BLANK = "BLANK",
+  INVITE = "INVITE",
+  DRAWABLE = "DRAWABLE",
+  DRAWN = "DRAWN",
 }
 
 export enum TileType {
-  SOLO = 'SOLO',
-  COMMONS = 'COMMONS'
+  SOLO = "SOLO",
+  COMMONS = "COMMONS",
 }
 
-const useStore = create<UniverseState>(set => ({
+const useStore = create<UniverseState>((set) => ({
   activeCanvas: 0,
   activeColor: 0,
-  activeBrush: BrushType.PAINTBRUSH
 }));
 
 export default useStore;

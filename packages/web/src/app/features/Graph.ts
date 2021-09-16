@@ -1,8 +1,8 @@
-import { request, gql } from 'graphql-request';
-import useSWR, { SWRConfiguration } from 'swr';
+import { request, gql } from "graphql-request";
+import useSWR, { SWRConfiguration } from "swr";
 
 export const GRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/shahruz/mydemograph2';
+  "https://api.thegraph.com/subgraphs/name/shahruz/mydemograph2";
 
 let query = gql`
   query CanvasQuery($canvas: String) {
@@ -32,8 +32,8 @@ export const useFetchTile = (
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    [canvasID, 'canvas-fetch'],
-    canvasID => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
+    [canvasID, "canvas-fetch"],
+    (canvasID) => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
     { revalidateOnMount: true, ...swrOptions }
   );
   const tile = data?.canvas?.tiles.find((tile: any) => {
@@ -42,14 +42,15 @@ export const useFetchTile = (
   return { tile, error, refresh: mutate };
 };
 
+// TODO: integrate IPFS fetching? at Graph level or here?
 export const useFetchCanvas = (
   canvasID: number,
   // variables?: Variables,
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    [canvasID, 'canvas-fetch'],
-    canvasID => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
+    [canvasID, "canvas-fetch"],
+    (canvasID) => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
     { revalidateOnMount: true, ...swrOptions }
   );
   return { data, error, refresh: mutate };
