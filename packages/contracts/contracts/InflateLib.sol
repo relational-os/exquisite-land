@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 /// @notice Based on https://github.com/madler/zlib/blob/master/contrib/puff
-library InflateLib {
+contract InflateLib {
     // Maximum bits in a code
     uint256 constant MAXBITS = 15;
     // Maximum number of literal/length codes
@@ -68,6 +68,8 @@ library InflateLib {
         uint256[] counts;
         uint256[] symbols;
     }
+
+    constructor() {}
 
     function bits(State memory s, uint256 need)
         private
@@ -743,7 +745,7 @@ library InflateLib {
     }
 
     function puff(bytes memory source, uint256 destlen)
-        internal
+        public
         pure
         returns (ErrorCode, bytes memory)
     {

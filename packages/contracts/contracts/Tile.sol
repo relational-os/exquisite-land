@@ -4,9 +4,12 @@ pragma solidity ^0.8.2;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./InflateLib.sol";
+import "./IInflateLib.sol";
 
 contract Tile is ERC721, Ownable {
+    IInflateLib private _inflateLib =
+        IInflateLib(0x31ea889Ba6910E75B06a4Bb0aa01c4DEc6E65917);
+
     uint8 constant MAX_CANVASES = 16;
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
     uint8 constant MAX_WIDTH = 100;
@@ -58,9 +61,12 @@ contract Tile is ERC721, Ownable {
         uint32 x,
         uint32 y
     ) {
-        require(canvasId < MAX_CANVASES && canvasId >= 0);
-        require(x < MAX_WIDTH && x >= 0, "You are out of horizontal bounds.");
-        require(y < MAX_HEIGHT && y >= 0);
+        require(
+            canvasId < MAX_CANVASES && canvasId >= 0,
+            "You are not on a valid canvas"
+        );
+        require(x < MAX_WIDTH && x >= 0, "You are out of horizontal bounds");
+        require(y < MAX_HEIGHT && y >= 0, "You are out of vertical bounds");
         _;
     }
 
@@ -157,18 +163,21 @@ contract Tile is ERC721, Ownable {
         TilePathStroke[] calldata strokes
     ) public validTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
-        require(ownerOf(tokenId) == msg.sender);
+        require(
+            ownerOf(tokenId) == msg.sender,
+            "You are not the owner of token"
+        );
         require(
             allowEditing || targetTileIsBlank(tokenId),
             "Someone already drew that tile."
         );
 
         for (uint32 i = 0; i < strokes.length; i++) {
-            svgData[tokenId].strokes[i] = strokes[i];
+            // svgData[tokenId].strokes[i] = strokes[i];
         }
 
-        svgData[tokenId].isLocked = true;
-        svgData[tokenId].strokeCount = strokes.length;
+        // svgData[tokenId].isLocked = true;
+        // svgData[tokenId].strokeCount = strokes.length;
 
         emit TileCreated(tokenId, msg.sender);
     }
@@ -257,7 +266,7 @@ contract Tile is ERC721, Ownable {
         for (uint32 i = 1; i < data.strokeCount + 1; i++) {
             TilePathStroke memory strokeData = data.strokes[i - 1];
 
-            (InflateLib.ErrorCode err, bytes memory result) = InflateLib.puff(
+            (IInflateLib.ErrorCode err, bytes memory result) = _inflateLib.puff(
                 strokeData.path,
                 strokeData.pathLenBytes
             );
