@@ -2,7 +2,7 @@ import { request, gql } from "graphql-request";
 import useSWR, { SWRConfiguration } from "swr";
 
 export const GRAPH_URL =
-  "https://api.thegraph.com/subgraphs/name/shahruz/mydemograph2";
+  "https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land";
 
 let query = gql`
   query CanvasQuery($canvas: String) {
