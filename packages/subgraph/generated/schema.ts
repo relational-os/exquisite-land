@@ -12,72 +12,6 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Canvas extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save Canvas entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save Canvas entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("Canvas", id.toString(), this);
-  }
-
-  static load(id: string): Canvas | null {
-    return store.get("Canvas", id) as Canvas | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get name(): string | null {
-    let value = this.get("name");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set name(value: string | null) {
-    if (value === null) {
-      this.unset("name");
-    } else {
-      this.set("name", Value.fromString(value as string));
-    }
-  }
-
-  get tiles(): Array<string> {
-    let value = this.get("tiles");
-    return value.toStringArray();
-  }
-
-  set tiles(value: Array<string>) {
-    this.set("tiles", Value.fromStringArray(value));
-  }
-
-  get palette(): Array<string> {
-    let value = this.get("palette");
-    return value.toStringArray();
-  }
-
-  set palette(value: Array<string>) {
-    this.set("palette", Value.fromStringArray(value));
-  }
-}
-
 export class Tile extends Entity {
   constructor(id: string) {
     super();
@@ -106,23 +40,6 @@ export class Tile extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
-  }
-
-  get canvas(): string | null {
-    let value = this.get("canvas");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set canvas(value: string | null) {
-    if (value === null) {
-      this.unset("canvas");
-    } else {
-      this.set("canvas", Value.fromString(value as string));
-    }
   }
 
   get owner(): string {
