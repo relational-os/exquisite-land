@@ -1,12 +1,12 @@
-import { Address, BigInt, ByteArray, Bytes } from '@graphprotocol/graph-ts';
-import { Canvas, Player, Tile } from '../generated/schema';
+import { Address, BigInt, ByteArray, Bytes } from "@graphprotocol/graph-ts";
+import { Player, Tile } from "../generated/schema";
 import {
   NeighborInvited,
   SeedCreated,
   ExquisiteLand,
   TileCreated,
-  Transfer
-} from '../generated/ExquisiteLand/ExquisiteLand';
+  Transfer,
+} from "../generated/ExquisiteLand/ExquisiteLand";
 
 function createTileToken(
   tokenId: BigInt,
@@ -17,22 +17,10 @@ function createTileToken(
 
   let results = contract.getCoordinates(tokenId);
 
-  let canvasId = results.value0;
-  let x = results.value1;
-  let y = results.value2;
+  let x = results.value0;
+  let y = results.value1;
 
   let tile = new Tile(tokenId.toString());
-
-  let canvas = Canvas.load(canvasId.toString());
-  if (!canvas) {
-    // create canvas if it does not exist
-    canvas = new Canvas(canvasId.toString());
-
-    canvas.palette = contract.getPalette(canvasId);
-
-    canvas.save();
-  }
-  tile.canvas = canvas.id;
 
   let player = Player.load(recipient.toString());
   if (!player) {
@@ -44,7 +32,7 @@ function createTileToken(
 
   tile.x = x;
   tile.y = y;
-  tile.status = 'UNLOCKED';
+  tile.status = "UNLOCKED";
   tile.save();
 }
 
@@ -60,7 +48,7 @@ export function handleTileCreated(event: TileCreated): void {
   let tokenID = event.params.tokenId;
   let tile = Tile.load(tokenID.toString());
   tile.svg = ExquisiteLand.bind(event.address).getTileSVG(tokenID);
-  tile.status = 'LOCKED';
+  tile.status = "LOCKED";
   tile.save();
 }
 

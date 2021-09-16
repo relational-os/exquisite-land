@@ -1,13 +1,5 @@
-type Canvas @entity {
-  id: ID!
-  name: String
-  tiles: [Tile!]! @derivedFrom(field: "canvas")
-  palette: [String!]!
-}
-
 type Tile @entity {
   id: ID!
-  canvas: Canvas
   owner: Player!
   svg: String
   x: BigInt!
