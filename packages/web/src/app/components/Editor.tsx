@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
+import React, { useEffect, useRef, useState } from "react";
 import useEditor, { BrushType } from "@app/hooks/use-editor";
 import ColorPicker from "@app/components/ColorPicker";
 import BrushPicker from "@app/components/BrushPicker";
 import Inkwell from "@app/components/Inkwell";
 import Button, { ButtonSuccess } from "@app/components/Button";
+import PALETTES from "src/constants/Palettes";
 
 interface EditorProps {
   x: number;
@@ -12,98 +12,151 @@ interface EditorProps {
   closeModal: () => void;
 }
 
-const INKWELL_CAPACITY = 1000;
+const SIZE = 20;
+const columns = Array.from(Array(32).keys());
+const rows = Array.from(Array(32).keys());
+const palette = PALETTES[0];
 
 const Editor = ({ x, y, closeModal }: EditorProps) => {
-  const { brush, brushColor, brushSize, setTile } = useEditor();
-  const [inkUsed, setInkUsed] = React.useState(0);
-  const isEraseMode = brush === BrushType.ERASER;
-  const color = isEraseMode ? "pink" : brushColor;
-  const fillColor = color.replace("#", "%23");
-
-  // prettier-ignore
-  const circleSVG = `'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewbox="0 0 32 32" width="32" height="32"><circle r="${brushSize / 2}" cx="16" cy="16" fill="${fillColor}"/></svg>'`;
-  const cursorOffset = 14; // this should be 16 to center the pointer, unclear why it's off by 2
+  const [drawing, setDrawing] = useState(false);
+  const [pixels, setPixels] = useState<string[][]>([]);
+  const [activeColor, setActiveColor] = useState("#B00B");
 
   function handleClear() {
-    canvasRef.current?.resetCanvas();
-    setInkUsed(0);
+    setPixels([]);
   }
 
   async function handleSave() {
-    if (!canvasRef.current) return;
-    const svg = await canvasRef.current.exportSvg();
-    if (!svg) return;
-
-    const optimizedSvg = await fetch("/api/optimize", {
-      method: "POST",
-      body: svg,
-    })
-      .then((res) => res.json())
-      .then((s) => s.data as string);
-
-    const paths = await canvasRef.current.exportPaths();
-    setTile({ x, y, svg: optimizedSvg, paths });
+    // setTile({ x, y, svg: optimizedSvg, paths });
     closeModal();
   }
-  const canvasRef = useRef<ReactSketchCanvas>(null);
-  const canvasStyle = {}; // drop border style
 
-  useEffect(() => {
-    canvasRef.current?.eraseMode(isEraseMode);
-  }, [brush]);
+  const touchEnter = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!drawing) return;
+    e.preventDefault();
 
-  useEffect(() => {
-    async function loadPaths() {
-      const paths = await canvasRef.current?.exportPaths();
-      console.log("paths", paths);
-      // setCanvasPaths(paths || null);
-    }
-    loadPaths();
-  }, [canvasRef.current]);
+    const elem = document.elementFromPoint(
+      e.touches[0].clientX,
+      e.touches[0].clientY
+    );
+    if (!elem) return;
+    if (!elem.getAttribute("class")?.includes("box")) return;
+    elem?.setAttribute("style", `background-color: ${activeColor}`);
+    const [x, y] = elem
+      .getAttribute("id")!
+      .split("_")
+      .map((n) => parseInt(n));
+
+    e.currentTarget.style.backgroundColor = activeColor;
+
+    setPixels((pixels) => {
+      if (!pixels[x]) {
+        pixels[x] = [];
+      }
+      pixels[x][y] = activeColor;
+
+      return pixels;
+    });
+
+    console.log(e, x, y);
+  };
+
+  const onMouseEnter = (
+    e: React.MouseEvent<HTMLDivElement>,
+    x: number,
+    y: number
+  ) => {
+    if (!drawing) return;
+
+    e.preventDefault();
+    e.currentTarget.style.backgroundColor = activeColor;
+
+    setPixels((pixels) => {
+      if (!pixels[x]) {
+        pixels[x] = [];
+      }
+      pixels[x][y] = activeColor;
+      return pixels;
+    });
+  };
 
   return (
     <div className="editor">
       <div className="canvas">
-        <ReactSketchCanvas
-          ref={canvasRef}
-          height="600px"
-          width="600px"
-          strokeWidth={brushSize}
-          eraserWidth={brushSize}
-          strokeColor={brushColor}
-          onUpdate={(paths) => {
-            const pointCount = paths.reduce((acc, path) => {
-              return (acc += path.paths.length);
-            }, 0);
-            setInkUsed(pointCount);
+        <div
+          className="test"
+          draggable={false}
+          onPointerDown={(e) => {
+            setDrawing(true);
           }}
-          style={canvasStyle}
-        />
+          onPointerUp={() => setDrawing(false)}
+        >
+          {columns.map((y) => {
+            return rows.map((x) => {
+              return (
+                <div
+                  id={`${x}_${y}`}
+                  key={`${x}_${y}`}
+                  className="box"
+                  style={{ backgroundColor: pixels?.[x]?.[y] }}
+                  onPointerEnter={(e) => onMouseEnter(e, x, y)}
+                  onMouseDown={(e) => onMouseEnter(e, x, y)}
+                  onMouseOver={(e) => onMouseEnter(e, x, y)}
+                  onTouchMove={(e) => {
+                    touchEnter(e);
+                  }}
+                  onTouchStart={(e) => {
+                    touchEnter(e);
+                  }}
+                ></div>
+              );
+            });
+          })}
+        </div>
       </div>
 
       <div className="canvas-aside-left">
-        <BrushPicker />
-        <ColorPicker />
-      </div>
+        {palette.map((color) => {
+          return (
+            <div
+              style={{
+                backgroundColor: color,
+                height: "16px",
+                width: "16px",
+                border: "1px solid",
+              }}
+              onClick={(e) => setActiveColor(color)}
+            ></div>
+          );
+        })}
 
-      <div className="canvas-aside-right">
-        <Inkwell value={(INKWELL_CAPACITY - inkUsed) / INKWELL_CAPACITY} />
-      </div>
-
-      <div className="canvas-footer">
-        <div className="canvas-footer-left">
-          {/* <Button style={{ width: 35 }} disabled>
-            i
-          </Button> */}
-        </div>
-        <div className="canvas-footer-right">
-          <Button onClick={handleClear}>Clear</Button>
-          <ButtonSuccess onClick={handleSave}>Save</ButtonSuccess>
-        </div>
+        <Button onClick={handleClear}>Clear</Button>
+        <ButtonSuccess onClick={handleSave}>Save</ButtonSuccess>
       </div>
 
       <style jsx>{`
+        .test {
+          display: grid;
+          grid-template-columns: repeat(32, 1fr);
+          width: ${rows.length * SIZE}px;
+          height: ${columns.length * SIZE}px;
+          user-select: none;
+          touch-action: none;
+        }
+        .box {
+          width: ${SIZE}px;
+          height: ${SIZE}px;
+          border: 1px solid #000;
+        }
+        .editor {
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          overflow: hidden;
+          margin: 2rem;
+        }
+
         .editor {
           display: grid;
           grid-template-columns: 64px 600px 64px;
@@ -113,19 +166,12 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
             "aside-left canvas-footer aside-right";
         }
 
-        .canvas {
-          overflow: hidden;
-          grid-area: canvas;
-          cursor: url(${circleSVG}) ${cursorOffset} ${cursorOffset}, auto;
-          border: 2px solid hsl(0deg 0% 80%);
-        }
-
         .canvas-aside-left,
         .canvas-aside-right {
           display: flex;
-          padding: 16px 0;
+          padding: 4px 0;
           flex-direction: column;
-          gap: 24px;
+          gap: 4px;
           align-items: center;
         }
 
