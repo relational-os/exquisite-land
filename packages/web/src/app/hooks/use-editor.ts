@@ -118,7 +118,8 @@ const useEditor = () => {
       provider.getSigner()
     );
 
-    console.log(useStore.getState().activeCanvas, x, y, packagedPaths);
+    console.log("posting");
+    console.log(useStore.getState().activeCanvas, x, y, packagedPathsOpt);
 
     const tx = await tileContract.createTile(
       useStore.getState().activeCanvas,
