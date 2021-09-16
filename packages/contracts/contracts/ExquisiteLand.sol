@@ -8,47 +8,46 @@ contract ExquisiteLand is ERC721, Ownable {
     // * Constants * //
     uint8 constant MAX_CANVASES = 16;
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
-    uint8 constant MAX_WIDTH = 100;
-    uint8 constant MAX_HEIGHT = 100;
-    uint8 constant MAX_COLORS = 6;
+    uint8 constant MAX_CANVAS_WIDTH = 100;
+    uint8 constant MAX_CANVAS_HEIGHT = 100;
+    uint8 constant MAX_TILE_WIDTH = 32;
+    uint8 constant MAX_TILE_HEIGHT = 32;
+    // uint8 constant MAX_TILE_PIXELS = 1024;
+    uint8 constant MAX_COLORS = 16;
     uint8 constant MAX_BRUSH_SIZES = 2;
 
     // * Addresses * //
     address private _landGranter;
 
     // * Struct definitions * //
-    struct TilePathStroke {
-        uint32 strokeColor;
-        uint32 strokeWidth;
-        string path;
-    }
     struct TileDataContainer {
-        mapping(uint256 => TilePathStroke) strokes;
+        uint8[1024] pixels;
         bool isLocked;
-        uint256 strokeCount;
     }
 
     // * Admin controls * //
     bool allowEditing = true;
 
     // * SVG Presets * //
-    string[][MAX_CANVASES] PALETTES = [
-        ["#000", "#23577a", "#38a3a4", "#57cc99", "#7fed99", "#c7f9cc"],
-        ["#000", "#cdb4db", "#ffc8dd", "#ffafcd", "#bde0fd", "#a2d2ff"],
-        ["#000", "#79addc", "#ffbf9f", "#ffee92", "#fcf5c7", "#aef7b6"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"],
-        ["#000", "#", "#", "#", "#", "#"]
+    string[MAX_COLORS] PALETTE = [
+        "e4a672",
+        "b86f50",
+        "743f39",
+        "3f2832",
+        "9e2835",
+        "e53b44",
+        "fb922b",
+        "ffe762",
+        "63c64d",
+        "327345",
+        "193d3f",
+        "4f6781",
+        "afbfd2",
+        "ffffff",
+        "2ce8f4",
+        "0484d1"
     ];
+
     uint8[2] BRUSH_SIZES = [4, 16];
 
     // * Canvas Data Storage * //
@@ -63,7 +62,7 @@ contract ExquisiteLand is ERC721, Ownable {
 
     // * Modifiers * //
     modifier isInitialized() {
-        require(_landGranter != address(0), "Not initialized");
+        // require(_landGranter != address(0), "Not initialized");
         _;
     }
     modifier isValidTile(
@@ -71,9 +70,15 @@ contract ExquisiteLand is ERC721, Ownable {
         uint32 x,
         uint32 y
     ) {
-        require(canvasId < MAX_CANVASES && canvasId >= 0);
-        require(x < MAX_WIDTH && x >= 0, "You are out of horizontal bounds.");
-        require(y < MAX_HEIGHT && y >= 0);
+        require(canvasId < MAX_CANVASES && canvasId >= 0, "not a valid canvas");
+        require(
+            x < MAX_CANVAS_WIDTH && x >= 0,
+            "You are out of horizontal bounds."
+        );
+        require(
+            y < MAX_CANVAS_HEIGHT && y >= 0,
+            "You are out of vertical bounds"
+        );
         _;
     }
 
@@ -91,8 +96,9 @@ contract ExquisiteLand is ERC721, Ownable {
         for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) {
             if (seeds[canvasId][i] == 0) {
                 seeds[canvasId][i] = tokenId;
-                _safeMint(_landGranter, tokenId);
-                emit SeedCreated(tokenId, _landGranter);
+                // _safeMint(_landGranter, tokenId);
+                _safeMint(msg.sender, tokenId);
+                emit SeedCreated(tokenId, msg.sender);
                 return;
             }
         }
@@ -125,21 +131,17 @@ contract ExquisiteLand is ERC721, Ownable {
         uint32 canvasId,
         uint32 x,
         uint32 y,
-        TilePathStroke[] calldata strokes
+        uint8[1024] calldata pixels
     ) public isValidTile(canvasId, x, y) {
         uint32 tokenId = generateTokenID(canvasId, x, y);
-        require(ownerOf(tokenId) == msg.sender);
+        require(ownerOf(tokenId) == msg.sender, "u r not owner rawr");
         require(
             allowEditing || targetTileIsBlank(tokenId),
             "Someone already drew that tile."
         );
 
-        for (uint32 i = 0; i < strokes.length; i++) {
-            _svgData[tokenId].strokes[i] = strokes[i];
-        }
-
+        _svgData[tokenId].pixels = pixels;
         _svgData[tokenId].isLocked = true;
-        _svgData[tokenId].strokeCount = strokes.length;
 
         emit TileCreated(tokenId, msg.sender);
     }
@@ -193,15 +195,16 @@ contract ExquisiteLand is ERC721, Ownable {
             canvasId < MAX_CANVASES && canvasId >= 0,
             "Canvas ID out of accepted range."
         );
-        require(x < MAX_WIDTH && x >= 0, "Tile is out of horizontal bounds.");
-        require(y < MAX_HEIGHT && y >= 0, "Tile is out of vertical bounds.");
+        require(
+            x < MAX_CANVAS_WIDTH && x >= 0,
+            "Tile is out of horizontal bounds."
+        );
+        require(
+            y < MAX_CANVAS_HEIGHT && y >= 0,
+            "Tile is out of vertical bounds."
+        );
 
         return (canvasId, x, y);
-    }
-
-    function getPalette(uint32 canvasId) public view returns (string[] memory) {
-        require(canvasId < MAX_CANVASES);
-        return PALETTES[canvasId];
     }
 
     // * Admin Only Methods * //
@@ -250,36 +253,25 @@ contract ExquisiteLand is ERC721, Ownable {
         TileDataContainer storage data = _svgData[uint32(tokenId)];
         (uint32 canvasId, uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
         string
-            memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600" >';
-        for (uint32 i = 1; i < data.strokeCount + 1; i++) {
-            string memory strokePath = data.strokes[i - 1].path;
-            require(
-                data.strokes[i - 1].strokeColor >= 0 &&
-                    data.strokes[i - 1].strokeColor < MAX_COLORS,
-                "Stroke color out of range"
-            );
-            string memory strokeColor = PALETTES[canvasId][
-                data.strokes[i - 1].strokeColor
-            ];
-            require(
-                data.strokes[i - 1].strokeWidth >= 0 &&
-                    data.strokes[i - 1].strokeWidth < MAX_BRUSH_SIZES,
-                "Stroke color out of range"
-            );
-            uint8 strokeWidth = BRUSH_SIZES[data.strokes[i - 1].strokeWidth];
-            output = string(
-                abi.encodePacked(
-                    output,
-                    '<path d="',
-                    strokePath,
-                    '" fill="none" stroke-linecap="round" stroke="',
-                    strokeColor,
-                    '" stroke-width="',
-                    toString(strokeWidth),
-                    '"></path>'
-                )
-            );
+            memory output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 32 32" >';
+
+        for (uint8 y = 0; y < 16; y++) {
+            for (uint8 x = 0; x < 16; x++) {
+                output = string(
+                    abi.encodePacked(
+                        output,
+                        '<rect x="',
+                        toString(x),
+                        '" y="',
+                        toString(y),
+                        '"  style="fill:#B0B0B0',
+                        // PALETTE[data.pixels[x + y * MAX_TILE_HEIGHT]],
+                        '" width="1" height="1"/>'
+                    )
+                );
+            }
         }
+
         output = string(abi.encodePacked(output, "</svg>"));
         return output;
     }
