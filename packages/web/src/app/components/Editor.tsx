@@ -1,8 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import useEditor, { BrushType } from "@app/hooks/use-editor";
-import ColorPicker from "@app/components/ColorPicker";
-import BrushPicker from "@app/components/BrushPicker";
-import Inkwell from "@app/components/Inkwell";
+import React, { useState } from "react";
 import Button, { ButtonSuccess } from "@app/components/Button";
 import PALETTES from "src/constants/Palettes";
 
