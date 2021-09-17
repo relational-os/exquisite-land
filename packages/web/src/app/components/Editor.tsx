@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button, { ButtonSuccess } from "@app/components/Button";
 import useEditor from "@app/hooks/use-editor";
+import { Tool } from "@app/features/State";
 
 interface EditorProps {
   x: number;
@@ -14,7 +15,14 @@ const rows = Array.from(Array(32).keys());
 
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
-  const { palette, activeColor, setActiveColor, setTile } = useEditor();
+  const {
+    palette,
+    activeColor,
+    setActiveColor,
+    setTile,
+    activeTool,
+    setActiveTool,
+  } = useEditor();
 
   var m = Array(32)
     .fill(0)
@@ -114,6 +122,16 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-left">
+        <Button onClick={(e) => setActiveTool(Tool.BRUSH)}>
+          {activeTool == Tool.BRUSH ? "*brush*" : "brush"}
+        </Button>
+        <Button
+          onClick={(e) => {
+            setActiveTool(Tool.BUCKET);
+          }}
+        >
+          {activeTool == Tool.BUCKET ? "*bucket*" : "bucket"}
+        </Button>
         <div className="color-palette">
           {palette.map((color) => {
             return (
