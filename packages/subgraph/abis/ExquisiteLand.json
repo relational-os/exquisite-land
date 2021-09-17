@@ -196,30 +196,6 @@
     "inputs": [
       {
         "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "name": "canvasNames",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "canvasId",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint32",
         "name": "x",
         "type": "uint32"
       },
@@ -238,11 +214,6 @@
     "inputs": [
       {
         "internalType": "uint32",
-        "name": "canvasId",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint32",
         "name": "x",
         "type": "uint32"
       },
@@ -252,26 +223,9 @@
         "type": "uint32"
       },
       {
-        "components": [
-          {
-            "internalType": "uint32",
-            "name": "strokeColor",
-            "type": "uint32"
-          },
-          {
-            "internalType": "uint32",
-            "name": "strokeWidth",
-            "type": "uint32"
-          },
-          {
-            "internalType": "string",
-            "name": "path",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct ExquisiteLand.TilePathStroke[]",
-        "name": "strokes",
-        "type": "tuple[]"
+        "internalType": "bytes",
+        "name": "pixels",
+        "type": "bytes"
       }
     ],
     "name": "createTile",
@@ -281,11 +235,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "canvasId",
-        "type": "uint32"
-      },
       {
         "internalType": "uint32",
         "name": "x",
@@ -346,33 +295,9 @@
         "internalType": "uint32",
         "name": "",
         "type": "uint32"
-      },
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
       }
     ],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "canvasId",
-        "type": "uint32"
-      }
-    ],
-    "name": "getPalette",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

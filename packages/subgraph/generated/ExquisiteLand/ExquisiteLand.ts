@@ -179,19 +179,16 @@ export class Transfer__Params {
 export class ExquisiteLand__getCoordinatesResult {
   value0: BigInt;
   value1: BigInt;
-  value2: BigInt;
 
-  constructor(value0: BigInt, value1: BigInt, value2: BigInt) {
+  constructor(value0: BigInt, value1: BigInt) {
     this.value0 = value0;
     this.value1 = value1;
-    this.value2 = value2;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
     map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
     map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
     return map;
   }
 }
@@ -220,31 +217,11 @@ export class ExquisiteLand extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  canvasNames(param0: BigInt): string {
-    let result = super.call("canvasNames", "canvasNames(uint32):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-
-    return result[0].toString();
-  }
-
-  try_canvasNames(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("canvasNames", "canvasNames(uint32):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  generateTokenID(canvasId: BigInt, x: BigInt, y: BigInt): BigInt {
+  generateTokenID(x: BigInt, y: BigInt): BigInt {
     let result = super.call(
       "generateTokenID",
-      "generateTokenID(uint32,uint32,uint32):(uint32)",
+      "generateTokenID(uint32,uint32):(uint32)",
       [
-        ethereum.Value.fromUnsignedBigInt(canvasId),
         ethereum.Value.fromUnsignedBigInt(x),
         ethereum.Value.fromUnsignedBigInt(y)
       ]
@@ -253,16 +230,11 @@ export class ExquisiteLand extends ethereum.SmartContract {
     return result[0].toBigInt();
   }
 
-  try_generateTokenID(
-    canvasId: BigInt,
-    x: BigInt,
-    y: BigInt
-  ): ethereum.CallResult<BigInt> {
+  try_generateTokenID(x: BigInt, y: BigInt): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "generateTokenID",
-      "generateTokenID(uint32,uint32,uint32):(uint32)",
+      "generateTokenID(uint32,uint32):(uint32)",
       [
-        ethereum.Value.fromUnsignedBigInt(canvasId),
         ethereum.Value.fromUnsignedBigInt(x),
         ethereum.Value.fromUnsignedBigInt(y)
       ]
@@ -298,14 +270,13 @@ export class ExquisiteLand extends ethereum.SmartContract {
   getCoordinates(tokenId: BigInt): ExquisiteLand__getCoordinatesResult {
     let result = super.call(
       "getCoordinates",
-      "getCoordinates(uint32):(uint32,uint32,uint32)",
+      "getCoordinates(uint32):(uint32,uint32)",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
     return new ExquisiteLand__getCoordinatesResult(
       result[0].toBigInt(),
-      result[1].toBigInt(),
-      result[2].toBigInt()
+      result[1].toBigInt()
     );
   }
 
@@ -314,7 +285,7 @@ export class ExquisiteLand extends ethereum.SmartContract {
   ): ethereum.CallResult<ExquisiteLand__getCoordinatesResult> {
     let result = super.tryCall(
       "getCoordinates",
-      "getCoordinates(uint32):(uint32,uint32,uint32)",
+      "getCoordinates(uint32):(uint32,uint32)",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -324,29 +295,9 @@ export class ExquisiteLand extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new ExquisiteLand__getCoordinatesResult(
         value[0].toBigInt(),
-        value[1].toBigInt(),
-        value[2].toBigInt()
+        value[1].toBigInt()
       )
     );
-  }
-
-  getPalette(canvasId: BigInt): Array<string> {
-    let result = super.call("getPalette", "getPalette(uint32):(string[])", [
-      ethereum.Value.fromUnsignedBigInt(canvasId)
-    ]);
-
-    return result[0].toStringArray();
-  }
-
-  try_getPalette(canvasId: BigInt): ethereum.CallResult<Array<string>> {
-    let result = super.tryCall("getPalette", "getPalette(uint32):(string[])", [
-      ethereum.Value.fromUnsignedBigInt(canvasId)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toStringArray());
   }
 
   getTileSVG(tokenId: BigInt): string {
@@ -644,16 +595,12 @@ export class CreateSeedCall__Inputs {
     this._call = call;
   }
 
-  get canvasId(): BigInt {
+  get x(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get x(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
   get y(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
+    return this._call.inputValues[1].value.toBigInt();
   }
 }
 
@@ -682,22 +629,16 @@ export class CreateTileCall__Inputs {
     this._call = call;
   }
 
-  get canvasId(): BigInt {
+  get x(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get x(): BigInt {
+  get y(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 
-  get y(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get strokes(): Array<CreateTileCallStrokesStruct> {
-    return this._call.inputValues[3].value.toTupleArray<
-      CreateTileCallStrokesStruct
-    >();
+  get pixels(): Bytes {
+    return this._call.inputValues[2].value.toBytes();
   }
 }
 
@@ -706,20 +647,6 @@ export class CreateTileCall__Outputs {
 
   constructor(call: CreateTileCall) {
     this._call = call;
-  }
-}
-
-export class CreateTileCallStrokesStruct extends ethereum.Tuple {
-  get strokeColor(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get strokeWidth(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get path(): string {
-    return this[2].toString();
   }
 }
 
