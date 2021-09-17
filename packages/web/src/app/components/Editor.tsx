@@ -123,6 +123,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
                   backgroundColor: color,
                   height: "24px",
                   width: "24px",
+                  border:
+                    color == palette[activeColor] ? "solid 1px black" : "",
                 }}
                 onClick={(e) => setActiveColor(color)}
               ></div>
