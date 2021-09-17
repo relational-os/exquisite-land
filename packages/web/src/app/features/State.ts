@@ -3,6 +3,7 @@ import create from "zustand";
 type UniverseState = {
   activeCanvas: number;
   activeColor: number;
+  activeTool: Tool;
 };
 
 // type CanvasState = {
@@ -30,9 +31,15 @@ export enum TileType {
   COMMONS = "COMMONS",
 }
 
+export enum Tool {
+  BRUSH = "BRUSH",
+  BUCKET = "BUCKET",
+}
+
 const useStore = create<UniverseState>((set) => ({
   activeCanvas: 0,
   activeColor: 0,
+  activeTool: Tool.BRUSH,
 }));
 
 export default useStore;
