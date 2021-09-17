@@ -5,19 +5,15 @@ export const GRAPH_URL =
   "https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land";
 
 let query = gql`
-  query CanvasQuery($canvas: String) {
-    canvas(id: $canvas) {
+  {
+    tiles(first: 500) {
       id
-      palette
-      tiles(first: 500) {
+      x
+      y
+      status
+      svg
+      owner {
         id
-        x
-        y
-        status
-        svg
-        owner {
-          id
-        }
       }
     }
   }
@@ -26,32 +22,32 @@ let query = gql`
 // TODO: pagination
 
 export const useFetchTile = (
-  canvasID: number,
   x: number,
   y: number,
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    [canvasID, "canvas-fetch"],
-    (canvasID) => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
+    ["canvas-fetch"],
+    () => request(GRAPH_URL, query),
     { revalidateOnMount: true, ...swrOptions }
   );
-  const tile = data?.canvas?.tiles.find((tile: any) => {
+  const tile = data?.tiles.find((tile: any) => {
     return tile.x == x && tile.y == y;
   });
+  //   console.log("tile", tile);
   return { tile, error, refresh: mutate };
 };
 
 // TODO: integrate IPFS fetching? at Graph level or here?
 export const useFetchCanvas = (
-  canvasID: number,
   // variables?: Variables,
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    [canvasID, "canvas-fetch"],
-    (canvasID) => request(GRAPH_URL, query, { canvas: `${canvasID}` }),
+    ["canvas-fetch"],
+    () => request(GRAPH_URL, query),
     { revalidateOnMount: true, ...swrOptions }
   );
+  console.log("data", data);
   return { data, error, refresh: mutate };
 };

@@ -1,22 +1,22 @@
-import React from 'react';
-import useStore from '../features/State';
-import { useFetchTile } from '@app/features/Graph';
-import PALETTES from 'src/constants/Palettes';
+import React from "react";
+import useStore from "../features/State";
+import { useFetchTile } from "@app/features/Graph";
+import PALETTES from "src/constants/Palettes";
 
 const Tile = ({
   x,
   y,
   handleTileClick,
-  style
+  style,
 }: {
   x: number;
   y: number;
   handleTileClick: () => void;
   style?: React.CSSProperties;
 }) => {
-  const activeCanvasID = useStore(state => state.activeCanvas);
+  const activeCanvasID = useStore((state) => state.activeCanvas);
   const palette = PALETTES[activeCanvasID];
-  const { tile } = useFetchTile(activeCanvasID, x, y);
+  const { tile } = useFetchTile(x, y);
   return (
     <div className="tile" onClick={handleTileClick} style={style}>
       {tile?.svg && (
