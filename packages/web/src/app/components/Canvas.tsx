@@ -100,7 +100,7 @@ const Canvas = () => {
 					display: block;
 					padding: 8px 14px;
 					border: 0;
-					background: rgba(0, 0, 0, 0.1);
+					background: #eee;
 					font-size: 24px;
 					font-family: inherit;
 					cursor: pointer;
@@ -108,7 +108,6 @@ const Canvas = () => {
 					transition: transform 0.2s ease-in-out;
 					color: rgba(0, 0, 0, 1);
 					border-bottom: 4px solid rgba(0, 0, 0, 0.3);
-					z-index: 10001;
 				}
 
 				.controls button:hover {
