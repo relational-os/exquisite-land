@@ -22,6 +22,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     setTile,
     activeTool,
     setActiveTool,
+    getActiveCursor,
   } = useEditor();
 
   var m = Array(32)
@@ -122,16 +123,14 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-left">
-        <Button onClick={(e) => setActiveTool(Tool.BRUSH)}>
-          {activeTool == Tool.BRUSH ? "*brush*" : "brush"}
-        </Button>
-        <Button
-          onClick={(e) => {
-            setActiveTool(Tool.BUCKET);
-          }}
-        >
-          {activeTool == Tool.BUCKET ? "*bucket*" : "bucket"}
-        </Button>
+        {Object.keys(Tool).map((tool) => {
+          return (
+            <Button onClick={(e) => setActiveTool(tool as Tool)}>
+              {activeTool == tool ? `*${tool}*` : `${tool}`}
+            </Button>
+          );
+        })}
+        <Button>UNDO</Button>
         <div className="color-palette">
           {palette.map((color) => {
             return (
@@ -185,7 +184,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           height: ${columns.length * SIZE}px;
           user-select: none;
           touch-action: none;
-          cursor: cell;
+          cursor: ${getActiveCursor()};
           border: 1px solid #000;
         }
         .box {
@@ -280,3 +279,5 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 };
 
 export default Editor;
+
+// cursor: ${getActiveCursor()};

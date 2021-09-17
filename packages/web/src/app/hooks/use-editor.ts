@@ -21,6 +21,7 @@ const useEditor = () => {
   const activeCanvas = useStore((state) => state.activeCanvas);
   const activeColor = useStore((state) => state.activeColor);
   const activeTool = useStore((state) => state.activeTool);
+
   const { provider } = useWallet();
 
   const palette = PALETTES[activeCanvas];
@@ -31,6 +32,19 @@ const useEditor = () => {
 
   const setActiveColor = (hex: string) => {
     useStore.setState({ activeColor: palette.indexOf(hex) });
+  };
+
+  const getActiveCursor = () => {
+    const activeTool = useStore.getState().activeTool;
+
+    switch (activeTool) {
+      case Tool.BRUSH:
+        return "url(/static/px-icon-pencil.svg) 0 11, pointer";
+      case Tool.BUCKET:
+        return "url(/static/px-icon-bucket.svg) 0 11, pointer";
+      case Tool.EYEDROPPER:
+        return "url(/static/px-icon-eyedropper.svg) 4 11, pointer";
+    }
   };
 
   const setTile = async ({ x, y, pixels }: SetTileProps) => {
@@ -73,6 +87,7 @@ const useEditor = () => {
     setTile,
     activeTool,
     setActiveTool,
+    getActiveCursor,
   };
 };
 

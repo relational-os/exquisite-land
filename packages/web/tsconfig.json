@@ -5,7 +5,8 @@
       "@app/*": ["src/app/*"],
       "@server/*": ["src/server/*"],
       "@constants/*": ["src/constants/*"],
-      "@sdk/*": ["src/sdk/*"]
+      "@sdk/*": ["src/sdk/*"],
+      "@static/*": ["public/static/*"],
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

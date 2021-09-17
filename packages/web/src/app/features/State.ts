@@ -34,6 +34,7 @@ export enum TileType {
 export enum Tool {
   BRUSH = "BRUSH",
   BUCKET = "BUCKET",
+  EYEDROPPER = "EYEDROPPER",
 }
 
 const useStore = create<UniverseState>((set) => ({
