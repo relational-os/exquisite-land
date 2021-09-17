@@ -7,7 +7,7 @@ dataSources:
     network: mumbai
     source:
       address: "0x2Fa4cb8e38c1B02252BFfeFeC5a8dE23a8240Ac9"
-      startBlock: 18902892
+      startBlock: 18902890
       abi: ExquisiteLand
     mapping:
       kind: ethereum/events
