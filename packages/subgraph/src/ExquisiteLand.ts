@@ -17,10 +17,10 @@ function createTileToken(
 ): void {
   let contract = ExquisiteLand.bind(address);
 
-  let results = contract.getCoordinates(tokenId);
+  let result = contract.getCoordinates(tokenId);
 
-  let x = results.value0;
-  let y = results.value1;
+  let x = result.value0;
+  let y = result.value1;
 
   let tile = new Tile(tokenId.toString());
 
