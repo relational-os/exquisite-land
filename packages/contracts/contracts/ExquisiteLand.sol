@@ -157,6 +157,13 @@ contract ExquisiteLand is ERC721, Ownable {
         return true;
     }
 
+    function getTileSVG(uint32 tokenId) public view returns (string memory) {
+        return _renderer.renderSVG(
+            _svgData[uint32(tokenId)],
+            PALETTE
+        );
+    }
+
     function generateTokenID(uint32 x, uint32 y)
         public
         pure
