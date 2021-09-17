@@ -133,7 +133,21 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-right">
-        <div className="preview"></div>
+        <div className="preview">
+          {columns.map((y) => {
+            return rows.map((x) => {
+              return (
+                <div
+                  key={`${x}_${y}_preview`}
+                  className="box-preview"
+                  style={{
+                    backgroundColor: palette[pixels?.[x]?.[y]],
+                  }}
+                ></div>
+              );
+            });
+          })}
+        </div>
       </div>
 
       <div className="canvas-footer">
@@ -160,6 +174,10 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           height: ${SIZE}px;
           border: 1px solid rgba(0, 0, 0, 0.15);
           border-width: 0 1px 1px 0;
+        }
+        .box-preview {
+          width: 3.85px;
+          height: 3.85px;
         }
         .editor {
           top: 0;
@@ -223,6 +241,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           border: 2px solid #b2bfd0;
           border-radius: 4px;
           image-rendering: pixelated;
+          display: grid;
+          grid-template-columns: repeat(32, 1fr);
         }
 
         .color-palette {
