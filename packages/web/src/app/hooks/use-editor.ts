@@ -18,16 +18,16 @@ function transpose(matrix: any) {
 }
 
 const useEditor = () => {
-  const activeCanvas = useStore((state) => state.activeCanvas);
   const activeColor = useStore((state) => state.activeColor);
   const activeTool = useStore((state) => state.activeTool);
+  const prevTool = useStore((state) => state.prevTool);
 
   const { provider } = useWallet();
 
-  const palette = PALETTES[activeCanvas];
+  const palette = PALETTES[0];
 
   const setActiveTool = (tool: Tool) => {
-    useStore.setState({ activeTool: tool });
+    useStore.setState({ activeTool: tool, prevTool: activeTool });
   };
 
   const setActiveColor = (hex: string) => {
@@ -88,6 +88,7 @@ const useEditor = () => {
     activeTool,
     setActiveTool,
     getActiveCursor,
+    prevTool,
   };
 };
 

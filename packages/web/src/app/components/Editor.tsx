@@ -21,6 +21,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     setActiveColor,
     setTile,
     activeTool,
+    prevTool,
     setActiveTool,
     getActiveCursor,
   } = useEditor();
@@ -40,6 +41,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     closeModal();
   }
 
+  // TODO: break these out into functions
   const touchEnter = (e: React.TouchEvent<HTMLDivElement>) => {
     if (!drawing) return;
     e.preventDefault();
@@ -50,24 +52,27 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     );
     if (!elem) return;
     if (!elem.getAttribute("class")?.includes("box")) return;
-    elem?.setAttribute("style", `background-color: ${activeColor}`);
+
     const [x, y] = elem
       .getAttribute("id")!
       .split("_")
       .map((n) => parseInt(n));
 
-    elem?.setAttribute("style", `background-color: ${palette[activeColor]}`);
+    if (activeTool == Tool.BRUSH) {
+      elem?.setAttribute("style", `background-color: ${palette[activeColor]}`);
+      setPixels((pixels) => {
+        if (!pixels[x]) {
+          pixels[x] = [];
+        }
+        pixels[x][y] = activeColor;
 
-    setPixels((pixels) => {
-      if (!pixels[x]) {
-        pixels[x] = [];
-      }
-      pixels[x][y] = activeColor;
-
-      return pixels;
-    });
-
-    console.log(e, x, y);
+        return pixels;
+      });
+    } else if (activeTool == Tool.EYEDROPPER) {
+      console.log(prevTool);
+      setActiveColor(palette[pixels[x][y]]);
+      setActiveTool(prevTool);
+    }
   };
 
   const onMouseEnter = (
@@ -76,17 +81,23 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     y: number
   ) => {
     if (!drawing) return;
-
     e.preventDefault();
-    e.currentTarget.style.backgroundColor = palette[activeColor];
 
-    setPixels((pixels) => {
-      if (!pixels[x]) {
-        pixels[x] = [];
-      }
-      pixels[x][y] = activeColor;
-      return pixels;
-    });
+    if (activeTool == Tool.BRUSH) {
+      e.currentTarget.style.backgroundColor = palette[activeColor];
+
+      setPixels((pixels) => {
+        if (!pixels[x]) {
+          pixels[x] = [];
+        }
+        pixels[x][y] = activeColor;
+        return pixels;
+      });
+    } else if (activeTool == Tool.EYEDROPPER) {
+      console.log(prevTool);
+      setActiveColor(palette[pixels[x][y]]);
+      setActiveTool(prevTool);
+    }
   };
 
   return (
@@ -123,9 +134,9 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-left">
-        {Object.keys(Tool).map((tool) => {
+        {Object.keys(Tool).map((tool, i) => {
           return (
-            <Button onClick={(e) => setActiveTool(tool as Tool)}>
+            <Button key={i} onClick={(e) => setActiveTool(tool as Tool)}>
               {activeTool == tool ? `*${tool}*` : `${tool}`}
             </Button>
           );

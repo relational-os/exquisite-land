@@ -4,6 +4,7 @@ type UniverseState = {
   activeCanvas: number;
   activeColor: number;
   activeTool: Tool;
+  prevTool: Tool;
 };
 
 // type CanvasState = {
@@ -41,6 +42,7 @@ const useStore = create<UniverseState>((set) => ({
   activeCanvas: 0,
   activeColor: 0,
   activeTool: Tool.BRUSH,
+  prevTool: Tool.BRUSH,
 }));
 
 export default useStore;
