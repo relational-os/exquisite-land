@@ -122,6 +122,7 @@ const Canvas = () => {
 
 				.ReactModal__Overlay--after-open {
 					opacity: 1;
+					z-index: 1111;
 				}
 
 				.ReactModal__Overlay--before-close {
