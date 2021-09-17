@@ -8,7 +8,6 @@ import "./interfaces/IRender.sol";
 
 contract ExquisiteLand is ERC721, Ownable {
     // * External Dependencies *//
-
     IRender private _renderer;
 
     // * Constants * //
@@ -46,7 +45,7 @@ contract ExquisiteLand is ERC721, Ownable {
     ];
 
     // * Canvas Data Storage * //
-    mapping(uint32 => bytes) private _svgData; // TODO try to change to bytes
+    mapping(uint32 => bytes) private _svgData;
     uint32[4] private _seeds;
 
     // * Event definitions * //
@@ -56,7 +55,7 @@ contract ExquisiteLand is ERC721, Ownable {
 
     // * Modifiers * //
     modifier isInitialized() {
-        // require(_landGranter != address(0), "Not initialized");
+        require(_landGranter != address(0), "Not initialized");
         // require(_renderer != address(0), "Not initialized");
         _;
     }
@@ -75,7 +74,7 @@ contract ExquisiteLand is ERC721, Ownable {
 
     // * Constructor * //
     constructor() ERC721("Exquisite Land", "XQST") {
-        _renderer = IRender(0xc88C236DFD1e96baEc8c2aC7260b5e07B06b4bEc);
+        _renderer = IRender(0x1A1FeD25762a9DEA62F31074A2680DD5BB714c94);
     }
 
     // * Tile Creation Methods * //
@@ -90,8 +89,8 @@ contract ExquisiteLand is ERC721, Ownable {
         for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) {
             if (_seeds[i] == 0) {
                 _seeds[i] = tokenId;
-                _safeMint(msg.sender, tokenId);
-                emit SeedCreated(tokenId, msg.sender);
+                _safeMint(_landGranter, tokenId);
+                emit SeedCreated(tokenId, _landGranter);
                 return;
             }
         }
@@ -123,6 +122,7 @@ contract ExquisiteLand is ERC721, Ownable {
         uint32 y,
         bytes calldata pixels
     ) public isValidTile(x, y) {
+        require(pixels.length == 512, "Data is not 512 bytes");
         uint32 tokenId = generateTokenID(x, y);
         require(ownerOf(tokenId) == msg.sender, "u r not owner rawr");
         require(
@@ -158,10 +158,7 @@ contract ExquisiteLand is ERC721, Ownable {
     }
 
     function getTileSVG(uint32 tokenId) public view returns (string memory) {
-        return _renderer.renderSVG(
-            _svgData[uint32(tokenId)],
-            PALETTE
-        );
+        return _renderer.renderSVG(_svgData[uint32(tokenId)], PALETTE);
     }
 
     function generateTokenID(uint32 x, uint32 y)
@@ -189,11 +186,6 @@ contract ExquisiteLand is ERC721, Ownable {
             "Tile is out of vertical bounds."
         );
         return (x, y);
-    }
-
-    // * Admin Only Methods * //
-    function setLandGranter(address granter) public onlyOwner {
-        _landGranter = granter;
     }
 
     function toggleAllowEditing() public onlyOwner {
@@ -230,5 +222,14 @@ contract ExquisiteLand is ERC721, Ownable {
         );
         output = string(abi.encodePacked("data:application/json;utf-8,", json));
         return output;
+    }
+
+    // * Admin Only Methods * //
+    function setLandGranter(address granter) public onlyOwner {
+        _landGranter = granter;
+    }
+
+    function setRenderer(address addr) public onlyOwner {
+        _renderer = IRender(addr);
     }
 }

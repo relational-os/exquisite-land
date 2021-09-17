@@ -27,14 +27,14 @@ contract Render {
                     lookup[pos.x],
                     '" y="',
                     lookup[pos.y],
-                    '" width="1" height="1" />',
+                    '" width="1.5" height="1.5" />',
                     '<rect fill="',
                     pos.color2,
                     '" x="',
                     lookup[pos.x + 1],
                     '" y="',
                     lookup[pos.y],
-                    '" width="1" height="1" />',
+                    '" width="1.5" height="1.5" />',
                     string(
                         abi.encodePacked(
                             '<rect fill="',
@@ -43,14 +43,14 @@ contract Render {
                             lookup[pos.x + 2],
                             '" y="',
                             lookup[pos.y],
-                            '" width="1" height="1" />',
+                            '" width="1.5" height="1.5" />',
                             '<rect fill="',
                             pos.color4,
                             '" x="',
                             lookup[pos.x + 3],
                             '" y="',
                             lookup[pos.y],
-                            '" width="1" height="1" />'
+                            '" width="1.5" height="1.5" />'
                         )
                     )
                 )
@@ -62,6 +62,7 @@ contract Render {
         pure
         returns (string memory)
     {
+        require(data.length == 512, "Data is not 512 bytes");
         string
             memory svgString = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">';
 

@@ -28,6 +28,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     "generateTokenID(uint32,uint32)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getCoordinates(uint32)": FunctionFragment;
+    "getTileSVG(uint32)": FunctionFragment;
     "inviteIsValid(uint32,uint32,uint32,uint32)": FunctionFragment;
     "inviteNeighbor(uint32,uint32,uint32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -38,6 +39,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setLandGranter(address)": FunctionFragment;
+    "setRenderer(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "targetTileIsBlank(uint32)": FunctionFragment;
@@ -70,6 +72,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getCoordinates",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTileSVG",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -106,6 +112,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     functionFragment: "setLandGranter",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "setRenderer", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -148,6 +155,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     functionFragment: "getCoordinates",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getTileSVG", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "inviteIsValid",
     data: BytesLike
@@ -177,6 +185,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setLandGranter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRenderer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -302,6 +314,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number, number]>;
 
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     inviteIsValid(
       senderX: BigNumberish,
       senderY: BigNumberish,
@@ -360,6 +377,11 @@ export class ExquisiteLand extends BaseContract {
 
     setLandGranter(
       granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setRenderer(
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -434,6 +456,8 @@ export class ExquisiteLand extends BaseContract {
     overrides?: CallOverrides
   ): Promise<[number, number]>;
 
+  getTileSVG(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
   inviteIsValid(
     senderX: BigNumberish,
     senderY: BigNumberish,
@@ -489,6 +513,11 @@ export class ExquisiteLand extends BaseContract {
 
   setLandGranter(
     granter: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setRenderer(
+    addr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -560,6 +589,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number, number]>;
 
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     inviteIsValid(
       senderX: BigNumberish,
       senderY: BigNumberish,
@@ -612,6 +646,8 @@ export class ExquisiteLand extends BaseContract {
     ): Promise<void>;
 
     setLandGranter(granter: string, overrides?: CallOverrides): Promise<void>;
+
+    setRenderer(addr: string, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -738,6 +774,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     inviteIsValid(
       senderX: BigNumberish,
       senderY: BigNumberish,
@@ -796,6 +837,11 @@ export class ExquisiteLand extends BaseContract {
 
     setLandGranter(
       granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setRenderer(
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -874,6 +920,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     inviteIsValid(
       senderX: BigNumberish,
       senderY: BigNumberish,
@@ -932,6 +983,11 @@ export class ExquisiteLand extends BaseContract {
 
     setLandGranter(
       granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setRenderer(
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
