@@ -9,9 +9,6 @@ interface SetTileProps {
   y: number;
 }
 
-const DEFAULT_FILL = 13;
-const PIXELS = 32;
-
 function transpose(matrix: any) {
   return matrix.reduce(
     (prev: any, next: any) =>
@@ -42,7 +39,7 @@ const useEditor = () => {
       transposed.length
     );
 
-    transposed.map((row) => {
+    transposed.map((row: any) => {
       console.log("--", row.length);
     });
 
@@ -50,6 +47,7 @@ const useEditor = () => {
     console.log("flattened.length", flattened.length);
     let outputPixels = "0x";
 
+    // @ts-ignore
     let index = 0;
     for (let i = 0; i < flattened.length; i += 2) {
       let d = `${((flattened[i] << 4) | flattened[i + 1])

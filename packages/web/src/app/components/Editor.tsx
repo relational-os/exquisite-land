@@ -8,7 +8,6 @@ interface EditorProps {
   closeModal: () => void;
 }
 
-const PIXEL_COUNT = 32;
 const SIZE = 18;
 const columns = Array.from(Array(32).keys());
 const rows = Array.from(Array(32).keys());
