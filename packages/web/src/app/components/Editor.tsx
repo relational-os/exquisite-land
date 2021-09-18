@@ -13,6 +13,8 @@ const SIZE = 18;
 const columns = Array.from(Array(32).keys());
 const rows = Array.from(Array(32).keys());
 
+const MAX = 32;
+
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
   const {
@@ -31,6 +33,43 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     .map(() => Array(32).fill(13));
 
   const [pixels, setPixels] = useState<number[][]>(m);
+
+  const paintNeighbors = (
+    color: number,
+    startColor: number,
+    x: number,
+    y: number,
+    d: number[][],
+    checked: Record<string, boolean>
+  ) => {
+    // If we've already checked this pixel don't check again
+    // @ts-ignore
+    if (checked[`${x}-${y}`]) return d;
+
+    // if this is no longer the same color stop checking
+    if (pixels[x][y] != startColor) return d;
+    d[x][y] = color;
+
+    // Find Neighbors and add them to the stack
+    if (x + 1 < MAX) {
+      d = paintNeighbors(color, startColor, x + 1, y, d, checked);
+    }
+    if (x - 1 >= 0) {
+      d = paintNeighbors(color, startColor, x - 1, y, d, checked);
+    }
+    if (y + 1 < MAX) {
+      d = paintNeighbors(color, startColor, x, y + 1, d, checked);
+    }
+    if (y - 1 >= 0) {
+      d = paintNeighbors(color, startColor, x, y - 1, d, checked);
+    }
+
+    // Since we've just checked this one, make sure we don't check it again
+    // @ts-ignore
+    checked[`${x}-${y}`] = true;
+
+    return d;
+  };
 
   function handleClear() {
     setPixels([]);
@@ -97,6 +136,9 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       console.log(prevTool);
       setActiveColor(palette[pixels[x][y]]);
       setActiveTool(prevTool);
+    } else if (activeTool == Tool.BUCKET) {
+      const d = paintNeighbors(activeColor, pixels[x][y], x, y, pixels, {});
+      setPixels(d);
     }
   };
 
