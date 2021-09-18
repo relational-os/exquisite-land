@@ -43,11 +43,12 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     checked: Record<string, boolean>
   ) => {
     // If we've already checked this pixel don't check again
-    // @ts-ignore
     if (checked[`${x}-${y}`]) return d;
 
     // if this is no longer the same color stop checking
     if (pixels[x][y] != startColor) return d;
+
+    // paint this pixels color
     d[x][y] = color;
 
     // Find Neighbors and add them to the stack
@@ -65,7 +66,6 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     }
 
     // Since we've just checked this one, make sure we don't check it again
-    // @ts-ignore
     checked[`${x}-${y}`] = true;
 
     return d;
@@ -80,15 +80,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     closeModal();
   }
 
-  // TODO: break these out into functions
-  const touchEnter = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!drawing) return;
-    e.preventDefault();
-
-    const elem = document.elementFromPoint(
-      e.touches[0].clientX,
-      e.touches[0].clientY
-    );
+  const paintPixels = (rawX: number, rawY: number) => {
+    const elem = document.elementFromPoint(rawX, rawY);
     if (!elem) return;
     if (!elem.getAttribute("class")?.includes("box")) return;
 
@@ -98,38 +91,13 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       .map((n) => parseInt(n));
 
     if (activeTool == Tool.BRUSH) {
-      elem?.setAttribute("style", `background-color: ${palette[activeColor]}`);
+      elem.setAttribute("style", `background-color: ${palette[activeColor]}`);
       setPixels((pixels) => {
         if (!pixels[x]) {
           pixels[x] = [];
         }
         pixels[x][y] = activeColor;
 
-        return pixels;
-      });
-    } else if (activeTool == Tool.EYEDROPPER) {
-      console.log(prevTool);
-      setActiveColor(palette[pixels[x][y]]);
-      setActiveTool(prevTool);
-    }
-  };
-
-  const onMouseEnter = (
-    e: React.MouseEvent<HTMLDivElement>,
-    x: number,
-    y: number
-  ) => {
-    if (!drawing) return;
-    e.preventDefault();
-
-    if (activeTool == Tool.BRUSH) {
-      e.currentTarget.style.backgroundColor = palette[activeColor];
-
-      setPixels((pixels) => {
-        if (!pixels[x]) {
-          pixels[x] = [];
-        }
-        pixels[x][y] = activeColor;
         return pixels;
       });
     } else if (activeTool == Tool.EYEDROPPER) {
@@ -140,6 +108,25 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       const d = paintNeighbors(activeColor, pixels[x][y], x, y, pixels, {});
       setPixels(d);
     }
+  };
+
+  // TODO: break these out into functions
+  const touchEnter = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!drawing) return;
+    e.preventDefault();
+
+    paintPixels(e.touches[0].clientX, e.touches[0].clientY);
+  };
+
+  const onMouseEnter = (
+    e: React.MouseEvent<HTMLDivElement>,
+    x: number,
+    y: number
+  ) => {
+    if (!drawing) return;
+    e.preventDefault();
+
+    paintPixels(e.clientX, e.clientY);
   };
 
   return (
@@ -332,5 +319,3 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 };
 
 export default Editor;
-
-// cursor: ${getActiveCursor()};
