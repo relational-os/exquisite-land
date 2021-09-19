@@ -17,7 +17,7 @@
     "graphql": "^15.5.3",
     "graphql-request": "^3.5.0",
     "next": "^11.0.0",
-    "prettier": "^2.3.2",
+    "prettier": "^2.4.1",
     "react": "^17.0.1",
     "react-color": "^2.19.3",
     "react-dom": "^17.0.1",
@@ -36,13 +36,13 @@
     "zustand": "^3.5.10"
   },
   "devDependencies": {
-    "@types/node": "^14.14.22",
+    "@types/node": "^16.9.4",
     "@types/react": "^17.0.0",
     "@types/react-canvas-draw": "^1.1.1",
     "@types/react-modal": "^3.12.1",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
-    "@types/svgo": "^2.4.1",
+    "@types/svgo": "^2.4.2",
     "typescript": "^4.1.3"
   }
 }

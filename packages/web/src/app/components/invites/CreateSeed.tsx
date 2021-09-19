@@ -4,7 +4,6 @@ import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
 
 const CreateSeed = () => {
-  const [canvasId, setCanvasId] = useState<string>('');
   const [x, setX] = useState<string>('');
   const [y, setY] = useState<string>('');
   const [hash, setHash] = useState<string>();
@@ -14,11 +13,7 @@ const CreateSeed = () => {
   const onSubmit = async () => {
     if (!provider) return;
     const contract = getContract(provider.getSigner());
-    const tx = await contract.createSeed(
-      parseInt(canvasId),
-      parseInt(x),
-      parseInt(y)
-    );
+    const tx = await contract.createSeed(parseInt(x), parseInt(y));
     await tx.wait(1);
     console.log(tx.hash);
     setHash(tx.hash);
@@ -26,12 +21,6 @@ const CreateSeed = () => {
   return (
     <div className="create-seed">
       <label>Create Seed</label>
-      <input
-        type="number"
-        placeholder="canvasId"
-        value={canvasId}
-        onChange={e => setCanvasId(e.target.value)}
-      />
       <input
         type="number"
         placeholder="x"
@@ -50,7 +39,6 @@ const CreateSeed = () => {
         <>
           <img
             src={`/api/land-granter/generate?tokenId=${generateTokenID(
-              parseInt(canvasId),
               parseInt(x),
               parseInt(y)
             )}`}

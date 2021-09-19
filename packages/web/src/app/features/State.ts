@@ -1,7 +1,6 @@
-import create from "zustand";
+import create from 'zustand';
 
 type UniverseState = {
-  activeCanvas: number;
   activeColor: number;
   activeTool: Tool;
   prevTool: Tool;
@@ -21,28 +20,27 @@ type UniverseState = {
 // };
 
 export enum TileStatus {
-  BLANK = "BLANK",
-  INVITE = "INVITE",
-  DRAWABLE = "DRAWABLE",
-  DRAWN = "DRAWN",
+  BLANK = 'BLANK',
+  INVITE = 'INVITE',
+  DRAWABLE = 'DRAWABLE',
+  DRAWN = 'DRAWN'
 }
 
 export enum TileType {
-  SOLO = "SOLO",
-  COMMONS = "COMMONS",
+  SOLO = 'SOLO',
+  COMMONS = 'COMMONS'
 }
 
 export enum Tool {
-  BRUSH = "BRUSH",
-  BUCKET = "BUCKET",
-  EYEDROPPER = "EYEDROPPER",
+  BRUSH = 'BRUSH',
+  BUCKET = 'BUCKET',
+  EYEDROPPER = 'EYEDROPPER'
 }
 
-const useStore = create<UniverseState>((set) => ({
-  activeCanvas: 0,
+const useStore = create<UniverseState>(set => ({
   activeColor: 0,
   activeTool: Tool.BRUSH,
-  prevTool: Tool.BRUSH,
+  prevTool: Tool.BRUSH
 }));
 
 export default useStore;

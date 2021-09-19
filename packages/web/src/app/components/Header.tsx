@@ -1,31 +1,17 @@
-import useStore from "@app/features/State";
-import useOpenNeighborsForWallet from "@app/features/useOpenNeighborsForWallet";
-import useTilesInWallet from "@app/features/useTilesInWallet";
-import { useWallet } from "@gimmixorg/use-wallet";
-import React from "react";
-import ConnectWalletButton from "./ConnectWalletButton";
-
-const canvases = Array.from(Array(16).keys());
+import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import useTilesInWallet from '@app/features/useTilesInWallet';
+import { useWallet } from '@gimmixorg/use-wallet';
+import React from 'react';
+import ConnectWalletButton from './ConnectWalletButton';
 
 const Header = () => {
-  const setActiveCanvas = (id: number) =>
-    useStore.setState({ activeCanvas: id });
   const { account } = useWallet();
   const { tiles } = useTilesInWallet(account);
   const openNeighbors = useOpenNeighborsForWallet();
-  // console.log({ userOwnedTiles: tiles, openNeighbors });
+  console.log({ account, tiles, openNeighbors });
   return (
     <div className="header">
       <ConnectWalletButton />
-      <select onChange={(e) => setActiveCanvas(parseInt(e.target.value))}>
-        {canvases.map((canvas) => {
-          return (
-            <option key={canvas} value={canvas}>
-              Canvas {canvas}
-            </option>
-          );
-        })}
-      </select>
       <button className="invite-button">have a coin?</button>
       <div className="spacer" />
       {account && (
@@ -34,13 +20,13 @@ const Header = () => {
             You have {openNeighbors.length} open neighbors
           </div>
           <div className="open-tiles">
-            You have{" "}
-            {tiles?.filter((tile) => tile.status == "UNLOCKED").length || "0"}{" "}
+            You have{' '}
+            {tiles?.filter(tile => tile.status == 'UNLOCKED').length || '0'}{' '}
             open tiles [
             {tiles
-              ?.filter((tile) => tile.status == "UNLOCKED")
-              .map((tile) => `${tile.canvas?.id},${tile.x},${tile.y}`)
-              .join(" & ")}
+              ?.filter(tile => tile.status == 'UNLOCKED')
+              .map(tile => `${tile.x}, ${tile.y}`)
+              .join(' & ')}
             ]
           </div>
         </div>
@@ -83,4 +69,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default React.memo(Header);

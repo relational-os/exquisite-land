@@ -1,25 +1,19 @@
-import React, { CSSProperties, useEffect, useState } from "react";
-import { FixedSizeGrid as Grid } from "react-window";
-import Tile from "./Tile";
-import Editor from "./Editor";
-import useStore from "../features/State";
-import { useFetchCanvas } from "@app/features/Graph";
-import AutoSizer from "react-virtualized-auto-sizer";
-import Modal from "react-modal";
-import { useWallet } from "@gimmixorg/use-wallet";
-Modal.setAppElement("#__next");
+import React, { CSSProperties, useState } from 'react';
+import { FixedSizeGrid as Grid } from 'react-window';
+import Tile from './Tile';
+import Editor from './Editor';
+import { useFetchCanvas } from '@app/features/Graph';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import Modal from 'react-modal';
+import { useWallet } from '@gimmixorg/use-wallet';
+Modal.setAppElement('#__next');
 
 const Canvas = () => {
   const [x, setX] = useState<number>();
   const [y, setY] = useState<number>();
   const [size, setSize] = useState(200);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const activeCanvasID = useStore((state) => state.activeCanvas);
   useFetchCanvas();
-
-  useEffect(() => {
-    setIsModalOpen(false);
-  }, [activeCanvasID]);
 
   function closeModal() {
     setIsModalOpen(false);
@@ -30,15 +24,15 @@ const Canvas = () => {
   const { provider } = useWallet();
 
   function handleTileClick(x: number, y: number) {
-    if (!provider) return alert("Not signed in.");
+    if (!provider) return alert('Not signed in.');
     console.log(`tile ${x}, ${y} clicked!`);
     setX(x);
     setY(y);
     setIsModalOpen(true);
   }
 
-  const zoomIn = () => setSize((s) => s * 1.25);
-  const zoomOut = () => setSize((s) => Math.max(0, s / 1.25));
+  const zoomIn = () => setSize(s => s * 1.25);
+  const zoomOut = () => setSize(s => Math.max(0, s / 1.25));
 
   return (
     <>
@@ -59,15 +53,15 @@ const Canvas = () => {
             <Grid
               width={width}
               height={height}
-              columnCount={100}
-              rowCount={100}
+              columnCount={32}
+              rowCount={32}
               columnWidth={size}
               rowHeight={size}
             >
               {({
                 columnIndex,
                 rowIndex,
-                style,
+                style
               }: {
                 columnIndex: number;
                 rowIndex: number;
@@ -92,6 +86,12 @@ const Canvas = () => {
         .surface {
           width: 100vw;
           height: 100vh;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          overflow: auto;
         }
         .controls {
           position: fixed;
@@ -139,19 +139,19 @@ const Canvas = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: "rgba(255, 255, 255, 0.98)",
+    backgroundColor: 'rgba(255, 255, 255, 0.98)'
   },
   content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    background: "transparent",
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    background: 'transparent',
     border: 0,
-    padding: 0,
-  },
+    padding: 0
+  }
 };
 
 export default Canvas;

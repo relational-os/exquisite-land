@@ -1,9 +1,9 @@
-import request, { gql } from "graphql-request";
-import useSWR, { SWRConfiguration } from "swr";
-import { GRAPH_URL } from "./Graph";
-import { GraphTile } from "./useTile";
+import request, { gql } from 'graphql-request';
+import useSWR, { SWRConfiguration } from 'swr';
+import { GRAPH_URL } from './Graph';
+import { GraphTile } from './useTile';
 
-let query = gql`
+const query = gql`
   query TilesInWalletQuery($address: String) {
     player(id: $address) {
       tiles(first: 500) {
@@ -12,9 +12,6 @@ let query = gql`
         y
         status
         svg
-        canvas {
-          id
-        }
       }
     }
   }
@@ -25,17 +22,15 @@ export const useTilesInWallet = (
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR<{ player: { tiles: GraphTile[] } }>(
-    address ? [address, "useTilesInWallet"] : null,
-    (address) => request(GRAPH_URL, query, { address: address.toLowerCase() }),
-    { revalidateOnMount: false, ...swrOptions }
+    address ? [address, 'useTilesInWallet'] : null,
+    address => request(GRAPH_URL, query, { address: address.toLowerCase() }),
+    swrOptions
   );
-  const tiles = data?.player?.tiles.map((tile) => ({
+
+  const tiles = data?.player?.tiles.map(tile => ({
     ...tile,
-    canvas: {
-      id: Number(tile.canvas?.id as string),
-    },
     x: Number(tile.x),
-    y: Number(tile.y),
+    y: Number(tile.y)
   }));
   return { tiles, error, refresh: mutate };
 };
