@@ -10,15 +10,10 @@ const InviteNeighbors = () => {
 
   const [tokenId, setTokenId] = useState<number>();
   const [hash, setHash] = useState<string>();
-  const inviteNeighbor = async (
-    tokenId: number,
-    canvasId: number,
-    x: number,
-    y: number
-  ) => {
+  const inviteNeighbor = async (tokenId: number, x: number, y: number) => {
     if (!provider) return;
     const contract = getContract(provider.getSigner());
-    setTokenId(generateTokenID(canvasId, x, y));
+    setTokenId(generateTokenID(x, y));
     const tx = await contract.inviteNeighbor(
       tokenId,
       x,
@@ -33,15 +28,10 @@ const InviteNeighbors = () => {
     <div className="inviteneighbors">
       {openNeighbors.map(neighbor => (
         <div className="open-neighbor" key={neighbor.tokenId}>
-          {neighbor.canvasId}, {neighbor.x}, {neighbor.y}{' '}
+          {neighbor.x}, {neighbor.y}{' '}
           <button
             onClick={() =>
-              inviteNeighbor(
-                neighbor.ownTokenId,
-                neighbor.canvasId,
-                neighbor.x,
-                neighbor.y
-              )
+              inviteNeighbor(neighbor.ownTokenId, neighbor.x, neighbor.y)
             }
           >
             Invite

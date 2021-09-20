@@ -1,7 +1,7 @@
-import useStore, { Tool } from "@app/features/State";
-import { useWallet } from "@gimmixorg/use-wallet";
-import PALETTES from "src/constants/Palettes";
-import { ExquisiteLand__factory } from "src/sdk/factories/ExquisiteLand__factory";
+import useStore, { Tool } from '@app/features/State';
+import { useWallet } from '@gimmixorg/use-wallet';
+import PALETTES from 'src/constants/Palettes';
+import { ExquisiteLand__factory } from 'src/sdk/factories/ExquisiteLand__factory';
 
 interface SetTileProps {
   pixels: number[][];
@@ -18,9 +18,9 @@ function transpose(matrix: any) {
 }
 
 const useEditor = () => {
-  const activeColor = useStore((state) => state.activeColor);
-  const activeTool = useStore((state) => state.activeTool);
-  const prevTool = useStore((state) => state.prevTool);
+  const activeColor = useStore(state => state.activeColor);
+  const activeTool = useStore(state => state.activeTool);
+  const prevTool = useStore(state => state.prevTool);
 
   const { provider } = useWallet();
 
@@ -39,27 +39,27 @@ const useEditor = () => {
 
     switch (activeTool) {
       case Tool.BRUSH:
-        return "url(/static/px-icon-pencil.svg) 0 11, pointer";
+        return 'url(/static/px-icon-pencil.svg) 0 11, pointer';
       case Tool.BUCKET:
-        return "url(/static/px-icon-bucket.svg) 0 11, pointer";
+        return 'url(/static/px-icon-bucket.svg) 0 11, pointer';
       case Tool.EYEDROPPER:
-        return "url(/static/px-icon-eyedropper.svg) 4 11, pointer";
+        return 'url(/static/px-icon-eyedropper.svg) 4 11, pointer';
     }
   };
 
   const setTile = async ({ x, y, pixels }: SetTileProps) => {
-    if (!provider) return alert("Not signed in.");
+    if (!provider) return alert('Not signed in.');
 
     let transposed = transpose(pixels);
     let flattened = transposed.flat();
-    let outputPixels = "0x";
+    let outputPixels = '0x';
 
     // @ts-ignore
     let index = 0;
     for (let i = 0; i < flattened.length; i += 2) {
       let d = `${((flattened[i] << 4) | flattened[i + 1])
         .toString(16)
-        .padStart(2, "0")}`;
+        .padStart(2, '0')}`;
       outputPixels += d;
       index++;
     }
@@ -69,7 +69,7 @@ const useEditor = () => {
       provider.getSigner()
     );
 
-    console.log(useStore.getState().activeCanvas, x, y, pixels);
+    console.log(x, y, pixels);
 
     const tx = await tileContract.createTile(x, y, outputPixels);
 
@@ -88,7 +88,7 @@ const useEditor = () => {
     activeTool,
     setActiveTool,
     getActiveCursor,
-    prevTool,
+    prevTool
   };
 };
 
