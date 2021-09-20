@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import Button, { ButtonSuccess } from "@app/components/Button";
-import useEditor from "@app/hooks/use-editor";
-import { Tool } from "@app/features/State";
+import React, { useState } from 'react';
+import Button, { ButtonSuccess } from '@app/components/Button';
+import useEditor from '@app/hooks/use-editor';
+import { Tool } from '@app/features/State';
 
 interface EditorProps {
   x: number;
@@ -14,9 +14,13 @@ const columns = Array.from(Array(32).keys());
 const rows = Array.from(Array(32).keys());
 
 const MAX = 32;
+const EMPTY = Array(32)
+  .fill(0)
+  .map(() => Array(32).fill(13));
 
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
+  const [pixels, setPixels] = useState<number[][]>(EMPTY);
   const {
     palette,
     activeColor,
@@ -25,14 +29,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     activeTool,
     prevTool,
     setActiveTool,
-    getActiveCursor,
+    getActiveCursor
   } = useEditor();
-
-  var m = Array(32)
-    .fill(0)
-    .map(() => Array(32).fill(13));
-
-  const [pixels, setPixels] = useState<number[][]>(m);
 
   const paintNeighbors = (
     color: number,
@@ -71,28 +69,28 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     return d;
   };
 
-  function handleClear() {
+  const handleClear = () => {
     setPixels([]);
-  }
+  };
 
-  async function handleSave() {
+  const handleSave = async () => {
     setTile({ x, y, pixels });
     closeModal();
-  }
+  };
 
   const paintPixels = (rawX: number, rawY: number) => {
     const elem = document.elementFromPoint(rawX, rawY);
     if (!elem) return;
-    if (!elem.getAttribute("class")?.includes("box")) return;
+    if (!elem.getAttribute('class')?.includes('box')) return;
 
     const [x, y] = elem
-      .getAttribute("id")!
-      .split("_")
-      .map((n) => parseInt(n));
+      .getAttribute('id')!
+      .split('_')
+      .map(n => parseInt(n));
 
     if (activeTool == Tool.BRUSH) {
-      elem.setAttribute("style", `background-color: ${palette[activeColor]}`);
-      setPixels((pixels) => {
+      elem.setAttribute('style', `background-color: ${palette[activeColor]}`);
+      setPixels(pixels => {
         if (!pixels[x]) {
           pixels[x] = [];
         }
@@ -134,26 +132,26 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       <div
         className="canvas"
         draggable={false}
-        onPointerDown={(e) => {
+        onPointerDown={e => {
           setDrawing(true);
         }}
         onPointerUp={() => setDrawing(false)}
       >
-        {columns.map((y) => {
-          return rows.map((x) => {
+        {columns.map(y => {
+          return rows.map(x => {
             return (
               <div
                 id={`${x}_${y}`}
                 key={`${x}_${y}`}
                 className="box"
                 style={{ backgroundColor: palette[pixels?.[x]?.[y]] }}
-                onPointerEnter={(e) => onMouseEnter(e, x, y)}
-                onMouseDown={(e) => onMouseEnter(e, x, y)}
-                onMouseOver={(e) => onMouseEnter(e, x, y)}
-                onTouchMove={(e) => {
+                onPointerEnter={e => onMouseEnter(e, x, y)}
+                onMouseDown={e => onMouseEnter(e, x, y)}
+                onMouseOver={e => onMouseEnter(e, x, y)}
+                onTouchMove={e => {
                   touchEnter(e);
                 }}
-                onTouchStart={(e) => {
+                onTouchStart={e => {
                   touchEnter(e);
                 }}
               ></div>
@@ -165,25 +163,24 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       <div className="canvas-aside-left">
         {Object.keys(Tool).map((tool, i) => {
           return (
-            <Button key={i} onClick={(e) => setActiveTool(tool as Tool)}>
+            <Button key={i} onClick={e => setActiveTool(tool as Tool)}>
               {activeTool == tool ? `*${tool}*` : `${tool}`}
             </Button>
           );
         })}
         <Button>UNDO</Button>
         <div className="color-palette">
-          {palette.map((color) => {
+          {palette.map(color => {
             return (
               <div
                 key={`${color}`}
                 style={{
                   backgroundColor: color,
-                  height: "24px",
-                  width: "24px",
-                  border:
-                    color == palette[activeColor] ? "solid 1px black" : "",
+                  height: '24px',
+                  width: '24px',
+                  border: color == palette[activeColor] ? 'solid 1px black' : ''
                 }}
-                onClick={(e) => setActiveColor(color)}
+                onClick={e => setActiveColor(color)}
               ></div>
             );
           })}
@@ -192,14 +189,14 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
       <div className="canvas-aside-right">
         <div className="preview">
-          {columns.map((y) => {
-            return rows.map((x) => {
+          {columns.map(y => {
+            return rows.map(x => {
               return (
                 <div
                   key={`${x}_${y}_preview`}
                   className="box-preview"
                   style={{
-                    backgroundColor: palette[pixels?.[x]?.[y]],
+                    backgroundColor: palette[pixels?.[x]?.[y]]
                   }}
                 ></div>
               );
@@ -211,7 +208,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       <div className="canvas-footer">
         <Button onClick={handleClear}>reset</Button>
         <div className="canvas-footer-right">
-          <Button>cancel</Button>
+          <Button onClick={closeModal}>cancel</Button>
           <ButtonSuccess onClick={handleSave}>save</ButtonSuccess>
         </div>
       </div>
@@ -251,8 +248,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           grid-template-columns: 150px auto 150px;
           grid-template-rows: auto 64px;
           grid-template-areas:
-            "aside-left canvas aside-right"
-            "aside-left canvas-footer aside-right";
+            'aside-left canvas aside-right'
+            'aside-left canvas-footer aside-right';
         }
 
         .canvas-aside-left,

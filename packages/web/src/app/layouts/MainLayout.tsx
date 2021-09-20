@@ -4,19 +4,17 @@ import React, { ReactNode } from 'react';
 const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="main-layout">
-      <header>
-        <Header />
-      </header>
-      {children}
+      <Header />
+      <main>{children}</main>
       <style jsx>{`
         .main-layout {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          width: 100%;
         }
-        header {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 100;
+        main {
+          flex: 1 1 auto;
         }
       `}</style>
       <style jsx global>{`
@@ -30,6 +28,10 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
           font-family: 'VT323', monospace;
           margin: 0;
           padding: 0;
+          height: 100%;
+        }
+        #__next {
+          min-height: 100%;
         }
       `}</style>
     </div>

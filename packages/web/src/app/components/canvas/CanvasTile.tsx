@@ -3,16 +3,19 @@ import { useFetchTile } from '@app/features/Graph';
 import useTilesInWallet from '@app/features/useTilesInWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import { ENSName } from 'react-ens-name';
 
-const Tile = ({
+const CanvasTile = ({
   x,
   y,
-  handleTileClick,
+  openEditor,
+  openGenerateInvite,
   style
 }: {
   x: number;
   y: number;
-  handleTileClick: () => void;
+  openEditor: () => void;
+  openGenerateInvite: () => void;
   style?: React.CSSProperties;
 }) => {
   const { tile } = useFetchTile(x, y);
@@ -34,25 +37,54 @@ const Tile = ({
     }
   }, [JSON.stringify(openNeighbors)]);
 
+  const onClick = () => {
+    if (isOwned && tile.status == 'UNLOCKED') openEditor();
+    else if (isInvitable) openGenerateInvite();
+  };
   return (
-    <div className="tile" onClick={handleTileClick} style={style}>
+    <div className="tile" onClick={onClick} style={style}>
       {tile?.svg && (
         <div className="svg" dangerouslySetInnerHTML={{ __html: tile.svg }} />
       )}
       <div className="meta">
         <div className="coords">
-          {x}, {y}
+          X: {x}
+          <br />
+          Y: {y}
         </div>
-        {isOwned && <div className="owned">(You Own This)</div>}
-        {isInvitable && <div className="invitable">Invite Available!</div>}
+        {tile?.owner && (
+          <div className="owner">
+            {tile.owner.id.toLowerCase() ==
+            process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS ? (
+              'Unclaimed'
+            ) : (
+              <ENSName address={tile.owner.id} />
+            )}
+          </div>
+        )}
+        {isOwned && <div className="owned">[You Own This]</div>}
+        {isInvitable && (
+          <div className="invitable">[You Can Invite Someone]</div>
+        )}
       </div>
       <style jsx>{`
         .tile {
           position: relative;
-          border: 1px dashed #ddd;
+          border: ${tile?.status == 'LOCKED' ? 0 : 1}px dashed #f1f1f1;
+          background-color: ${isInvitable
+            ? '#ffd80033'
+            : tile?.status == 'UNLOCKED'
+            ? '#fafafa'
+            : 'transparent'};
+          background-size: 10% 10%;
+          background-image: ${tile?.status == 'UNLOCKED'
+            ? `radial-gradient(circle, #aaa 1px, rgba(0, 0, 0, 0) 1px)`
+            : 'none'};
         }
         .tile:hover {
           background-color: #f1f1f1;
+          border: ${tile?.status == 'LOCKED' ? 0 : 1}px dashed #ccc;
+          cursor: pointer;
         }
         .svg {
           width: 100%;
@@ -67,8 +99,9 @@ const Tile = ({
           padding: 5px;
           opacity: 0.5;
           position: absolute;
-          top: 0;
+          bottom: 0;
           left: 0;
+          font-size: 14px;
         }
       `}</style>
     </div>
@@ -76,6 +109,6 @@ const Tile = ({
 };
 
 export default React.memo(
-  Tile,
+  CanvasTile,
   (prev, next) => prev.x === next.x && prev.y === next.y
 );

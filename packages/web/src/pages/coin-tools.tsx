@@ -1,4 +1,4 @@
-import CoinDrop from '@app/components/invites/CoinDrop';
+import CoinDrop from '@app/components/modals/CoinDropModal';
 import CreateSeed from '@app/components/invites/CreateSeed';
 import InviteNeighbors from '@app/components/invites/InviteNeighbors';
 import { useWallet } from '@gimmixorg/use-wallet';

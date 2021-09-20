@@ -25,7 +25,7 @@ const InviteNeighbors = () => {
     setHash(tx.hash);
   };
   return (
-    <div className="inviteneighbors">
+    <div className="invite-neighbors">
       {openNeighbors.map(neighbor => (
         <div className="open-neighbor" key={neighbor.tokenId}>
           {neighbor.x}, {neighbor.y}{' '}
@@ -49,7 +49,7 @@ const InviteNeighbors = () => {
         </>
       )}
       <style jsx>{`
-        .inviteneighbors {
+        .invite-neighbors {
           background-color: lightseagreen;
           padding: 10px 20px;
         }

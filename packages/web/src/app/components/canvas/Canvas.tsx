@@ -1,52 +1,54 @@
 import React, { CSSProperties, useState } from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
-import Tile from './Tile';
-import Editor from './Editor';
+import CanvasTile from './CanvasTile';
+import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
+import InviteNeighborModal from '../modals/InviteNeighborModal';
 Modal.setAppElement('#__next');
 
 const Canvas = () => {
-  const [x, setX] = useState<number>();
-  const [y, setY] = useState<number>();
-  const [size, setSize] = useState(200);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tileSize, setTileSize] = useState(200);
+
+  const [selectedX, setSelectedX] = useState<number>();
+  const [selectedY, setSelectedY] = useState<number>();
+  const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
+  const [isInviteNeighborModalOpen, setIsInviteNeighborModalOpen] =
+    useState(false);
   useFetchCanvas();
 
-  function closeModal() {
-    setIsModalOpen(false);
-    setX(undefined);
-    setY(undefined);
-  }
+  const closeEditorModal = () => {
+    setIsEditorModalOpen(false);
+    setSelectedX(undefined);
+    setSelectedY(undefined);
+  };
+  const closeInviteNeighborModal = () => {
+    setIsInviteNeighborModalOpen(false);
+  };
 
   const { provider } = useWallet();
 
-  function handleTileClick(x: number, y: number) {
+  const openEditor = (x: number, y: number) => {
     if (!provider) return alert('Not signed in.');
-    console.log(`tile ${x}, ${y} clicked!`);
-    setX(x);
-    setY(y);
-    setIsModalOpen(true);
-  }
+    setSelectedX(x);
+    setSelectedY(y);
+    setIsEditorModalOpen(true);
+  };
 
-  const zoomIn = () => setSize(s => s * 1.25);
-  const zoomOut = () => setSize(s => Math.max(0, s / 1.25));
+  const openGenerateInvite = (x: number, y: number) => {
+    if (!provider) return alert('Not signed in.');
+    setSelectedX(x);
+    setSelectedY(y);
+    setIsInviteNeighborModalOpen(true);
+  };
+
+  const zoomIn = () => setTileSize(s => s * 1.25);
+  const zoomOut = () => setTileSize(s => Math.max(0, s / 1.25));
 
   return (
     <>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        style={modalStyles}
-        contentLabel="Tile Editor Modal"
-        closeTimeoutMS={200}
-      >
-        {x != undefined && y != undefined && (
-          <Editor x={x} y={y} closeModal={closeModal}></Editor>
-        )}
-      </Modal>
       <div className="surface">
         <AutoSizer>
           {({ height, width }: { width: number; height: number }) => (
@@ -55,8 +57,8 @@ const Canvas = () => {
               height={height}
               columnCount={32}
               rowCount={32}
-              columnWidth={size}
-              rowHeight={size}
+              columnWidth={tileSize}
+              rowHeight={tileSize}
             >
               {({
                 columnIndex,
@@ -67,10 +69,13 @@ const Canvas = () => {
                 rowIndex: number;
                 style: CSSProperties;
               }) => (
-                <Tile
+                <CanvasTile
                   x={columnIndex}
                   y={rowIndex}
-                  handleTileClick={() => handleTileClick(columnIndex, rowIndex)}
+                  openEditor={() => openEditor(columnIndex, rowIndex)}
+                  openGenerateInvite={() =>
+                    openGenerateInvite(columnIndex, rowIndex)
+                  }
                   style={style}
                 />
               )}
@@ -82,15 +87,32 @@ const Canvas = () => {
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
       </div>
+      <Modal
+        isOpen={isEditorModalOpen}
+        onRequestClose={closeEditorModal}
+        style={modalStyles}
+        contentLabel="Tile Editor Modal"
+      >
+        {selectedX != undefined && selectedY != undefined && (
+          <Editor
+            x={selectedX}
+            y={selectedY}
+            closeModal={closeEditorModal}
+          ></Editor>
+        )}
+      </Modal>
+      <Modal
+        isOpen={isInviteNeighborModalOpen}
+        onRequestClose={closeInviteNeighborModal}
+        style={modalStyles}
+        contentLabel="Invite Neighbor Modal"
+      >
+        <InviteNeighborModal />
+      </Modal>
       <style jsx>{`
         .surface {
-          width: 100vw;
-          height: 100vh;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          width: 100%;
+          height: 100%;
           overflow: auto;
         }
         .controls {
@@ -99,7 +121,6 @@ const Canvas = () => {
           right: 0;
           padding: 30px;
         }
-
         .controls button {
           display: block;
           padding: 8px 14px;
@@ -118,28 +139,13 @@ const Canvas = () => {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
       `}</style>
-      <style jsx global>{`
-        .ReactModal__Overlay {
-          opacity: 0;
-          transition: opacity 200ms ease-in-out;
-        }
-
-        .ReactModal__Overlay--after-open {
-          opacity: 1;
-          z-index: 1111;
-        }
-
-        .ReactModal__Overlay--before-close {
-          opacity: 0;
-        }
-      `}</style>
     </>
   );
 };
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.98)'
+    backgroundColor: 'rgba(255, 255, 255, 0.9)'
   },
   content: {
     top: '50%',
