@@ -62,18 +62,16 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   return (
     <div className="coindrop">
       {tokenId == undefined && error == undefined ? (
-        <div {...getRootProps()}>
+        <div className="message" {...getRootProps()}>
           <input {...getInputProps()} />
-          <div className="message">
-            Drop a coin here, or click to find and upload
-          </div>
+          Drop a coin here!
         </div>
       ) : claimed ? (
         <div className="claimed">Success!</div>
       ) : tokenId != undefined ? (
         <div className="valid-token">
           <div className="message">
-            Token is valid! ({getCoordinates(tokenId)[0]},{' '}
+            Your coin is valid! ({getCoordinates(tokenId)[0]},{' '}
             {getCoordinates(tokenId)[1]})
           </div>
           <Button onClick={claimCoin}>Claim</Button>
@@ -88,9 +86,10 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         .coindrop {
           border: 1px solid black;
           background-color: #f1f1f1;
-          padding: 20px;
+          overflow: hidden;
         }
         .message {
+          padding: 20px;
           cursor: pointer;
           font-size: 24px;
         }

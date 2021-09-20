@@ -55,8 +55,8 @@ const CanvasTile = ({
         {tile?.owner && (
           <div className="owner">
             {tile.owner.id.toLowerCase() ==
-            process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS ? (
-              'Unclaimed'
+            process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS?.toLowerCase() ? (
+              '[Unclaimed]'
             ) : (
               <ENSName address={tile.owner.id} />
             )}

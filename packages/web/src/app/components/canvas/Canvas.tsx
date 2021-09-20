@@ -107,7 +107,9 @@ const Canvas = () => {
         style={modalStyles}
         contentLabel="Invite Neighbor Modal"
       >
-        <InviteNeighborModal />
+        {selectedX != undefined && selectedY != undefined && (
+          <InviteNeighborModal x={selectedX} y={selectedY} />
+        )}
       </Modal>
       <style jsx>{`
         .surface {
