@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { useWallet } from '@gimmixorg/use-wallet';
-import { ENSName, AddressDisplayEnum } from 'react-ens-name';
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import { useWallet } from "@gimmixorg/use-wallet";
+import { ENSName, AddressDisplayEnum } from "react-ens-name";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 const ConnectWalletButton = () => {
   const { connect, account } = useWallet();
@@ -11,9 +11,9 @@ const ConnectWalletButton = () => {
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        infuraId: process.env.NEXT_PUBLIC_INFURA_API_KEY as string
-      }
-    }
+        infuraId: process.env.NEXT_PUBLIC_INFURA_API_KEY as string,
+      },
+    },
   };
 
   return (
@@ -29,7 +29,9 @@ const ConnectWalletButton = () => {
       ) : (
         <button
           className="connect-wallet-button"
-          onClick={() => connect({ providerOptions: providerOptions })}
+          onClick={() =>
+            connect({ cacheProvider: true, providerOptions: providerOptions })
+          }
         >
           connect wallet
         </button>
