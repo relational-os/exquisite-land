@@ -19,6 +19,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
     console.log(openNeighbors, x, y);
     const tokenId = openNeighbors.find(
       tile =>
+        (tile.x == x && tile.y == y) ||
         (tile.x == x - 1 && tile.y == y) ||
         (tile.x == x + 1 && tile.y == y) ||
         (tile.x == x && tile.y == y - 1) ||
