@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import Button, { ButtonSuccess } from '@app/components/Button';
-import useEditor from '@app/hooks/use-editor';
-import { Tool } from '@app/features/State';
+import React, { useState } from "react";
+import Button, { ButtonSuccess } from "@app/components/Button";
+import useEditor from "@app/hooks/use-editor";
+import { Tool } from "@app/features/State";
+import CanvasTile from "../canvas/CanvasTile";
 
 interface EditorProps {
   x: number;
   y: number;
   closeModal: () => void;
 }
+
+const emptyBoard = () => {
+  return Array(32)
+    .fill(0)
+    .map(() => Array(32).fill(13));
+};
 
 const SIZE = 18;
 const columns = Array.from(Array(32).keys());
@@ -29,7 +36,9 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     activeTool,
     prevTool,
     setActiveTool,
-    getActiveCursor
+    getActiveCursor,
+    activeBrushSize,
+    setActiveBrushSize,
   } = useEditor();
 
   const paintNeighbors = (
@@ -70,7 +79,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
   };
 
   const handleClear = () => {
-    setPixels([]);
+    console.log(EMPTY);
+    setPixels(emptyBoard());
   };
 
   const handleSave = async () => {
@@ -81,16 +91,16 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
   const paintPixels = (rawX: number, rawY: number) => {
     const elem = document.elementFromPoint(rawX, rawY);
     if (!elem) return;
-    if (!elem.getAttribute('class')?.includes('box')) return;
+    if (!elem.getAttribute("class")?.includes("box")) return;
 
     const [x, y] = elem
-      .getAttribute('id')!
-      .split('_')
-      .map(n => parseInt(n));
+      .getAttribute("id")!
+      .split("_")
+      .map((n) => parseInt(n));
 
     if (activeTool == Tool.BRUSH) {
-      elem.setAttribute('style', `background-color: ${palette[activeColor]}`);
-      setPixels(pixels => {
+      elem.setAttribute("style", `background-color: ${palette[activeColor]}`);
+      setPixels((pixels) => {
         if (!pixels[x]) {
           pixels[x] = [];
         }
@@ -132,26 +142,26 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       <div
         className="canvas"
         draggable={false}
-        onPointerDown={e => {
+        onPointerDown={(e) => {
           setDrawing(true);
         }}
         onPointerUp={() => setDrawing(false)}
       >
-        {columns.map(y => {
-          return rows.map(x => {
+        {columns.map((y) => {
+          return rows.map((x) => {
             return (
               <div
                 id={`${x}_${y}`}
                 key={`${x}_${y}`}
                 className="box"
                 style={{ backgroundColor: palette[pixels?.[x]?.[y]] }}
-                onPointerEnter={e => onMouseEnter(e, x, y)}
-                onMouseDown={e => onMouseEnter(e, x, y)}
-                onMouseOver={e => onMouseEnter(e, x, y)}
-                onTouchMove={e => {
+                onPointerEnter={(e) => onMouseEnter(e, x, y)}
+                onMouseDown={(e) => onMouseEnter(e, x, y)}
+                onMouseOver={(e) => onMouseEnter(e, x, y)}
+                onTouchMove={(e) => {
                   touchEnter(e);
                 }}
-                onTouchStart={e => {
+                onTouchStart={(e) => {
                   touchEnter(e);
                 }}
               ></div>
@@ -161,26 +171,58 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-left">
+        <div className="brush-palette">
+          <Button onClick={(e) => setActiveTool(Tool.BRUSH)}>
+            {activeTool == Tool.BRUSH ? `*${Tool.BRUSH}*` : `${Tool.BRUSH}`}
+          </Button>
+          <div
+            style={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+              fontSize: "28px",
+              paddingTop: "1rem",
+            }}
+          >
+            <div
+              style={{ color: "#555" }}
+              onClick={() => setActiveBrushSize(activeBrushSize - 1)}
+            >
+              -
+            </div>
+            <div style={{ paddingLeft: ".5rem", paddingRight: ".5rem" }}>
+              {activeBrushSize}
+            </div>
+            <div
+              style={{ color: "#555" }}
+              onClick={() => setActiveBrushSize(activeBrushSize + 1)}
+            >
+              +
+            </div>
+          </div>
+        </div>
         {Object.keys(Tool).map((tool, i) => {
-          return (
-            <Button key={i} onClick={e => setActiveTool(tool as Tool)}>
-              {activeTool == tool ? `*${tool}*` : `${tool}`}
-            </Button>
-          );
+          if (tool != "BRUSH")
+            return (
+              <Button key={i} onClick={(e) => setActiveTool(tool as Tool)}>
+                {activeTool == tool ? `*${tool}*` : `${tool}`}
+              </Button>
+            );
         })}
         <Button>UNDO</Button>
         <div className="color-palette">
-          {palette.map(color => {
+          {palette.map((color) => {
             return (
               <div
                 key={`${color}`}
                 style={{
                   backgroundColor: color,
-                  height: '24px',
-                  width: '24px',
-                  border: color == palette[activeColor] ? 'solid 1px black' : ''
+                  height: "24px",
+                  width: "24px",
+                  border:
+                    color == palette[activeColor] ? "solid 1px black" : "",
                 }}
-                onClick={e => setActiveColor(color)}
+                onClick={(e) => setActiveColor(color)}
               ></div>
             );
           })}
@@ -188,20 +230,82 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-right">
-        <div className="preview">
-          {columns.map(y => {
-            return rows.map(x => {
-              return (
-                <div
-                  key={`${x}_${y}_preview`}
-                  className="box-preview"
-                  style={{
-                    backgroundColor: palette[pixels?.[x]?.[y]]
-                  }}
-                ></div>
-              );
-            });
-          })}
+        <div style={{ display: "flex" }}>
+          <CanvasTile
+            x={x - 1}
+            y={y - 1}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+          <CanvasTile
+            x={x}
+            y={y - 1}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+          <CanvasTile
+            x={x + 1}
+            y={y - 1}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+        </div>
+        <div style={{ display: "flex" }}>
+          <CanvasTile
+            x={x - 1}
+            y={y}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+          <div className="preview">
+            {columns.map((y) => {
+              return rows.map((x) => {
+                return (
+                  <div
+                    key={`${x}_${y}_preview`}
+                    className="box-preview"
+                    style={{
+                      backgroundColor: palette[pixels?.[x]?.[y]],
+                    }}
+                  ></div>
+                );
+              });
+            })}
+          </div>
+          <CanvasTile
+            x={x + 1}
+            y={y}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+        </div>
+        <div style={{ display: "flex" }}>
+          <CanvasTile
+            x={x - 1}
+            y={y + 1}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+          <CanvasTile
+            x={x}
+            y={y + 1}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
+          <CanvasTile
+            x={x + 1}
+            y={y + 1}
+            openEditor={() => {}}
+            openGenerateInvite={() => {}}
+            style={{ width: "96px", height: "96px" }}
+          />
         </div>
       </div>
 
@@ -230,9 +334,12 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           border: 1px solid rgba(0, 0, 0, 0.15);
           border-width: 0 1px 1px 0;
         }
+        .box:hover {
+          background-color: #777;
+        }
         .box-preview {
-          width: 3.85px;
-          height: 3.85px;
+          width: 3px;
+          height: 3px;
         }
         .editor {
           top: 0;
@@ -245,31 +352,31 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
         .editor {
           display: grid;
-          grid-template-columns: 150px auto 150px;
+          grid-template-columns: 150px auto 300px;
           grid-template-rows: auto 64px;
           grid-template-areas:
-            'aside-left canvas aside-right'
-            'aside-left canvas-footer aside-right';
+            "aside-left canvas aside-right"
+            "aside-left canvas-footer aside-right";
         }
 
-        .canvas-aside-left,
-        .canvas-aside-right {
+        .canvas-aside-left {
           display: flex;
           padding: 0 14px;
           flex-direction: column;
           gap: 20px;
           align-items: center;
         }
+        .canvas-aside-right {
+          display: flex;
+          flex-direction: column;
+          padding: 0 14px;
+          grid-area: aside-right;
+          align-items: flex-start;
+          width: 60%;
+        }
 
         .canvas-aside-left {
           grid-area: aside-left;
-        }
-
-        .canvas-aside-right {
-          display: grid;
-          grid-area: aside-right;
-          align-items: flex-start;
-          width: 30%;
         }
 
         .canvas-footer {
@@ -291,10 +398,12 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         }
 
         .preview {
-          width: 128px;
-          height: 128px;
-          border: 2px solid #b2bfd0;
-          border-radius: 4px;
+          width: 96px;
+          height: 96px;
+           {
+            /* border: 2px solid #b2bfd0;
+          border-radius: 4px; */
+          }
           image-rendering: pixelated;
           display: grid;
           grid-template-columns: repeat(32, 1fr);
