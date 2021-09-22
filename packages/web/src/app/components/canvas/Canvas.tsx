@@ -7,6 +7,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
+import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
 Modal.setAppElement('#__next');
 
 const Canvas = () => {
@@ -18,6 +19,7 @@ const Canvas = () => {
   const [isInviteNeighborModalOpen, setIsInviteNeighborModalOpen] =
     useState(false);
   useFetchCanvas();
+  useOpenNeighborsForWallet();
 
   const closeEditorModal = () => {
     setIsEditorModalOpen(false);

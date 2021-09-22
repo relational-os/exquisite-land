@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useFetchTile } from '@app/features/Graph';
 import useTilesInWallet from '@app/features/useTilesInWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
-import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
 import { ENSName } from 'react-ens-name';
+import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 
 const CanvasTile = ({
   x,
@@ -29,13 +29,9 @@ const CanvasTile = ({
     }
   }, [JSON.stringify(tilesOwned)]);
 
-  const openNeighbors = useOpenNeighborsForWallet();
-  const [isInvitable, setInvitable] = useState(false);
-  useEffect(() => {
-    if (openNeighbors?.find(t => t.x == x && t.y == y)) {
-      setInvitable(true);
-    }
-  }, [JSON.stringify(openNeighbors)]);
+  const isInvitable = useOpenNeighborStore(
+    state => !!state.openNeighbors.find(t => t.x == x && t.y == y)
+  );
 
   const onClick = () => {
     if (isOwned && tile.status == 'UNLOCKED') openEditor();

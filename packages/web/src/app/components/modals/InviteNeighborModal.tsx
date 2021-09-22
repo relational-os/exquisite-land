@@ -1,12 +1,15 @@
 import getContract from '@app/features/getContract';
 import { generateTokenID } from '@app/features/TileUtils';
-import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
 import Button from '../Button';
 
 const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
-  const openNeighbors = useOpenNeighborsForWallet();
+  const ownTokenId = useOpenNeighborStore(
+    state =>
+      state.openNeighbors.find(tile => tile.x == x && tile.y == y)!.ownTokenId
+  );
   const { provider } = useWallet();
   const [isGeneratingCoin, setGeneratingCoin] = useState(false);
   const [isCoinGenerated, setCoinGenerated] = useState(false);
@@ -16,17 +19,8 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
     if (isGeneratingCoin) return;
     setGeneratingCoin(true);
     const contract = getContract(provider.getSigner());
-    console.log(openNeighbors, x, y);
-    const tokenId = openNeighbors.find(
-      tile =>
-        (tile.x == x && tile.y == y) ||
-        (tile.x == x - 1 && tile.y == y) ||
-        (tile.x == x + 1 && tile.y == y) ||
-        (tile.x == x && tile.y == y - 1) ||
-        (tile.x == x && tile.y == y + 1)
-    )!.ownTokenId;
     const tx = await contract.inviteNeighbor(
-      tokenId,
+      ownTokenId,
       x,
       y,
       process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string

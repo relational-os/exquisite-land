@@ -1,11 +1,11 @@
 import getContract from '@app/features/getContract';
 import { generateTokenID } from '@app/features/TileUtils';
-import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
 
 const InviteNeighbors = () => {
-  const openNeighbors = useOpenNeighborsForWallet();
+  const openNeighbors = useOpenNeighborStore(state => state.openNeighbors);
   const { provider } = useWallet();
 
   const [tokenId, setTokenId] = useState<number>();

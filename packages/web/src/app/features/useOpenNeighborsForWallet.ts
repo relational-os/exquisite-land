@@ -1,21 +1,28 @@
 import { useWallet } from '@gimmixorg/use-wallet';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { generateTokenID } from './TileUtils';
 import { getTile } from './useTile';
 import useTilesInWallet from './useTilesInWallet';
+import create from 'zustand';
+
+export const useOpenNeighborStore = create<{
+  openNeighbors: {
+    x: number;
+    y: number;
+    tokenId: number;
+    ownTokenId: number;
+  }[];
+}>(set => ({
+  openNeighbors: []
+}));
 
 const useOpenNeighborsForWallet = () => {
   const { account } = useWallet();
   const { tiles } = useTilesInWallet(account);
-  const [openNeighbors, setOpenNeighbors] = useState<
-    {
-      x: number;
-      y: number;
-      tokenId: number;
-      ownTokenId: number;
-    }[]
-  >([]);
+  const openNeighbors = useOpenNeighborStore(state => state.openNeighbors);
+
   useEffect(() => {
+    console.log('in useOpenNeighbor effect');
     (async () => {
       if (!tiles) return;
       const openNeighbors = [];
@@ -56,9 +63,10 @@ const useOpenNeighborsForWallet = () => {
             ownTokenId: parseInt(tile.id)
           });
       }
-      setOpenNeighbors(openNeighbors);
+      useOpenNeighborStore.setState({ openNeighbors });
     })();
   }, [JSON.stringify(tiles), account]);
+
   return openNeighbors;
 };
 
