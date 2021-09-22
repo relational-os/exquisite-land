@@ -58,7 +58,7 @@ const useOpenNeighborsForWallet = () => {
       }
       setOpenNeighbors(openNeighbors);
     })();
-  }, [JSON.stringify(tiles)]);
+  }, [JSON.stringify(tiles), account]);
   return openNeighbors;
 };
 
