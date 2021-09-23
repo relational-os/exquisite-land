@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useFetchTile } from '@app/features/Graph';
-import useTilesInWallet from '@app/features/useTilesInWallet';
-import { useWallet } from '@gimmixorg/use-wallet';
-import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
-import { ENSName } from 'react-ens-name';
+import React, { useEffect, useState } from "react";
+import { useFetchTile } from "@app/features/Graph";
+import useTilesInWallet from "@app/features/useTilesInWallet";
+import { useWallet } from "@gimmixorg/use-wallet";
+import useOpenNeighborsForWallet from "@app/features/useOpenNeighborsForWallet";
+import { ENSName } from "react-ens-name";
+import TileSVG from "./TileSVG";
 
 const CanvasTile = ({
   x,
   y,
   openEditor,
   openGenerateInvite,
-  style
+  style,
 }: {
   x: number;
   y: number;
@@ -24,7 +25,7 @@ const CanvasTile = ({
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
   useEffect(() => {
-    if (tilesOwned?.find(t => t.x == x && t.y == y)) {
+    if (tilesOwned?.find((t) => t.x == x && t.y == y)) {
       setOwned(true);
     }
   }, [JSON.stringify(tilesOwned)]);
@@ -32,20 +33,19 @@ const CanvasTile = ({
   const openNeighbors = useOpenNeighborsForWallet();
   const [isInvitable, setInvitable] = useState(false);
   useEffect(() => {
-    if (openNeighbors?.find(t => t.x == x && t.y == y)) {
+    if (openNeighbors?.find((t) => t.x == x && t.y == y)) {
       setInvitable(true);
     }
   }, [JSON.stringify(openNeighbors)]);
 
   const onClick = () => {
-    if (isOwned && tile.status == 'UNLOCKED') openEditor();
+    if (isOwned && tile.status == "UNLOCKED") openEditor();
     else if (isInvitable) openGenerateInvite();
   };
   return (
     <div className="tile" onClick={onClick} style={style}>
-      {tile?.svg && (
-        <div className="svg" dangerouslySetInnerHTML={{ __html: tile.svg }} />
-      )}
+      <TileSVG x={x} y={y}></TileSVG>
+
       <div className="meta">
         <div className="coords">
           X: {x}
@@ -56,7 +56,7 @@ const CanvasTile = ({
           <div className="owner">
             {tile.owner.id.toLowerCase() ==
             process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS?.toLowerCase() ? (
-              '[Unclaimed]'
+              "[Unclaimed]"
             ) : (
               <ENSName address={tile.owner.id} />
             )}
@@ -70,20 +70,20 @@ const CanvasTile = ({
       <style jsx>{`
         .tile {
           position: relative;
-          border: ${tile?.status == 'LOCKED' ? 0 : 1}px dashed #f1f1f1;
+          border: ${tile?.status == "LOCKED" ? 0 : 1}px dashed #f1f1f1;
           background-color: ${isInvitable
-            ? '#ffd80033'
-            : tile?.status == 'UNLOCKED'
-            ? '#fafafa'
-            : 'transparent'};
+            ? "#ffd80033"
+            : tile?.status == "UNLOCKED"
+            ? "#fafafa"
+            : "transparent"};
           background-size: 10% 10%;
-          background-image: ${tile?.status == 'UNLOCKED'
+          background-image: ${tile?.status == "UNLOCKED"
             ? `radial-gradient(circle, #aaa 1px, rgba(0, 0, 0, 0) 1px)`
-            : 'none'};
+            : "none"};
         }
         .tile:hover {
           background-color: #f1f1f1;
-          border: ${tile?.status == 'LOCKED' ? 0 : 1}px dashed #ccc;
+          border: ${tile?.status == "LOCKED" ? 0 : 1}px dashed #ccc;
           cursor: pointer;
         }
         .svg {
