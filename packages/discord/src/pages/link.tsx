@@ -59,8 +59,7 @@ const LinkWallet = ({
       </div>
       {isLinked ? (
         <>
-          <ENSName address={account} />
-          Linked!
+          <ENSName address={account} /> linked!
         </>
       ) : error ? (
         <div className="error">{error}</div>

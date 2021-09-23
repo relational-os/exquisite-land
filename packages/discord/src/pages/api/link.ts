@@ -1,5 +1,6 @@
 import { verifyMessage } from '@ethersproject/wallet';
 import prisma from '@server/helpers/prisma';
+import { refreshRoles } from '@server/services/Roles';
 import { NextApiHandler } from 'next';
 import { SIGNING_MESSAGE } from '../link';
 
@@ -14,10 +15,13 @@ const api: NextApiHandler = async (req, res) => {
   if (account.toLowerCase() != signingAccount.toLowerCase())
     return res.status(400).json({ error: 'Invalid signature' });
 
-  await prisma.user.update({
+  const user = await prisma.user.update({
     where: { id },
     data: { address: account.toLowerCase() }
   });
+
+  await refreshRoles(user);
+
   return res.json({ success: true });
 };
 

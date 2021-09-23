@@ -13,15 +13,12 @@ export const getTilesInWallet = async (address: string) => {
           y
           status
           svg
-          canvas {
-            id
-          }
         }
       }
     }
   `;
-  const player = await request(GRAPH_URL, query, {
+  const { player } = await request(GRAPH_URL, query, {
     address: address.toLowerCase()
   });
-  return player;
+  return player?.tiles || [];
 };
