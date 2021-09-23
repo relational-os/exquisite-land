@@ -68,7 +68,7 @@ client.on('interactionCreate', async interaction => {
     });
     await interaction.reply({
       ephemeral: true,
-      content: `Please visit exquisite-roles.up.railway.app/link?id=${user.id} and tap Connect Wallet.`
+      content: `Please visit https://exquisite-roles.up.railway.app/link?id=${user.id} and tap Connect Wallet.`
     });
   }
 });
