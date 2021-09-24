@@ -122,6 +122,11 @@ const CanvasTile = ({
 					text-align: center;
 				}
 
+				.tile:hover .meta {
+					${tile?.svg &&
+					"display: block; cursor: pointer; background: rgba(0,0,0,0.25); color:#fff; text-shadow: 2px 2px #000; opacity: 1;"};
+				}
+
 				.coords {
 				}
 
