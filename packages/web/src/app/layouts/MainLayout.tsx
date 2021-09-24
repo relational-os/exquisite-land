@@ -1,41 +1,41 @@
-import Header from '@app/components/Header';
-import React, { ReactNode } from 'react';
+import Header from "@app/components/Header";
+import React, { ReactNode } from "react";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="main-layout">
-      <Header />
-      <main>{children}</main>
-      <style jsx>{`
-        .main-layout {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          width: 100%;
-        }
-        main {
-          flex: 1 1 auto;
-        }
-      `}</style>
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        * {
-          box-sizing: border-box;
-        }
-        html,
-        body {
-          font-size: 16px;
-          font-family: 'VT323', monospace;
-          margin: 0;
-          padding: 0;
-          height: 100%;
-        }
-        #__next {
-          min-height: 100%;
-        }
-      `}</style>
-    </div>
-  );
+	return (
+		<div className="main-layout">
+			<Header />
+			<main>{children}</main>
+			<style jsx>{`
+				.main-layout {
+					display: flex;
+					flex-direction: column;
+					height: 100vh;
+					width: 100%;
+				}
+				main {
+					flex: 1 1 auto;
+				}
+			`}</style>
+			<style jsx global>{`
+				@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+				* {
+					box-sizing: border-box;
+				}
+				html,
+				body {
+					font-size: 16px;
+					font-family: "VT323", monospace;
+					margin: 0;
+					padding: 0;
+					height: 100%;
+				}
+				#__next {
+					min-height: 100%;
+				}
+			`}</style>
+		</div>
+	);
 };
 
 export default React.memo(MainLayout);
