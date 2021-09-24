@@ -1,24 +1,19 @@
 import getContract from '@app/features/getContract';
 import { generateTokenID } from '@app/features/TileUtils';
-import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
 
 const InviteNeighbors = () => {
-  const openNeighbors = useOpenNeighborsForWallet();
+  const openNeighbors = useOpenNeighborStore(state => state.openNeighbors);
   const { provider } = useWallet();
 
   const [tokenId, setTokenId] = useState<number>();
   const [hash, setHash] = useState<string>();
-  const inviteNeighbor = async (
-    tokenId: number,
-    canvasId: number,
-    x: number,
-    y: number
-  ) => {
+  const inviteNeighbor = async (tokenId: number, x: number, y: number) => {
     if (!provider) return;
     const contract = getContract(provider.getSigner());
-    setTokenId(generateTokenID(canvasId, x, y));
+    setTokenId(generateTokenID(x, y));
     const tx = await contract.inviteNeighbor(
       tokenId,
       x,
@@ -30,18 +25,13 @@ const InviteNeighbors = () => {
     setHash(tx.hash);
   };
   return (
-    <div className="inviteneighbors">
+    <div className="invite-neighbors">
       {openNeighbors.map(neighbor => (
         <div className="open-neighbor" key={neighbor.tokenId}>
-          {neighbor.canvasId}, {neighbor.x}, {neighbor.y}{' '}
+          {neighbor.x}, {neighbor.y}{' '}
           <button
             onClick={() =>
-              inviteNeighbor(
-                neighbor.ownTokenId,
-                neighbor.canvasId,
-                neighbor.x,
-                neighbor.y
-              )
+              inviteNeighbor(neighbor.ownTokenId, neighbor.x, neighbor.y)
             }
           >
             Invite
@@ -59,7 +49,7 @@ const InviteNeighbors = () => {
         </>
       )}
       <style jsx>{`
-        .inviteneighbors {
+        .invite-neighbors {
           background-color: lightseagreen;
           padding: 10px 20px;
         }

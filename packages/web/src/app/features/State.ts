@@ -1,7 +1,7 @@
 import create from "zustand";
 
 type UniverseState = {
-  activeCanvas: number;
+  activeBrushSize: number;
   activeColor: number;
   activeTool: Tool;
   prevTool: Tool;
@@ -38,8 +38,9 @@ export enum Tool {
   EYEDROPPER = "EYEDROPPER",
 }
 
+// TODO: this should be refactored as EditorState
 const useStore = create<UniverseState>((set) => ({
-  activeCanvas: 0,
+  activeBrushSize: 1,
   activeColor: 0,
   activeTool: Tool.BRUSH,
   prevTool: Tool.BRUSH,

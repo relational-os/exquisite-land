@@ -1,3 +1,4 @@
+import { generateTokenID } from '@app/features/TileUtils';
 import {
   checkTokenIdIsOwnedByLandGranter,
   generateCoin
@@ -12,17 +13,24 @@ const api: NextApiHandler = async (req, res) => {
   // if (!(await checkOwnerSignature(OWNER_SIGNATURE_MESSAGE, signature)))
   //   return res.status(403).json('Invalid signature.');
 
-  const { tokenId }: { tokenId?: string } = req.query;
-  if (!tokenId || isNaN(parseInt(tokenId)))
-    return res.status(400).json({ error: 'Missing tokenId.' });
+  let { tokenId, x, y }: { tokenId?: string; x?: string; y?: string } =
+    req.query;
+  // if (!tokenId || (!x && !y) || isNaN(parseInt(tokenId)))
+  //   return res.status(400).json({ error: 'Missing tokenId.' });
 
-  const isGrantable = await checkTokenIdIsOwnedByLandGranter(parseInt(tokenId));
+  if (tokenId == undefined && x != undefined && y != undefined)
+    tokenId = `${generateTokenID(parseInt(x), parseInt(y))}`;
+
+  const isGrantable = await checkTokenIdIsOwnedByLandGranter(
+    parseInt(tokenId!)
+  );
+
   if (!isGrantable)
     return res
       .status(400)
       .json({ error: 'Coin not generatable for this tile.' });
 
-  const coinImage = await generateCoin(parseInt(tokenId));
+  const coinImage = await generateCoin(parseInt(tokenId!));
   res.setHeader('Content-Type', 'image/png');
   return res.send(coinImage);
 };

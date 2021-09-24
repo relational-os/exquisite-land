@@ -18,6 +18,7 @@ function transpose(matrix: any) {
 }
 
 const useEditor = () => {
+  const activeBrushSize = useStore((state) => state.activeBrushSize);
   const activeColor = useStore((state) => state.activeColor);
   const activeTool = useStore((state) => state.activeTool);
   const prevTool = useStore((state) => state.prevTool);
@@ -32,6 +33,12 @@ const useEditor = () => {
 
   const setActiveColor = (hex: string) => {
     useStore.setState({ activeColor: palette.indexOf(hex) });
+  };
+
+  const setActiveBrushSize = (size: number) => {
+    if (size < 1) size = 1;
+    else if (size > 8) size = 8;
+    useStore.setState({ activeBrushSize: size });
   };
 
   const getActiveCursor = () => {
@@ -69,7 +76,7 @@ const useEditor = () => {
       provider.getSigner()
     );
 
-    console.log(useStore.getState().activeCanvas, x, y, pixels);
+    console.log(x, y, pixels);
 
     const tx = await tileContract.createTile(x, y, outputPixels);
 
@@ -82,13 +89,15 @@ const useEditor = () => {
 
   return {
     palette,
-    activeColor,
-    setActiveColor,
-    setTile,
-    activeTool,
-    setActiveTool,
-    getActiveCursor,
     prevTool,
+    activeTool,
+    activeColor,
+    activeBrushSize,
+    setActiveBrushSize,
+    setActiveColor,
+    setActiveTool,
+    setTile,
+    getActiveCursor,
   };
 };
 

@@ -1,8 +1,8 @@
-import { forwardRef, useState } from "react";
-import Icon, { IconName } from "@app/components/Icon";
+import { forwardRef, useState } from 'react';
+import Icon, { IconName } from '@app/components/editor/Icon';
 
 const Swatch = forwardRef(function Swatch(
-  props: React.ComponentPropsWithoutRef<"svg">,
+  props: React.ComponentPropsWithoutRef<'svg'>,
   ref: React.Ref<HTMLOrSVGElement>
 ) {
   // hold random id in state so it doesn't change on re-render

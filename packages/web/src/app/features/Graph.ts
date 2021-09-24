@@ -1,8 +1,8 @@
-import { request, gql } from "graphql-request";
-import useSWR, { SWRConfiguration } from "swr";
+import { request, gql } from 'graphql-request';
+import useSWR, { SWRConfiguration } from 'swr';
 
 export const GRAPH_URL =
-  "https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land";
+  'https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land';
 
 let query = gql`
   {
@@ -27,7 +27,7 @@ export const useFetchTile = (
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    ["canvas-fetch"],
+    ['canvas-fetch'],
     () => request(GRAPH_URL, query),
     { revalidateOnMount: true, ...swrOptions }
   );
@@ -44,10 +44,9 @@ export const useFetchCanvas = (
   swrOptions?: Partial<SWRConfiguration>
 ) => {
   const { data, error, mutate } = useSWR(
-    ["canvas-fetch"],
+    ['canvas-fetch'],
     () => request(GRAPH_URL, query),
     { revalidateOnMount: true, ...swrOptions }
   );
-  console.log("data", data);
   return { data, error, refresh: mutate };
 };
