@@ -26,7 +26,6 @@ export const useTilesInWallet = (
     address => request(GRAPH_URL, query, { address: address.toLowerCase() }),
     swrOptions
   );
-
   const tiles = data?.player?.tiles.map(tile => ({
     ...tile,
     x: Number(tile.x),
