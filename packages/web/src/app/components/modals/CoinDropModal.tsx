@@ -23,7 +23,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         headers: {
           'Content-Type': 'application/json'
         }
-      }).then(r => r.json());
+      }).then((r) => r.json());
       if (tokenId) setTokenId(tokenId);
 
       if (error) setError(error);
@@ -40,7 +40,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(r => r.json());
+    }).then((r) => r.json());
     if (tx && !error) {
       setClaimed(true);
       if (onClaim) setTimeout(onClaim, 1000);
@@ -62,37 +62,90 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   return (
     <div className="coindrop">
       {tokenId == undefined && error == undefined ? (
-        <div className="message" {...getRootProps()}>
-          <input {...getInputProps()} />
-          Drop a coin here!
-        </div>
+        <>
+          <div className="message" {...getRootProps()}>
+            <img className="empty" src="/graphics/coinbox-empty.png" />
+            <input {...getInputProps()} />
+            <div className="text">Drop your coin here!</div>
+          </div>
+          <div className="arrows">
+            <img className="arrow-l" src="/graphics/coinbox-arrow.png" />
+            <img className="arrow-r" src="/graphics/coinbox-arrow.png" />
+          </div>
+        </>
       ) : claimed ? (
         <div className="claimed">Success!</div>
       ) : tokenId != undefined ? (
         <div className="valid-token">
           <div className="message">
-            Your coin is valid! ({getCoordinates(tokenId)[0]},{' '}
-            {getCoordinates(tokenId)[1]})
+            <img src="/graphics/coinbox-empty.png" />
+            <div className="subtext">
+              Your coin is valid! ({getCoordinates(tokenId)[0]},{' '}
+              {getCoordinates(tokenId)[1]})
+            </div>
           </div>
-          <Button onClick={claimCoin}>Claim</Button>
+          <Button onClick={claimCoin}>Redeem</Button>
         </div>
       ) : (
         <div className="error">
-          <div className="message">Error! {error}</div>
+          <div className="message">
+            <img src="/graphics/coinbox-empty.png" />
+            <div className="subtext">Error! {error}</div>
+          </div>
           <Button onClick={reset}>Try Again</Button>
         </div>
       )}
       <style jsx>{`
         .coindrop {
-          border: 1px solid black;
-          background-color: #f1f1f1;
-          overflow: hidden;
+          width: 400px;
+          text-align: center;
         }
         .message {
-          padding: 20px;
           cursor: pointer;
-          font-size: 24px;
         }
+
+        .message img {
+          width: 300px;
+          margin-bottom: 1rem;
+          margin-left: 15px;
+        }
+
+        .arrows img.arrow-l {
+          position: absolute;
+          bottom: 3.7rem;
+          left: 18px;
+          max-width: 200px;
+          max-height: 110px;
+          width: auto;
+          height: auto;
+          animation: point-l 1s ease-in-out infinite;
+        }
+        .arrows img.arrow-r {
+          position: absolute;
+          bottom: 3.7rem;
+          right: 18px;
+          max-width: 200px;
+          max-height: 110px;
+          width: auto;
+          height: auto;
+          animation: point-r 1s ease-in-out infinite;
+        }
+
+        .message .text {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          text-align: center;
+          font-size: 24px;
+          color: #5d86b0;
+        }
+
+        .message .subtext {
+          font-size: 24px;
+          color: #5d86b0;
+        }
+
         .claimed,
         .valid-token,
         .error {
@@ -100,6 +153,30 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           flex-direction: column;
           justify-content: stretch;
           gap: 10px;
+        }
+
+        @keyframes point-l {
+          0% {
+            transform: translateX(0);
+          }
+          70% {
+            transform: translateX(-20px);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes point-r {
+          0% {
+            transform: translateX(0) scaleX(-1);
+          }
+          70% {
+            transform: translateX(20px) scaleX(-1);
+          }
+          100% {
+            transform: translateX(0) scaleX(-1);
+          }
         }
       `}</style>
     </div>

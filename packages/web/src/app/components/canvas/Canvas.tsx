@@ -11,7 +11,7 @@ import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
 Modal.setAppElement('#__next');
 
 const Canvas = () => {
-  const [tileSize, setTileSize] = useState(200);
+  const [tileSize, setTileSize] = useState(170);
 
   const [selectedX, setSelectedX] = useState<number>();
   const [selectedY, setSelectedY] = useState<number>();
@@ -46,8 +46,8 @@ const Canvas = () => {
     setIsInviteNeighborModalOpen(true);
   };
 
-  const zoomIn = () => setTileSize(s => s * 1.25);
-  const zoomOut = () => setTileSize(s => Math.max(0, s / 1.25));
+  const zoomIn = () => setTileSize((s) => s * 1.25);
+  const zoomOut = () => setTileSize((s) => Math.max(0, s / 1.25));
 
   return (
     <>
@@ -149,7 +149,7 @@ const Canvas = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)'
+    backgroundColor: 'rgba(51, 51, 51, 0.9)'
   },
   content: {
     top: '50%',
