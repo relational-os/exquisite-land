@@ -92,7 +92,7 @@ const Canvas = () => {
       <Modal
         isOpen={isEditorModalOpen}
         onRequestClose={closeEditorModal}
-        style={modalStyles}
+        style={editModalStyles}
         contentLabel="Tile Editor Modal"
       >
         {selectedX != undefined && selectedY != undefined && (
@@ -150,6 +150,23 @@ const Canvas = () => {
 const modalStyles = {
   overlay: {
     backgroundColor: 'rgba(51, 51, 51, 0.9)'
+  },
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    background: 'transparent',
+    border: 0,
+    padding: 0
+  }
+};
+
+const editModalStyles = {
+  overlay: {
+    backgroundColor: 'rgba(51, 51, 51, 0.95)'
   },
   content: {
     top: '50%',
