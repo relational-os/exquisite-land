@@ -138,106 +138,117 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
   return (
     <div className="editor">
-      <div
-        className="canvas"
-        draggable={false}
-        onPointerDown={(e) => {
-          setDrawing(true);
-        }}
-        onPointerUp={() => setDrawing(false)}
-      >
-        {columns.map((y) => {
-          return rows.map((x) => {
-            return (
-              <div
-                id={`${x}_${y}`}
-                key={`${x}_${y}`}
-                className="box"
-                style={{ backgroundColor: palette[pixels?.[x]?.[y]] }}
-                onPointerEnter={(e) => onMouseEnter(e, x, y)}
-                onMouseDown={(e) => onMouseEnter(e, x, y)}
-                onMouseOver={(e) => onMouseEnter(e, x, y)}
-                onTouchMove={(e) => {
-                  touchEnter(e);
-                }}
-                onTouchStart={(e) => {
-                  touchEnter(e);
-                }}
-              ></div>
-            );
-          });
-        })}
+      <div className="canvas-peek">
+        <div
+          className="canvas"
+          draggable={false}
+          onPointerDown={(e) => {
+            setDrawing(true);
+          }}
+          onPointerUp={() => setDrawing(false)}
+        >
+          {columns.map((y) => {
+            return rows.map((x) => {
+              return (
+                <div
+                  id={`${x}_${y}`}
+                  key={`${x}_${y}`}
+                  className="box"
+                  style={{ backgroundColor: palette[pixels?.[x]?.[y]] }}
+                  onPointerEnter={(e) => onMouseEnter(e, x, y)}
+                  onMouseDown={(e) => onMouseEnter(e, x, y)}
+                  onMouseOver={(e) => onMouseEnter(e, x, y)}
+                  onTouchMove={(e) => {
+                    touchEnter(e);
+                  }}
+                  onTouchStart={(e) => {
+                    touchEnter(e);
+                  }}
+                ></div>
+              );
+            });
+          })}
+        </div>
+
+        <div className="peek-north"></div>
+        <div className="peek-south"></div>
+        <div className="peek-west"></div>
+        <div className="peek-east"></div>
       </div>
 
       <div className="canvas-aside-left">
-        <div className="toolbar">
-          <button
-            onClick={(e) => setActiveTool(Tool.BRUSH)}
-            className={
-              activeTool == Tool.BRUSH ? `active brush` : `` + ' brush'
-            }
-          >
-            <Icon
-              name="brush"
-              style={{
-                width: '35px',
-                height: '35px'
-              }}
-            />
-          </button>
-
-          <button
-            onClick={(e) => setActiveTool(Tool.BUCKET)}
-            className={
-              activeTool == Tool.BUCKET ? `active bucket` : `` + ' bucket'
-            }
-          >
-            <Icon
-              name="bucket"
-              style={{
-                width: '40px',
-                height: '35px'
-              }}
-            />
-          </button>
-
-          <button
-            onClick={(e) => setActiveTool(Tool.EYEDROPPER)}
-            className={
-              activeTool == Tool.EYEDROPPER
-                ? `active eyedropper`
-                : `` + ' eyedropper'
-            }
-          >
-            <Icon
-              name="eyedropper"
-              style={{
-                width: '25px',
-                height: '36px'
-              }}
-            />
-          </button>
-
-          <button className="undo">
-            <Icon name="undo" />
-          </button>
-        </div>
-
-        <div className="color-palette">
-          {palette.map((color) => {
-            return (
-              <div
-                key={`${color}`}
+        <div className="tool-container">
+          <div className="toolbar">
+            <button
+              onClick={(e) => setActiveTool(Tool.BRUSH)}
+              className={
+                activeTool == Tool.BRUSH ? `active brush` : `` + ' brush'
+              }
+            >
+              <Icon
+                name="brush"
                 style={{
-                  backgroundColor: color,
-                  height: '24px',
-                  width: '24px',
-                  border: color == palette[activeColor] ? 'solid 2px black' : ''
+                  width: '30px',
+                  height: 'auto',
+                  fill: '#fff'
                 }}
-                onClick={(e) => setActiveColor(color)}
-              ></div>
-            );
-          })}
+              />
+            </button>
+            <button
+              onClick={(e) => setActiveTool(Tool.BUCKET)}
+              className={
+                activeTool == Tool.BUCKET ? `active bucket` : `` + ' bucket'
+              }
+            >
+              <Icon
+                name="bucket"
+                style={{
+                  width: '34px',
+                  height: 'auto'
+                }}
+              />
+            </button>
+            <button
+              onClick={(e) => setActiveTool(Tool.EYEDROPPER)}
+              className={
+                activeTool == Tool.EYEDROPPER
+                  ? `active eyedropper`
+                  : `` + ' eyedropper'
+              }
+            >
+              <Icon
+                name="eyedropper"
+                style={{
+                  width: '22px',
+                  height: 'auto'
+                }}
+              />
+            </button>
+            <button className="undo">
+              <Icon
+                name="undo"
+                style={{
+                  width: '32px',
+                  height: 'auto'
+                }}
+              />
+            </button>
+          </div>
+
+          <div className="color-palette">
+            {palette.map((color) => {
+              return (
+                <div
+                  key={`${color}`}
+                  className={color == palette[activeColor] ? 'active' : ''}
+                  style={{
+                    backgroundColor: color
+                  }}
+                  onClick={(e) => setActiveColor(color)}
+                ></div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -325,7 +336,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         <Button onClick={handleClear}>reset</Button>
         <div className="canvas-footer-right">
           <Button onClick={closeModal}>cancel</Button>
-          <ButtonSuccess onClick={handleSave}>save</ButtonSuccess>
+          <ButtonSuccess onClick={handleSave}>publish</ButtonSuccess>
         </div>
       </div>
 
@@ -338,8 +349,8 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           user-select: none;
           touch-action: none;
           cursor: ${getActiveCursor()};
-          border: 1px solid #000;
         }
+
         .box {
           width: ${SIZE}px;
           height: ${SIZE}px;
@@ -353,7 +364,14 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           width: 3px;
           height: 3px;
         }
+
         .editor {
+          display: grid;
+          grid-template-columns: auto auto auto;
+          grid-template-rows: auto;
+          grid-template-areas:
+            'aside-left canvas aside-right'
+            'aside-left canvas-footer aside-right';
           top: 0;
           left: 0;
           right: 0;
@@ -362,33 +380,19 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           margin: 2rem;
         }
 
-        .editor {
-          display: grid;
-          grid-template-columns: 150px auto 300px;
-          grid-template-rows: auto 64px;
-          grid-template-areas:
-            'aside-left canvas aside-right'
-            'aside-left canvas-footer aside-right';
-        }
-
         .canvas-aside-left {
           display: flex;
-          padding: 0 14px;
           flex-direction: column;
-          gap: 20px;
+          gap: 0;
           align-items: center;
+          grid-area: aside-left;
         }
         .canvas-aside-right {
           display: flex;
           flex-direction: column;
-          padding: 0 14px;
           grid-area: aside-right;
           align-items: flex-start;
           width: 60%;
-        }
-
-        .canvas-aside-left {
-          grid-area: aside-left;
         }
 
         .canvas-footer {
@@ -409,6 +413,31 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           gap: 8px;
         }
 
+        .canvas-peek {
+          display: grid;
+          grid-template-columns: 36px auto 36px;
+          grid-template-rows: 36px auto 36px;
+          gap: 0px 0px;
+          grid-template-areas:
+            'peek-north peek-north peek-north'
+            'peek-west canvas peek-east'
+            'peek-south peek-south peek-south';
+          background: #eee;
+          border-radius: 4px;
+        }
+        .peek-north {
+          grid-area: peek-north;
+        }
+        .peek-south {
+          grid-area: peek-south;
+        }
+        .peek-west {
+          grid-area: peek-west;
+        }
+        .peek-east {
+          grid-area: peek-east;
+        }
+
         .preview {
           width: 96px;
           height: 96px;
@@ -421,29 +450,19 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           grid-template-columns: repeat(32, 1fr);
         }
 
-        .color-palette {
-          display: grid;
-          grid-template-columns: 50% 50%;
-          grid-gap: 5px;
-          column-gap: 3px;
-          margin-left: 62px;
-          padding: 8px;
+        .tool-container {
+          padding: 0.7rem;
           background: #222;
-          border-radius: 6px;
         }
 
         .toolbar {
           display: flex;
           flex-direction: column;
-          margin-left: 62px;
-          padding: 6px;
-          background: #aaa;
-          border-radius: 6px;
+          margin-bottom: 2rem;
         }
 
         .toolbar button {
-          margin: 4px 0;
-          padding: 5px;
+          padding: 10px 12px;
           background: transparent;
           outline: none;
           border: none;
@@ -451,10 +470,46 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           cursor: pointer;
         }
         .toolbar button:hover {
-          background: #fff;
+          background: #111;
+          opacity: 0.9;
         }
         .toolbar button.active {
           opacity: 1;
+          background: #111;
+        }
+
+        .brush,
+        .bucket,
+        .eyedropper,
+        .undo {
+          fill: #fff;
+        }
+
+        .color-palette {
+          display: grid;
+          grid-template-columns: 50% 50%;
+          grid-gap: 1px;
+          column-gap: 1px;
+        }
+
+        .color-palette div {
+          position: relative;
+          width: 28px;
+          height: 28px;
+          cursor: pointer;
+        }
+
+        .color-palette .active::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
+          width: 8px;
+          height: 8px;
+          background: #000;
         }
       `}</style>
     </div>
