@@ -78,19 +78,20 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       ) : tokenId != undefined ? (
         <div className="valid-token">
           <div className="message">
-            <img src="/graphics/coinbox-valid.png" />
-            <div className="text">
-              Your coin is valid! ({getCoordinates(tokenId)[0]},{' '}
-              {getCoordinates(tokenId)[1]})
+            <div className="coords">
+              [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
             </div>
+            <img src="/graphics/coinbox-valid.png" />
+            <div className="text">Your coin is valid!</div>
           </div>
           <Button onClick={claimCoin}>Redeem</Button>
         </div>
       ) : (
         <div className="error">
           <div className="message">
+            <div className="coords">Error!</div>
             <img src="/graphics/coinbox-invalid.png" />
-            <div className="text">Error! {error}</div>
+            <div className="text"> {error}</div>
           </div>
           <Button onClick={reset}>Try Again</Button>
         </div>
@@ -99,6 +100,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         .coindrop {
           width: 400px;
           text-align: center;
+          overflow: hidden;
         }
         .message {
           cursor: pointer;
@@ -136,9 +138,10 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           color: #5d86b0;
         }
 
-        .message .subtext {
-          font-size: 24px;
-          color: #78a8d8;
+        .message .coords {
+          margin-bottom: 0.5rem;
+          font-size: 42px;
+          color: #5d86b0;
         }
 
         .claimed,
