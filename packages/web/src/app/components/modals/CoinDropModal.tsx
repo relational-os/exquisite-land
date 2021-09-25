@@ -78,8 +78,8 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       ) : tokenId != undefined ? (
         <div className="valid-token">
           <div className="message">
-            <img src="/graphics/coinbox-empty.png" />
-            <div className="subtext">
+            <img src="/graphics/coinbox-valid.png" />
+            <div className="text">
               Your coin is valid! ({getCoordinates(tokenId)[0]},{' '}
               {getCoordinates(tokenId)[1]})
             </div>
@@ -89,8 +89,8 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       ) : (
         <div className="error">
           <div className="message">
-            <img src="/graphics/coinbox-empty.png" />
-            <div className="subtext">Error! {error}</div>
+            <img src="/graphics/coinbox-invalid.png" />
+            <div className="text">Error! {error}</div>
           </div>
           <Button onClick={reset}>Try Again</Button>
         </div>
@@ -106,13 +106,13 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
 
         .message img {
           width: 300px;
-          margin-bottom: 1rem;
-          margin-left: 15px;
+          margin-bottom: 0.5rem;
+          margin-left: 5px;
         }
 
         .arrows img.arrow-l {
           position: absolute;
-          bottom: 3.7rem;
+          bottom: 4.6rem;
           left: 18px;
           max-width: 200px;
           max-height: 110px;
@@ -122,7 +122,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         }
         .arrows img.arrow-r {
           position: absolute;
-          bottom: 3.7rem;
+          bottom: 4.6rem;
           right: 18px;
           max-width: 200px;
           max-height: 110px;
@@ -132,18 +132,13 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         }
 
         .message .text {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          text-align: center;
           font-size: 24px;
           color: #5d86b0;
         }
 
         .message .subtext {
           font-size: 24px;
-          color: #5d86b0;
+          color: #78a8d8;
         }
 
         .claimed,
