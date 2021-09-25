@@ -1,13 +1,16 @@
-import useStore, { Tool } from "@app/features/State";
-import { useWallet } from "@gimmixorg/use-wallet";
-import PALETTES from "src/constants/Palettes";
-import { ExquisiteLand__factory } from "src/sdk/factories/ExquisiteLand__factory";
+import { createTile, getSignatureForTypedData } from '@app/features/Forwarder';
+import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import useStore, { Tool } from '@app/features/State';
+import { useWallet } from '@gimmixorg/use-wallet';
+import PALETTES from 'src/constants/Palettes';
 
 interface SetTileProps {
   pixels: number[][];
   x: number;
   y: number;
 }
+
+const CHAIN_ID = 80001;
 
 function transpose(matrix: any) {
   return matrix.reduce(
@@ -18,12 +21,12 @@ function transpose(matrix: any) {
 }
 
 const useEditor = () => {
-  const activeBrushSize = useStore((state) => state.activeBrushSize);
-  const activeColor = useStore((state) => state.activeColor);
-  const activeTool = useStore((state) => state.activeTool);
-  const prevTool = useStore((state) => state.prevTool);
+  const activeBrushSize = useStore(state => state.activeBrushSize);
+  const activeColor = useStore(state => state.activeColor);
+  const activeTool = useStore(state => state.activeTool);
+  const prevTool = useStore(state => state.prevTool);
 
-  const { provider } = useWallet();
+  const { account, provider } = useWallet();
 
   const palette = PALETTES[0];
 
@@ -46,45 +49,63 @@ const useEditor = () => {
 
     switch (activeTool) {
       case Tool.BRUSH:
-        return "url(/static/px-icon-pencil.svg) 0 11, pointer";
+        return 'url(/static/px-icon-pencil.svg) 0 11, pointer';
       case Tool.BUCKET:
-        return "url(/static/px-icon-bucket.svg) 0 11, pointer";
+        return 'url(/static/px-icon-bucket.svg) 0 11, pointer';
       case Tool.EYEDROPPER:
-        return "url(/static/px-icon-eyedropper.svg) 4 11, pointer";
+        return 'url(/static/px-icon-eyedropper.svg) 4 11, pointer';
     }
   };
 
   const setTile = async ({ x, y, pixels }: SetTileProps) => {
-    if (!provider) return alert("Not signed in.");
+    if (!provider || !account) return alert('Not signed in.');
 
     let transposed = transpose(pixels);
     let flattened = transposed.flat();
-    let outputPixels = "0x";
+    let outputPixels = '0x';
 
     // @ts-ignore
     let index = 0;
     for (let i = 0; i < flattened.length; i += 2) {
       let d = `${((flattened[i] << 4) | flattened[i + 1])
         .toString(16)
-        .padStart(2, "0")}`;
+        .padStart(2, '0')}`;
       outputPixels += d;
       index++;
     }
 
-    const tileContract = ExquisiteLand__factory.connect(
-      process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
-      provider.getSigner()
-    );
+    // const tileContract = ExquisiteLand__factory.connect(
+    //   process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
+    //   provider.getSigner()
+    // );
 
     console.log(x, y, pixels);
 
-    const tx = await tileContract.createTile(x, y, outputPixels);
+    const dataToSign = await createTile(
+      x,
+      y,
+      outputPixels,
+      account,
+      CHAIN_ID,
+      getJsonRpcProvider()
+    );
+    const signature = await getSignatureForTypedData(provider, dataToSign);
 
-    const receipt = await tx.wait(2);
+    const response = await fetch('/api/forwarder/forward', {
+      method: 'POST',
+      body: JSON.stringify({ data: dataToSign, signature }),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(res => res.json());
 
-    console.log(receipt);
+    console.log({ response });
 
-    console.log(`tile(${x}, ${y}) saved!`);
+    // const tx = await tileContract.createTile(x, y, outputPixels);
+
+    // const receipt = await tx.wait(2);
+
+    // console.log(receipt);
+
+    // console.log(`tile(${x}, ${y}) saved!`);
   };
 
   return {
@@ -97,7 +118,7 @@ const useEditor = () => {
     setActiveColor,
     setActiveTool,
     setTile,
-    getActiveCursor,
+    getActiveCursor
   };
 };
 

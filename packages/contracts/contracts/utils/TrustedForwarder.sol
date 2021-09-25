@@ -27,7 +27,7 @@ contract TrustedForwarder is EIP712 {
 
     mapping(address => uint256) private _nonces;
 
-    constructor() EIP712("Internet Camera", "0.0.1") {}
+    constructor() EIP712("Exquisite Land", "0.0.1") {}
 
     function getNonce(address from) public view returns (uint256) {
         return _nonces[from];

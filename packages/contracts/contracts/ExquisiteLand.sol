@@ -3,10 +3,10 @@ pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "./utils/TrustedForwarderRecipient.sol";
 import "./interfaces/IRender.sol";
 
-contract ExquisiteLand is ERC721, Ownable {
+contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
     // * External Dependencies *//
     IRender private _renderer;
 
@@ -73,7 +73,10 @@ contract ExquisiteLand is ERC721, Ownable {
     }
 
     // * Constructor * //
-    constructor() ERC721("Exquisite Land", "XQST") {
+    constructor(address trustedForwarderAddress_)
+        ERC721("Exquisite Land", "XQST")
+        TrustedForwarderRecipient(trustedForwarderAddress_)
+    {
         _renderer = IRender(0x1A1FeD25762a9DEA62F31074A2680DD5BB714c94);
     }
 
@@ -103,7 +106,7 @@ contract ExquisiteLand is ERC721, Ownable {
         address recipient
     ) public {
         require(
-            ownerOf(tokenId) == msg.sender,
+            ownerOf(tokenId) == _msgSender(),
             "You are not the owner of that tile."
         );
         (uint32 senderX, uint32 senderY) = getCoordinates(tokenId);
@@ -124,13 +127,13 @@ contract ExquisiteLand is ERC721, Ownable {
     ) public isValidTile(x, y) {
         require(pixels.length == 512, "Data is not 512 bytes");
         uint32 tokenId = generateTokenID(x, y);
-        require(ownerOf(tokenId) == msg.sender, "u r not owner rawr");
+        require(ownerOf(tokenId) == _msgSender(), "u r not owner rawr");
         require(
             allowEditing || targetTileIsBlank(tokenId),
             "Someone already drew that tile."
         );
         _svgData[tokenId] = pixels;
-        emit TileCreated(tokenId, msg.sender);
+        emit TileCreated(tokenId, _msgSender());
     }
 
     // * Helper methods * //
@@ -231,5 +234,23 @@ contract ExquisiteLand is ERC721, Ownable {
 
     function setRenderer(address addr) public onlyOwner {
         _renderer = IRender(addr);
+    }
+
+    function _msgSender()
+        internal
+        view
+        override(Context, TrustedForwarderRecipient)
+        returns (address)
+    {
+        return TrustedForwarderRecipient._msgSender();
+    }
+
+    function _msgData()
+        internal
+        view
+        override(Context, TrustedForwarderRecipient)
+        returns (bytes memory ret)
+    {
+        return TrustedForwarderRecipient._msgData();
     }
 }

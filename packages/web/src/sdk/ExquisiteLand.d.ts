@@ -32,12 +32,14 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     "inviteIsValid(uint32,uint32,uint32,uint32)": FunctionFragment;
     "inviteNeighbor(uint32,uint32,uint32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "isTrustedForwarder(address)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setForwarder(address)": FunctionFragment;
     "setLandGranter(address)": FunctionFragment;
     "setRenderer(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -47,6 +49,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "versionRecipient()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -90,6 +93,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "isTrustedForwarder",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -107,6 +114,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setForwarder",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setLandGranter",
@@ -138,6 +149,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "versionRecipient",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -168,6 +183,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "isTrustedForwarder",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
@@ -181,6 +200,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setForwarder",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -211,6 +234,10 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "versionRecipient",
     data: BytesLike
   ): Result;
 
@@ -341,6 +368,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -372,6 +404,11 @@ export class ExquisiteLand extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setForwarder(
+      trustedForwarder_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -417,6 +454,8 @@ export class ExquisiteLand extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    versionRecipient(overrides?: CallOverrides): Promise<[string]>;
   };
 
   approve(
@@ -480,6 +519,11 @@ export class ExquisiteLand extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isTrustedForwarder(
+    forwarder: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
@@ -508,6 +552,11 @@ export class ExquisiteLand extends BaseContract {
   setApprovalForAll(
     operator: string,
     approved: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setForwarder(
+    trustedForwarder_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -550,6 +599,8 @@ export class ExquisiteLand extends BaseContract {
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  versionRecipient(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     approve(
@@ -616,6 +667,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     name(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -642,6 +698,11 @@ export class ExquisiteLand extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setForwarder(
+      trustedForwarder_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -676,6 +737,8 @@ export class ExquisiteLand extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    versionRecipient(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -801,6 +864,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -832,6 +900,11 @@ export class ExquisiteLand extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setForwarder(
+      trustedForwarder_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -877,6 +950,8 @@ export class ExquisiteLand extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    versionRecipient(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -947,6 +1022,11 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -978,6 +1058,11 @@ export class ExquisiteLand extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setForwarder(
+      trustedForwarder_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1023,5 +1108,7 @@ export class ExquisiteLand extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    versionRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
