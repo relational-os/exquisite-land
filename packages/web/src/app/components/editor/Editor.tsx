@@ -253,82 +253,85 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-right">
-        <div style={{ display: 'flex' }}>
-          <CanvasTile
-            x={x - 1}
-            y={y - 1}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-          <CanvasTile
-            x={x}
-            y={y - 1}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-          <CanvasTile
-            x={x + 1}
-            y={y - 1}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-        </div>
-        <div style={{ display: 'flex' }}>
-          <CanvasTile
-            x={x - 1}
-            y={y}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-          <div className="preview">
-            {columns.map((y) => {
-              return rows.map((x) => {
-                return (
-                  <div
-                    key={`${x}_${y}_preview`}
-                    className="box-preview"
-                    style={{
-                      backgroundColor: palette[pixels?.[x]?.[y]]
-                    }}
-                  ></div>
-                );
-              });
-            })}
+        <div className="preview-minimap">
+          <div>
+            <CanvasTile
+              x={x - 1}
+              y={y - 1}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+            <CanvasTile
+              x={x}
+              y={y - 1}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+            <CanvasTile
+              x={x + 1}
+              y={y - 1}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
           </div>
-          <CanvasTile
-            x={x + 1}
-            y={y}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-        </div>
-        <div style={{ display: 'flex' }}>
-          <CanvasTile
-            x={x - 1}
-            y={y + 1}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-          <CanvasTile
-            x={x}
-            y={y + 1}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
-          <CanvasTile
-            x={x + 1}
-            y={y + 1}
-            openEditor={() => {}}
-            openGenerateInvite={() => {}}
-            style={{ width: '96px', height: '96px' }}
-          />
+
+          <div>
+            <CanvasTile
+              x={x - 1}
+              y={y}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+            <div className="preview">
+              {columns.map((y) => {
+                return rows.map((x) => {
+                  return (
+                    <div
+                      key={`${x}_${y}_preview`}
+                      className="box-preview"
+                      style={{
+                        backgroundColor: palette[pixels?.[x]?.[y]]
+                      }}
+                    ></div>
+                  );
+                });
+              })}
+            </div>
+            <CanvasTile
+              x={x + 1}
+              y={y}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+          </div>
+          <div>
+            <CanvasTile
+              x={x - 1}
+              y={y + 1}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+            <CanvasTile
+              x={x}
+              y={y + 1}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+            <CanvasTile
+              x={x + 1}
+              y={y + 1}
+              openEditor={() => {}}
+              openGenerateInvite={() => {}}
+              style={{ width: '96px', height: '96px' }}
+            />
+          </div>
         </div>
       </div>
 
@@ -386,6 +389,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           gap: 0;
           align-items: center;
           grid-area: aside-left;
+          margin-left: 3rem;
         }
         .canvas-aside-right {
           display: flex;
@@ -438,21 +442,27 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           grid-area: peek-east;
         }
 
+        .preview-minimap {
+          margin-left: 1rem;
+          border: 4px solid #222;
+        }
+        .preview-minimap > div {
+          display: flex;
+        }
         .preview {
           width: 96px;
           height: 96px;
-           {
-            /* border: 2px solid #b2bfd0;
-          border-radius: 4px; */
-          }
           image-rendering: pixelated;
           display: grid;
           grid-template-columns: repeat(32, 1fr);
+          background: #fff;
         }
 
         .tool-container {
+          margin-right: 1rem;
           padding: 0.7rem;
           background: #222;
+          border-radius: ;
         }
 
         .toolbar {
