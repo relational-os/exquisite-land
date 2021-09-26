@@ -489,7 +489,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           display: grid;
           grid-template-columns: 50% 50%;
           grid-gap: 1px;
-          column-gap: 1px;
+          column-gap: 0px;
         }
 
         .color-palette div {
