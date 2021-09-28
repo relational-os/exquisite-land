@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button, { ButtonSuccess } from "@app/components/Button";
 import useEditor from "@app/hooks/use-editor";
 import { Tool } from "@app/features/State";
+import Icon from "./Icon";
 import EditorPreview from "./EditorPreview";
 import TileSVG from "../canvas/TileSVG";
 
@@ -237,13 +238,15 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       </div>
 
       <div className="canvas-aside-right">
-        <EditorPreview
-          pixels={pixels}
-          y={y}
-          x={x}
-          columns={columns}
-          rows={rows}
-        ></EditorPreview>
+        <div className="preview-minimap">
+          <EditorPreview
+            pixels={pixels}
+            y={y}
+            x={x}
+            columns={columns}
+            rows={rows}
+          ></EditorPreview>
+        </div>
       </div>
 
       <div className="canvas-footer">
@@ -333,7 +336,87 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           justify-content: stretch;
           width: 200px;
           gap: 8px;
-          grid-area: canvas-footer;
+        }
+
+        .canvas-peek {
+          display: grid;
+          grid-template-columns: 36px auto 36px;
+          grid-template-rows: 36px auto 36px;
+          gap: 0px 0px;
+          grid-template-areas:
+            "peek-north peek-north peek-north"
+            "peek-west canvas peek-east"
+            "peek-south peek-south peek-south";
+          background: #eee;
+          border-radius: 4px;
+        }
+        .peek-north {
+          grid-area: peek-north;
+          display: flex;
+        }
+        .peek-south {
+          grid-area: peek-south;
+          display: flex;
+          margin-top: -4px;
+        }
+        .peek-west {
+          grid-area: peek-west;
+        }
+        .peek-east {
+          grid-area: peek-east;
+        }
+
+        .preview-minimap {
+          margin-left: 1rem;
+          border: 4px solid #222;
+        }
+        .preview-minimap > div {
+          display: flex;
+        }
+        .preview {
+          width: 96px;
+          height: 96px;
+          image-rendering: pixelated;
+          display: grid;
+          grid-template-columns: repeat(32, 1fr);
+          background: #fff;
+        }
+
+        .tool-container {
+          margin-right: 1rem;
+          padding: 0.7rem;
+          background: #222;
+          border-radius: ;
+        }
+
+        .toolbar {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 2rem;
+        }
+
+        .toolbar button {
+          padding: 10px 12px;
+          background: transparent;
+          outline: none;
+          border: none;
+          opacity: 0.5;
+          cursor: pointer;
+        }
+        .toolbar button:hover {
+          background: #111;
+          opacity: 0.9;
+        }
+        .toolbar button.active {
+          opacity: 1;
+          background: #111;
+        }
+
+        .brush,
+        .bucket,
+        .eyedropper,
+        .undo {
+          fill: #fff;
         }
 
         .color-palette {

@@ -1,6 +1,6 @@
 import useEditor from "@app/hooks/use-editor";
 import React from "react";
-import TileSVG from "../canvas/TileSVG";
+import CanvasTile from "../canvas/CanvasTile";
 
 interface EditorPreviewProps {
   pixels: number[][];
@@ -22,12 +22,12 @@ const EditorPreview = ({ pixels, x, y, columns, rows }: EditorPreviewProps) => {
   return (
     <div className="editorpreview">
       <div style={{ display: "flex" }}>
-        <TileSVG x={x - 1} y={y - 1} style={tileStyle} />
-        <TileSVG x={x} y={y - 1} style={tileStyle} />
-        <TileSVG x={x + 1} y={y - 1} style={tileStyle} />
+        <CanvasTile x={x - 1} y={y - 1} style={tileStyle} />
+        <CanvasTile x={x} y={y - 1} style={tileStyle} />
+        <CanvasTile x={x + 1} y={y - 1} style={tileStyle} />
       </div>
       <div style={{ display: "flex" }}>
-        <TileSVG x={x - 1} y={y} style={tileStyle} />
+        <CanvasTile x={x - 1} y={y} style={tileStyle} />
         <div className="preview">
           {columns.map((y) => {
             return rows.map((x) => {
@@ -43,12 +43,12 @@ const EditorPreview = ({ pixels, x, y, columns, rows }: EditorPreviewProps) => {
             });
           })}
         </div>
-        <TileSVG x={x + 1} y={y} style={tileStyle} />
+        <CanvasTile x={x + 1} y={y} style={tileStyle} />
       </div>
       <div style={{ display: "flex" }}>
-        <TileSVG x={x - 1} y={y + 1} style={tileStyle} />
-        <TileSVG x={x} y={y + 1} style={tileStyle} />
-        <TileSVG x={x + 1} y={y + 1} style={tileStyle} />
+        <CanvasTile x={x - 1} y={y + 1} style={tileStyle} />
+        <CanvasTile x={x} y={y + 1} style={tileStyle} />
+        <CanvasTile x={x + 1} y={y + 1} style={tileStyle} />
       </div>
       <style jsx>{`
         .editorpreview {

@@ -7,21 +7,38 @@ interface TileSVGProps {
   style?: React.CSSProperties;
   // TODO: this should change to K,V to replace SVG props easier
   viewbox?: string;
+  svgHeight?: string;
+  svgWidth?: string;
 }
 
-const TileSVG = ({ x, y, style, viewbox }: TileSVGProps) => {
+const TileSVG = ({
+  x,
+  y,
+  style,
+  viewbox,
+  svgHeight,
+  svgWidth,
+}: TileSVGProps) => {
   const { tile } = useFetchTile(x, y);
 
   const getTileSVG = () => {
     if (tile.svg) {
-      if (viewbox) {
+      if (viewbox || svgHeight || svgWidth) {
         var parsedSVG = new DOMParser().parseFromString(
           tile.svg,
           "image/svg+xml"
         ) as XMLDocument;
 
-        parsedSVG.querySelector("svg")?.setAttribute("viewBox", viewbox);
-        // parsedSVG.querySelector("svg")?.setAttribute("width", "100%");
+        if (viewbox) {
+          parsedSVG.querySelector("svg")?.setAttribute("viewBox", viewbox);
+        }
+
+        if (svgWidth) {
+          parsedSVG.querySelector("svg")?.setAttribute("width", svgWidth);
+        }
+        if (svgHeight) {
+          parsedSVG.querySelector("svg")?.setAttribute("height", svgHeight);
+        }
         // parsedSVG
         //   .querySelector("svg")
         //   ?.setAttribute("preserveAspectRatio", "none");

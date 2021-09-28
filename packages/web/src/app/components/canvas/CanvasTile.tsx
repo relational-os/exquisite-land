@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from "react";
 import { useFetchTile } from "@app/features/Graph";
 import useTilesInWallet from "@app/features/useTilesInWallet";
@@ -5,6 +6,15 @@ import { useWallet } from "@gimmixorg/use-wallet";
 import useOpenNeighborsForWallet from "@app/features/useOpenNeighborsForWallet";
 import { ENSName } from "react-ens-name";
 import TileSVG from "./TileSVG";
+=======
+import React, { useEffect, useState } from 'react';
+import { useFetchTile } from '@app/features/Graph';
+import useTilesInWallet from '@app/features/useTilesInWallet';
+import { useWallet } from '@gimmixorg/use-wallet';
+import { ENSName } from 'react-ens-name';
+import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
+import TileSVG from './TileSVG';
+>>>>>>> Stashed changes
 
 const CanvasTile = ({
   x,
@@ -15,8 +25,8 @@ const CanvasTile = ({
 }: {
   x: number;
   y: number;
-  openEditor: () => void;
-  openGenerateInvite: () => void;
+  openEditor?: () => void;
+  openGenerateInvite?: () => void;
   style?: React.CSSProperties;
 }) => {
   const { tile } = useFetchTile(x, y);
@@ -39,8 +49,13 @@ const CanvasTile = ({
   }, [JSON.stringify(openNeighbors)]);
 
   const onClick = () => {
+<<<<<<< Updated upstream
     if (isOwned && tile.status == "UNLOCKED") openEditor();
     else if (isInvitable) openGenerateInvite();
+=======
+    if (isOwned && tile.status == 'UNLOCKED' && openEditor) openEditor();
+    else if (isInvitable && openGenerateInvite) openGenerateInvite();
+>>>>>>> Stashed changes
   };
   return (
     <div className="tile" onClick={onClick} style={style}>
