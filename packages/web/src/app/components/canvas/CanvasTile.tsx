@@ -14,8 +14,8 @@ const CanvasTile = ({
 }: {
   x: number;
   y: number;
-  openEditor: () => void;
-  openGenerateInvite: () => void;
+  openEditor?: () => void;
+  openGenerateInvite?: () => void;
   style?: React.CSSProperties;
 }) => {
   const { tile } = useFetchTile(x, y);
@@ -34,8 +34,8 @@ const CanvasTile = ({
   );
 
   const onClick = () => {
-    if (isOwned && tile.status == 'UNLOCKED') openEditor();
-    else if (isInvitable) openGenerateInvite();
+    if (isOwned && tile.status == 'UNLOCKED' && openEditor) openEditor();
+    else if (isInvitable && openGenerateInvite) openGenerateInvite();
   };
   return (
     <div className="tile" onClick={onClick} style={style}>

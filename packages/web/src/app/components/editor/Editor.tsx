@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import Button, { ButtonSuccess } from '@app/components/Button';
 import useEditor from '@app/hooks/use-editor';
 import { Tool } from '@app/features/State';
-import CanvasTile from '../canvas/CanvasTile';
 import Icon from './Icon';
+import EditorPreview from './EditorPreview';
+import TileSVG from '../canvas/TileSVG';
 
 interface EditorProps {
   x: number;
@@ -17,7 +18,7 @@ const emptyBoard = () => {
     .map(() => Array(32).fill(13));
 };
 
-const SIZE = 18;
+const PIXEL_SIZE = 18;
 const columns = Array.from(Array(32).keys());
 const rows = Array.from(Array(32).keys());
 
@@ -170,10 +171,86 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           })}
         </div>
 
-        <div className="peek-north"></div>
-        <div className="peek-south"></div>
-        <div className="peek-west"></div>
-        <div className="peek-east"></div>
+        <div className="peek-north">
+          <TileSVG
+            x={x - 1}
+            y={y - 1}
+            viewbox={'30 30 32 32'}
+            style={{
+              height: `${PIXEL_SIZE * 2}px`,
+              width: `${PIXEL_SIZE * 2}px`
+            }}
+            svgWidth={`${PIXEL_SIZE * 32}px`}
+          ></TileSVG>
+          <TileSVG
+            x={x}
+            y={y - 1}
+            viewbox={'0 30 32 32'}
+            style={{
+              height: `${PIXEL_SIZE * 2}px`,
+              width: `${PIXEL_SIZE * 32}px`
+            }}
+          ></TileSVG>
+          <TileSVG
+            x={x + 1}
+            y={y - 1}
+            viewbox={'0 30 32 32'}
+            style={{
+              height: `${PIXEL_SIZE * 2}px`,
+              width: `${PIXEL_SIZE * 2}px`
+            }}
+            svgWidth={`${PIXEL_SIZE * 32}px`}
+          ></TileSVG>
+        </div>
+
+        <div className="peek-south">
+          <TileSVG
+            x={x - 1}
+            y={y + 1}
+            viewbox={'30 0 32 32'}
+            style={{
+              height: `${PIXEL_SIZE * 2}px`,
+              width: `${PIXEL_SIZE * 2}px`
+            }}
+            svgHeight={`${PIXEL_SIZE * 32}px`}
+          ></TileSVG>
+          <TileSVG
+            x={x}
+            y={y + 1}
+            viewbox={'0 0 32 32'}
+            style={{
+              height: `${PIXEL_SIZE * 2}px`,
+              width: `${PIXEL_SIZE * 32}px`
+            }}
+          ></TileSVG>
+          <TileSVG
+            x={x + 1}
+            y={y + 1}
+            viewbox={'0 0 32 32'}
+            style={{
+              height: `${PIXEL_SIZE * 2}px`,
+              width: `${PIXEL_SIZE * 2}px`
+            }}
+            svgHeight={`${PIXEL_SIZE * 32}px`}
+          ></TileSVG>
+        </div>
+
+        <div className="peek-west">
+          <TileSVG
+            x={x - 1}
+            y={y}
+            viewbox={'30 0 32 32'}
+            svgHeight={`${PIXEL_SIZE * 32}px`}
+          ></TileSVG>
+        </div>
+        <div className="peek-east">
+          <TileSVG
+            x={x + 1}
+            y={y}
+            viewbox={'0 0 32 32'}
+            svgHeight={`${PIXEL_SIZE * 32}px`}
+          ></TileSVG>
+        </div>
       </div>
 
       <div className="canvas-aside-left">
@@ -254,84 +331,13 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
       <div className="canvas-aside-right">
         <div className="preview-minimap">
-          <div>
-            <CanvasTile
-              x={x - 1}
-              y={y - 1}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-            <CanvasTile
-              x={x}
-              y={y - 1}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-            <CanvasTile
-              x={x + 1}
-              y={y - 1}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-          </div>
-
-          <div>
-            <CanvasTile
-              x={x - 1}
-              y={y}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-            <div className="preview">
-              {columns.map((y) => {
-                return rows.map((x) => {
-                  return (
-                    <div
-                      key={`${x}_${y}_preview`}
-                      className="box-preview"
-                      style={{
-                        backgroundColor: palette[pixels?.[x]?.[y]]
-                      }}
-                    ></div>
-                  );
-                });
-              })}
-            </div>
-            <CanvasTile
-              x={x + 1}
-              y={y}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-          </div>
-          <div>
-            <CanvasTile
-              x={x - 1}
-              y={y + 1}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-            <CanvasTile
-              x={x}
-              y={y + 1}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-            <CanvasTile
-              x={x + 1}
-              y={y + 1}
-              openEditor={() => {}}
-              openGenerateInvite={() => {}}
-              style={{ width: '96px', height: '96px' }}
-            />
-          </div>
+          <EditorPreview
+            pixels={pixels}
+            y={y}
+            x={x}
+            columns={columns}
+            rows={rows}
+          ></EditorPreview>
         </div>
       </div>
 
@@ -347,16 +353,16 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         .canvas {
           display: grid;
           grid-template-columns: repeat(32, 1fr);
-          width: ${rows.length * SIZE}px;
-          height: ${columns.length * SIZE}px;
+          width: ${rows.length * PIXEL_SIZE}px;
+          height: ${columns.length * PIXEL_SIZE}px;
           user-select: none;
           touch-action: none;
           cursor: ${getActiveCursor()};
         }
 
         .box {
-          width: ${SIZE}px;
-          height: ${SIZE}px;
+          width: ${PIXEL_SIZE}px;
+          height: ${PIXEL_SIZE}px;
           border: 1px solid rgba(0, 0, 0, 0.15);
           border-width: 0 1px 1px 0;
         }
@@ -420,7 +426,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         .canvas-peek {
           display: grid;
           grid-template-columns: 36px auto 36px;
-          grid-template-rows: 36px auto 36px;
+          grid-template-rows: 36px auto 31px;
           gap: 0px 0px;
           grid-template-areas:
             'peek-north peek-north peek-north'
@@ -431,9 +437,12 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         }
         .peek-north {
           grid-area: peek-north;
+          display: flex;
         }
         .peek-south {
           grid-area: peek-south;
+          display: flex;
+          margin-top: -4px;
         }
         .peek-west {
           grid-area: peek-west;
