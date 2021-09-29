@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Button, { ButtonSuccess } from "@app/components/Button";
 import useEditor from "@app/hooks/use-editor";
 import { Tool } from "@app/features/State";
-import Icon from "./Icon";
 import EditorPreview from "./EditorPreview";
 import TileSVG from "../canvas/TileSVG";
 
