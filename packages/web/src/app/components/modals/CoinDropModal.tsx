@@ -1,8 +1,10 @@
 import { getCoordinates } from '@app/features/TileUtils';
 import { useWallet } from '@gimmixorg/use-wallet';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Button from '../Button';
+import Modal from 'react-modal';
+import ConnectWalletModal from './ConnectWalletModal';
 
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
@@ -10,6 +12,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const [error, setError] = useState<string>();
   const [coinB64, setCoinB64] = useState<string>();
   const [claimed, setClaimed] = useState(false);
+  const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -33,7 +36,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
 
   const claimCoin = async () => {
     if (!coinB64) return;
-    if (!account) return alert('Not signed in!');
+    if (!account) setIsConnectedModalOpen(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
       body: JSON.stringify({ coinB64, recipient: account }),
@@ -58,6 +61,10 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     setCoinB64(undefined);
     setError(undefined);
   };
+
+  useEffect(() => {
+    if (account) setIsConnectedModalOpen(false);
+  }, [account]);
 
   return (
     <div className="coindrop">
@@ -96,6 +103,14 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           <Button onClick={reset}>Try Again</Button>
         </div>
       )}
+      <Modal
+        isOpen={isConnectedModalOpen}
+        onRequestClose={() => setIsConnectedModalOpen(false)}
+        contentLabel="Connect Wallet Modal"
+        style={modalStyles}
+      >
+        <ConnectWalletModal />
+      </Modal>
       <style jsx>{`
         .coindrop {
           width: 400px;
@@ -179,6 +194,23 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       `}</style>
     </div>
   );
+};
+
+const modalStyles = {
+  overlay: {
+    backgroundColor: 'rgba(51, 51, 51, 0.95)'
+  },
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    background: 'transparent',
+    border: 0,
+    padding: 0
+  }
 };
 
 export default CoinDropModal;
