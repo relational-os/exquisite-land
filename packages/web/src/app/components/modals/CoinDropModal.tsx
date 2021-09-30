@@ -158,7 +158,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             transform: translateX(0);
           }
           70% {
-            transform: translateX(-20px);
+            transform: translateX(-18px);
           }
           100% {
             transform: translateX(0);
@@ -170,7 +170,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             transform: translateX(0) scaleX(-1);
           }
           70% {
-            transform: translateX(20px) scaleX(-1);
+            transform: translateX(18px) scaleX(-1);
           }
           100% {
             transform: translateX(0) scaleX(-1);
