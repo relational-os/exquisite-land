@@ -1,4 +1,8 @@
-import { createTile, getSignatureForTypedData } from '@app/features/Forwarder';
+import {
+  createTile,
+  getSignatureForTypedData,
+  submitTx
+} from '@app/features/Forwarder';
 import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import useStore, { Tool } from '@app/features/State';
 import { useWallet } from '@gimmixorg/use-wallet';
@@ -10,12 +14,10 @@ interface SetTileProps {
   y: number;
 }
 
-const CHAIN_ID = 80001;
-
 function transpose(matrix: any) {
   return matrix.reduce(
     (prev: any, next: any) =>
-      next.map((item: any, i: number) => (prev[i] || []).concat(next[i])),
+      next.map((_: any, i: number) => (prev[i] || []).concat(next[i])),
     []
   );
 }
@@ -63,49 +65,24 @@ const useEditor = () => {
     let transposed = transpose(pixels);
     let flattened = transposed.flat();
     let outputPixels = '0x';
-
-    // @ts-ignore
-    let index = 0;
     for (let i = 0; i < flattened.length; i += 2) {
       let d = `${((flattened[i] << 4) | flattened[i + 1])
         .toString(16)
         .padStart(2, '0')}`;
       outputPixels += d;
-      index++;
     }
-
-    // const tileContract = ExquisiteLand__factory.connect(
-    //   process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
-    //   provider.getSigner()
-    // );
-
-    console.log(x, y, pixels);
-
     const dataToSign = await createTile(
       x,
       y,
       outputPixels,
       account,
-      CHAIN_ID,
       getJsonRpcProvider()
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
-
-    const response = await fetch('/api/forwarder/forward', {
-      method: 'POST',
-      body: JSON.stringify({ data: dataToSign, signature }),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(res => res.json());
-
-    console.log({ response });
-
-    // const tx = await tileContract.createTile(x, y, outputPixels);
-
-    // const receipt = await tx.wait(2);
-
-    // console.log(receipt);
-
-    // console.log(`tile(${x}, ${y}) saved!`);
+    const tx = await submitTx(dataToSign, signature);
+    const receipt = await tx.wait(2);
+    console.log(receipt);
+    console.log(`tile(${x}, ${y}) saved!`);
   };
 
   return {

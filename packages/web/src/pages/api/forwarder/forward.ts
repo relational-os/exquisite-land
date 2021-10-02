@@ -18,9 +18,6 @@ const api: NextApiHandler = async (req, res) => {
       data: any;
       signature: string;
     } = req.body;
-
-    console.log({ data, signature });
-
     const wallet = new Wallet(
       process.env.CONTRACT_OWNER_PRIVATE_KEY as string,
       new JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL)
@@ -29,7 +26,6 @@ const api: NextApiHandler = async (req, res) => {
       process.env.NEXT_PUBLIC_FORWARDER_ADDRESS as string,
       wallet
     );
-
     const tx = await forwarder.execute(data.message, signature, {
       gasLimit: Math.floor(data.message.gas * 2.5)
     });
