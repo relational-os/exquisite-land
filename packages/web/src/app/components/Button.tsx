@@ -38,8 +38,8 @@ export const ButtonSuccess = React.forwardRef(function ButtonSuccess(
       ref={ref}
       {...props}
       style={{
-        color: 'hsl(173deg 58% 20%)',
-        background: 'hsl(173deg 58% 80%)'
+        color: '#fff',
+        background: '#62c64c'
       }}
     />
   );

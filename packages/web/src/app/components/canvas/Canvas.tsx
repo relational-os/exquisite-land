@@ -166,7 +166,8 @@ const modalStyles = {
 
 const editModalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)'
+    backgroundColor: 'rgba(51, 51, 51, 0.95)',
+    zIndex: 1112
   },
   content: {
     top: '50%',
