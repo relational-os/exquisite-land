@@ -60,7 +60,8 @@ const CanvasTile = ({
           {isOwned && <div className="owned">Your tile!</div>}
           {isInvitable && (
             <div className="invitable">
-              <button>Invite!</button>
+              <img src="/graphics/coin-spin.gif" />
+              <button>invite!</button>
             </div>
           )}
         </div>
@@ -70,13 +71,13 @@ const CanvasTile = ({
           position: relative;
 
           background-color: ${isInvitable
-            ? '#ffd803'
+            ? '#c066ea'
             : tile?.status == 'UNLOCKED'
             ? '#444'
             : '#333'};
 
           background-image: ${isInvitable
-            ? 'radial-gradient(82.25% 50% at 50.24% 50%, #FBE877 0%, #C066EA 100%)'
+            ? '#c066ea'
             : tile?.status == 'UNLOCKED'
             ? `radial-gradient(circle, #333 1px, rgba(40, 40, 40, 0) 1px)`
             : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
@@ -95,13 +96,13 @@ const CanvasTile = ({
 
         .tile:hover {
           background-color: ${isInvitable
-            ? '#ffd80033'
+            ? '#c066ea'
             : tile?.status == 'UNLOCKED'
             ? 'none'
             : 'none'};
 
           background-image: ${isInvitable
-            ? 'radial-gradient(82.25% 50% at 50.24% 50%, #FBE877 0%, #C066EA 100%)'
+            ? ''
             : tile?.status == 'UNLOCKED'
             ? `none`
             : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
@@ -143,14 +144,35 @@ const CanvasTile = ({
           'display: block; cursor: pointer; background: rgba(0,0,0,0.25); color:#fff; text-shadow: 2px 2px #000; opacity: 1;'};
         }
 
-        .coords {
-        }
-
         .deets {
           position: absolute;
           bottom: 10px;
           left: 0;
           right: 0;
+        }
+
+        .invitable img {
+          display: block;
+          width: 35%;
+          height: auto;
+          margin: 0 auto 10px;
+        }
+
+        .invitable button {
+          padding: 6px 14px;
+          border: 0;
+          background: #ffe131;
+          font-size: 24px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: #000;
+          border-bottom: 4px solid rgba(0, 0, 0, 0.7);
+        }
+
+        .invitable button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
         }
 
         @keyframes gradient {
