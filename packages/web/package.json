@@ -14,6 +14,7 @@
     "@gimmixorg/use-wallet": "^0.0.25",
     "@svgr/webpack": "^5.5.0",
     "@walletconnect/web3-provider": "^1.6.5",
+    "copy-webpack-plugin": "^9.0.1",
     "graphql": "^15.5.3",
     "graphql-request": "^3.5.0",
     "next": "^11.0.0",
@@ -42,6 +43,7 @@
     "@types/react-modal": "^3.12.1",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
+    "@types/sharp": "^0.29.2",
     "@types/svgo": "^2.4.2",
     "typescript": "^4.1.3"
   }
