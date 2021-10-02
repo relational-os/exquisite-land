@@ -432,8 +432,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
             'peek-north peek-north peek-north'
             'peek-west canvas peek-east'
             'peek-south peek-south peek-south';
-          background: #eee;
-          border-radius: 4px;
+          background: #222;
         }
         .peek-north {
           grid-area: peek-north;
