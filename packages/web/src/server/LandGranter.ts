@@ -3,8 +3,12 @@ import { LandGranter__factory } from '@sdk/factories/LandGranter__factory';
 import { ExquisiteLand__factory } from '@sdk/factories/ExquisiteLand__factory';
 import sharp from 'sharp';
 
-path.resolve(process.cwd(), 'fonts', 'fonts.conf');
-path.resolve(process.cwd(), 'fonts', 'VT323-Regular.ttf');
+let basePath = process.cwd();
+if (process.env.NODE_ENV === 'production') {
+  basePath = path.join(process.cwd(), '.next/server/chunks');
+}
+path.resolve(basePath, 'fonts', 'fonts.conf');
+path.resolve(basePath, 'fonts', 'VT323-Regular.ttf');
 
 // @ts-ignore
 import steggy from 'steggy';
