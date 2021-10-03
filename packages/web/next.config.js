@@ -1,3 +1,5 @@
+const CopyPlugin = require('copy-webpack-plugin');
+
 module.exports = {
   webpack: function (config, { dev, isServer }) {
     config.module.rules.push({
