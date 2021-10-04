@@ -6,8 +6,8 @@ dataSources:
     name: ExquisiteLand
     network: mumbai
     source:
-      address: "0xBE5FC085b72Ce3390F30B08529269C2d9BB35d30"
-      startBlock: 18902890
+      address: "0x25ccd58D508A31B68DE9efbE5398447C384f742e"
+      startBlock: 19769578
       abi: ExquisiteLand
     mapping:
       kind: ethereum/events
@@ -27,6 +27,8 @@ dataSources:
           handler: handleNeighborInvited
         - event: TileCreated(uint32,address)
           handler: handleTileCreated
+        - event: TileReset(uint32)
+          handler: handleTileReset
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTileTransfer
       file: ExquisiteLand/ExquisiteLand.wasm

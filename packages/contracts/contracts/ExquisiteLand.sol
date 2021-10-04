@@ -5,18 +5,19 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./utils/TrustedForwarderRecipient.sol";
 import "./interfaces/IRender.sol";
+import "./interfaces/IBase64.sol";
 
 contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
     // * External Dependencies *//
     IRender private _renderer;
+    IBase64 private _b64;
 
     // * Constants * //
     uint8 constant MAX_SEEDS_PER_CANVAS = 4;
-    uint8 constant MAX_CANVAS_WIDTH = 32;
-    uint8 constant MAX_CANVAS_HEIGHT = 32;
+    uint8 constant MAX_CANVAS_WIDTH = 16;
+    uint8 constant MAX_CANVAS_HEIGHT = 16;
     uint8 constant MAX_TILE_WIDTH = 32;
     uint8 constant MAX_TILE_HEIGHT = 32;
-    // uint8 constant MAX_TILE_PIXELS = 1024;
 
     // * Addresses * //
     address private _landGranter;
@@ -46,12 +47,14 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
 
     // * Canvas Data Storage * //
     mapping(uint32 => bytes) private _svgData;
+    mapping(uint32 => uint256) private _lastTransferred;
     uint32[4] private _seeds;
 
     // * Event definitions * //
     event SeedCreated(uint32 tokenId, address recipient);
     event NeighborInvited(uint32 tokenId, address recipient);
     event TileCreated(uint32 tokenId, address sender);
+    event TileReset(uint32 tokenId);
 
     // * Modifiers * //
     modifier isInitialized() {
@@ -73,11 +76,16 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
     }
 
     // * Constructor * //
-    constructor(address trustedForwarderAddress_)
+    constructor(
+        address trustedForwarderAddress_,
+        address rendererAddress_,
+        address b64Address_
+    )
         ERC721("Exquisite Land", "XQST")
         TrustedForwarderRecipient(trustedForwarderAddress_)
     {
-        _renderer = IRender(0x1A1FeD25762a9DEA62F31074A2680DD5BB714c94);
+        _renderer = IRender(rendererAddress_);
+        _b64 = IBase64(b64Address_);
     }
 
     // * Tile Creation Methods * //
@@ -118,6 +126,27 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         );
         _safeMint(recipient, targetTileId);
         emit NeighborInvited(targetTileId, recipient);
+    }
+
+    function resetTile(uint32 x, uint32 y) public onlyOwner isValidTile(x, y) {
+        uint32 tokenId = generateTokenID(x, y);
+        require(
+            ownerOf(tokenId) != address(0) && ownerOf(tokenId) != _landGranter
+        );
+
+        delete _svgData[tokenId];
+        _transfer(ownerOf(tokenId), _landGranter, tokenId);
+        emit TileReset(tokenId);
+    }
+
+    function recirculateTile(uint32 x, uint32 y)
+        public
+        onlyOwner
+        isValidTile(x, y)
+    {
+        uint32 tokenId = generateTokenID(x, y);
+        require(block.timestamp > _lastTransferred[tokenId] + 12 hours);
+        resetTile(x, y);
     }
 
     function createTile(
@@ -211,21 +240,80 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         // prettier-ignore
         string[32] memory LOOKUP=["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
-        // TODO lookup again
-        string memory json = string(
-            abi.encodePacked(
-                '{"name": "Exquisite Land Tile ',
-                LOOKUP[x],
-                " ",
-                LOOKUP[y],
-                '", "description": "Blank for now", "image": "data:image/svg+xml;utf-8,',
-                output,
-                '"}'
+        string memory json = _b64.encode(
+            string(
+                abi.encodePacked(
+                    '{"name": "Exquisite Land Tile ',
+                    LOOKUP[x],
+                    " ",
+                    LOOKUP[y],
+                    '", "description": "Blank for now", "image": "data:image/svg+xml;base64,',
+                    _b64.encode(output),
+                    '"}'
+                )
             )
         );
-        output = string(abi.encodePacked("data:application/json;utf-8,", json));
+        output = string(
+            abi.encodePacked("data:application/json;base64,", json)
+        );
         return output;
     }
+
+    /* Prevent a user from inviting themselves to the board as a neighbor */
+    function validateTransfer(uint256 tokenId, address to) internal {
+        (uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
+        if (to != address(0) && to != _landGranter) {
+            // check east is in bounds
+            if (x < MAX_CANVAS_WIDTH - 1) {
+                uint32 id = generateTokenID(x + 1, y);
+                require(
+                    _exists(id) && ownerOf(id) != to,
+                    "failed on east bound check"
+                );
+            }
+
+            // check west is in bounds
+            if (x > 0) {
+                uint32 id = generateTokenID(x - 1, y);
+                require(
+                    _exists(id) && ownerOf(id) != to,
+                    "failed on west bound check"
+                );
+            }
+
+            // check south is in bounds
+            if (y < MAX_CANVAS_HEIGHT - 1) {
+                uint32 id = generateTokenID(x, y + 1);
+                require(
+                    _exists(id) && ownerOf(id) != to,
+                    "failed on south bound check"
+                );
+            }
+
+            // check north is in bounds
+            if (y > 0) {
+                uint32 id = generateTokenID(x, y - 1);
+                require(
+                    _exists(id) && ownerOf(id) != to,
+                    "failed on north bound check"
+                );
+            }
+        }
+    }
+
+    // function _beforeTokenTransfer(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId
+    // ) internal virtual override {
+    //     super._beforeTokenTransfer(from, to, tokenId);
+    //     validateTransfer(tokenId, to);
+
+    //     // do stuff before every transfer
+    //     // e.g. check that vote (other than when minted)
+    //     // being transferred to registered candidate
+    //     _lastTransferred[uint32(tokenId)] = block.timestamp;
+    // }
 
     // * Admin Only Methods * //
     function setLandGranter(address granter) public onlyOwner {

@@ -36,7 +36,9 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "recirculateTile(uint32,uint32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "resetTile(uint32,uint32)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setForwarder(address)": FunctionFragment;
@@ -104,8 +106,16 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "recirculateTile",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resetTile",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -191,9 +201,14 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "recirculateTile",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "resetTile", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -248,6 +263,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "SeedCreated(uint32,address)": EventFragment;
     "TileCreated(uint32,address)": EventFragment;
+    "TileReset(uint32)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -257,6 +273,7 @@ interface ExquisiteLandInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SeedCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TileCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TileReset"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -382,7 +399,19 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -530,7 +559,19 @@ export class ExquisiteLand extends BaseContract {
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  recirculateTile(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  resetTile(
+    x: BigNumberish,
+    y: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -678,7 +719,19 @@ export class ExquisiteLand extends BaseContract {
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -789,6 +842,8 @@ export class ExquisiteLand extends BaseContract {
       sender?: null
     ): TypedEventFilter<[number, string], { tokenId: number; sender: string }>;
 
+    TileReset(tokenId?: null): TypedEventFilter<[number], { tokenId: number }>;
+
     Transfer(
       from?: string | null,
       to?: string | null,
@@ -878,7 +933,19 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1036,7 +1103,19 @@ export class ExquisiteLand extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

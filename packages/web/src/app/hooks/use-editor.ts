@@ -1,12 +1,12 @@
 import {
   createTile,
   getSignatureForTypedData,
-  submitTx
-} from '@app/features/Forwarder';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
-import useStore, { Tool } from '@app/features/State';
-import { useWallet } from '@gimmixorg/use-wallet';
-import PALETTES from 'src/constants/Palettes';
+  submitTx,
+} from "@app/features/Forwarder";
+import getJsonRpcProvider from "@app/features/getJsonRpcProvider";
+import useStore, { Tool } from "@app/features/State";
+import { useWallet } from "@gimmixorg/use-wallet";
+import PALETTES from "src/constants/Palettes";
 
 interface SetTileProps {
   pixels: number[][];
@@ -23,10 +23,10 @@ function transpose(matrix: any) {
 }
 
 const useEditor = () => {
-  const activeBrushSize = useStore(state => state.activeBrushSize);
-  const activeColor = useStore(state => state.activeColor);
-  const activeTool = useStore(state => state.activeTool);
-  const prevTool = useStore(state => state.prevTool);
+  const activeBrushSize = useStore((state) => state.activeBrushSize);
+  const activeColor = useStore((state) => state.activeColor);
+  const activeTool = useStore((state) => state.activeTool);
+  const prevTool = useStore((state) => state.prevTool);
 
   const { account, provider } = useWallet();
 
@@ -51,26 +51,27 @@ const useEditor = () => {
 
     switch (activeTool) {
       case Tool.BRUSH:
-        return 'url(/static/px-icon-pencil.svg) 0 11, pointer';
+        return "url(/static/px-icon-pencil.svg) 0 11, pointer";
       case Tool.BUCKET:
-        return 'url(/static/px-icon-bucket.svg) 0 11, pointer';
+        return "url(/static/px-icon-bucket.svg) 0 11, pointer";
       case Tool.EYEDROPPER:
-        return 'url(/static/px-icon-eyedropper.svg) 4 11, pointer';
+        return "url(/static/px-icon-eyedropper.svg) 4 11, pointer";
     }
   };
 
   const setTile = async ({ x, y, pixels }: SetTileProps) => {
-    if (!provider || !account) return alert('Not signed in.');
+    if (!provider || !account) return alert("Not signed in.");
 
     let transposed = transpose(pixels);
     let flattened = transposed.flat();
-    let outputPixels = '0x';
+    let outputPixels = "0x";
     for (let i = 0; i < flattened.length; i += 2) {
       let d = `${((flattened[i] << 4) | flattened[i + 1])
         .toString(16)
-        .padStart(2, '0')}`;
+        .padStart(2, "0")}`;
       outputPixels += d;
     }
+    console.log(outputPixels);
     const dataToSign = await createTile(
       x,
       y,
@@ -95,7 +96,7 @@ const useEditor = () => {
     setActiveColor,
     setActiveTool,
     setTile,
-    getActiveCursor
+    getActiveCursor,
   };
 };
 
