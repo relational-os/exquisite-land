@@ -49,7 +49,8 @@ const modalStyles = {
     backgroundImage: 'url(/graphics/coinbox-background.png)',
     backgroundPosition: 'center center',
     backgroundSize: '75%',
-    backgroundRepeat: 'no-repeat'
+    backgroundRepeat: 'no-repeat',
+    zIndex: 1112
   },
   content: {
     top: '50%',

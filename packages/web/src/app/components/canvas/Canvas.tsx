@@ -149,7 +149,8 @@ const Canvas = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.9)'
+    backgroundColor: 'rgba(51, 51, 51, 0.9)',
+    zIndex: 1112
   },
   content: {
     top: '50%',
