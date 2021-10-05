@@ -1,5 +1,5 @@
-import React, { CSSProperties, useState } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
+import React, { CSSProperties, useState, useRef, useEffect } from 'react';
+import { FixedSizeGrid } from 'react-window';
 import CanvasTile from './CanvasTile';
 import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
@@ -49,12 +49,31 @@ const Canvas = () => {
   const zoomIn = () => setTileSize((s) => s * 1.25);
   const zoomOut = () => setTileSize((s) => Math.max(0, s / 1.25));
 
+  // Scroll to tile based on query params
+  const gridRef = useRef<FixedSizeGrid>(null);
+  useEffect(() => {
+    if (!gridRef.current) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const x = params.get('x');
+    const y = params.get('y');
+
+    if (x != null && y != null) {
+      gridRef.current.scrollToItem({
+        align: 'center',
+        columnIndex: +x,
+        rowIndex: +y
+      });
+    }
+  }, [gridRef.current]);
+
   return (
     <>
       <div className="surface">
         <AutoSizer>
           {({ height, width }: { width: number; height: number }) => (
-            <Grid
+            <FixedSizeGrid
+              ref={gridRef}
               width={width}
               height={height}
               columnCount={16}
@@ -81,7 +100,7 @@ const Canvas = () => {
                   style={style}
                 />
               )}
-            </Grid>
+            </FixedSizeGrid>
           )}
         </AutoSizer>
       </div>
