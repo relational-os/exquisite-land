@@ -150,6 +150,24 @@ export class TileCreated__Params {
   }
 }
 
+export class TileReset extends ethereum.Event {
+  get params(): TileReset__Params {
+    return new TileReset__Params(this);
+  }
+}
+
+export class TileReset__Params {
+  _event: TileReset;
+
+  constructor(event: TileReset) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -388,6 +406,29 @@ export class ExquisiteLand extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
+  isTrustedForwarder(forwarder: Address): boolean {
+    let result = super.call(
+      "isTrustedForwarder",
+      "isTrustedForwarder(address):(bool)",
+      [ethereum.Value.fromAddress(forwarder)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_isTrustedForwarder(forwarder: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "isTrustedForwarder",
+      "isTrustedForwarder(address):(bool)",
+      [ethereum.Value.fromAddress(forwarder)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   name(): string {
     let result = super.call("name", "name():(string)", []);
 
@@ -516,6 +557,29 @@ export class ExquisiteLand extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
   }
+
+  versionRecipient(): string {
+    let result = super.call(
+      "versionRecipient",
+      "versionRecipient():(string)",
+      []
+    );
+
+    return result[0].toString();
+  }
+
+  try_versionRecipient(): ethereum.CallResult<string> {
+    let result = super.tryCall(
+      "versionRecipient",
+      "versionRecipient():(string)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
 }
 
 export class ConstructorCall extends ethereum.Call {
@@ -533,6 +597,10 @@ export class ConstructorCall__Inputs {
 
   constructor(call: ConstructorCall) {
     this._call = call;
+  }
+
+  get trustedForwarderAddress_(): Address {
+    return this._call.inputValues[0].value.toAddress();
   }
 }
 
@@ -692,6 +760,40 @@ export class InviteNeighborCall__Outputs {
   }
 }
 
+export class RecirculateTileCall extends ethereum.Call {
+  get inputs(): RecirculateTileCall__Inputs {
+    return new RecirculateTileCall__Inputs(this);
+  }
+
+  get outputs(): RecirculateTileCall__Outputs {
+    return new RecirculateTileCall__Outputs(this);
+  }
+}
+
+export class RecirculateTileCall__Inputs {
+  _call: RecirculateTileCall;
+
+  constructor(call: RecirculateTileCall) {
+    this._call = call;
+  }
+
+  get x(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get y(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class RecirculateTileCall__Outputs {
+  _call: RecirculateTileCall;
+
+  constructor(call: RecirculateTileCall) {
+    this._call = call;
+  }
+}
+
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -714,6 +816,40 @@ export class RenounceOwnershipCall__Outputs {
   _call: RenounceOwnershipCall;
 
   constructor(call: RenounceOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class ResetTileCall extends ethereum.Call {
+  get inputs(): ResetTileCall__Inputs {
+    return new ResetTileCall__Inputs(this);
+  }
+
+  get outputs(): ResetTileCall__Outputs {
+    return new ResetTileCall__Outputs(this);
+  }
+}
+
+export class ResetTileCall__Inputs {
+  _call: ResetTileCall;
+
+  constructor(call: ResetTileCall) {
+    this._call = call;
+  }
+
+  get x(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get y(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class ResetTileCall__Outputs {
+  _call: ResetTileCall;
+
+  constructor(call: ResetTileCall) {
     this._call = call;
   }
 }
@@ -832,6 +968,36 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
+export class SetForwarderCall extends ethereum.Call {
+  get inputs(): SetForwarderCall__Inputs {
+    return new SetForwarderCall__Inputs(this);
+  }
+
+  get outputs(): SetForwarderCall__Outputs {
+    return new SetForwarderCall__Outputs(this);
+  }
+}
+
+export class SetForwarderCall__Inputs {
+  _call: SetForwarderCall;
+
+  constructor(call: SetForwarderCall) {
+    this._call = call;
+  }
+
+  get trustedForwarder_(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetForwarderCall__Outputs {
+  _call: SetForwarderCall;
+
+  constructor(call: SetForwarderCall) {
+    this._call = call;
+  }
+}
+
 export class SetLandGranterCall extends ethereum.Call {
   get inputs(): SetLandGranterCall__Inputs {
     return new SetLandGranterCall__Inputs(this);
@@ -858,6 +1024,36 @@ export class SetLandGranterCall__Outputs {
   _call: SetLandGranterCall;
 
   constructor(call: SetLandGranterCall) {
+    this._call = call;
+  }
+}
+
+export class SetRendererCall extends ethereum.Call {
+  get inputs(): SetRendererCall__Inputs {
+    return new SetRendererCall__Inputs(this);
+  }
+
+  get outputs(): SetRendererCall__Outputs {
+    return new SetRendererCall__Outputs(this);
+  }
+}
+
+export class SetRendererCall__Inputs {
+  _call: SetRendererCall;
+
+  constructor(call: SetRendererCall) {
+    this._call = call;
+  }
+
+  get addr(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetRendererCall__Outputs {
+  _call: SetRendererCall;
+
+  constructor(call: SetRendererCall) {
     this._call = call;
   }
 }

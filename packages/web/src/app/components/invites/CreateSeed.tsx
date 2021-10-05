@@ -1,4 +1,9 @@
-import getContract from '@app/features/getContract';
+import {
+  createSeed,
+  getSignatureForTypedData,
+  submitTx
+} from '@app/features/Forwarder';
+import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import { generateTokenID } from '@app/features/TileUtils';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
@@ -7,16 +12,23 @@ const CreateSeed = () => {
   const [x, setX] = useState<string>('');
   const [y, setY] = useState<string>('');
   const [hash, setHash] = useState<string>();
-
-  const { provider } = useWallet();
-
+  const [txDone, setTxDone] = useState(false);
+  const { provider, account } = useWallet();
   const onSubmit = async () => {
-    if (!provider) return;
-    const contract = getContract(provider.getSigner());
-    const tx = await contract.createSeed(parseInt(x), parseInt(y));
-    await tx.wait(1);
+    if (!provider || !account) return;
+    const dataToSign = await createSeed(
+      parseInt(x),
+      parseInt(y),
+      account,
+      getJsonRpcProvider()
+    );
+    const signature = await getSignatureForTypedData(provider, dataToSign);
+    const tx = await submitTx(dataToSign, signature);
     console.log(tx.hash);
     setHash(tx.hash);
+    const receipt = await tx.wait(2);
+    console.log(receipt);
+    setTxDone(true);
   };
   return (
     <div className="create-seed">
@@ -35,7 +47,7 @@ const CreateSeed = () => {
       />
       <button onClick={onSubmit}>Submit</button>
 
-      {hash && (
+      {txDone && (
         <>
           <img
             src={`/api/land-granter/generate?tokenId=${generateTokenID(

@@ -4,6 +4,17 @@ pragma solidity ^0.8.2;
 contract Render {
     // SPDX-License-Identifier: GPL-3.0
 
+    uint8 constant MAX_COLORS = 16;
+    uint8 constant MAX_ROWS = 32;
+    uint8 constant MAX_COLS = 32;
+    uint16 constant MAX_DATA_SIZE = 512;
+
+    enum NUM_COLORS {
+        TWO,
+        FOUR,
+        SIXTEEN
+    }
+
     struct SVGCursor {
         uint8 x;
         uint8 y;
@@ -27,14 +38,14 @@ contract Render {
                     lookup[pos.x],
                     '" y="',
                     lookup[pos.y],
-                    '" width="1.15" height="1.15" />',
+                    '" width="1.5" height="1.5" />',
                     '<rect fill="',
                     pos.color2,
                     '" x="',
                     lookup[pos.x + 1],
                     '" y="',
                     lookup[pos.y],
-                    '" width="1.15" height="1.15" />',
+                    '" width="1.5" height="1.5" />',
                     string(
                         abi.encodePacked(
                             '<rect fill="',
@@ -43,14 +54,14 @@ contract Render {
                             lookup[pos.x + 2],
                             '" y="',
                             lookup[pos.y],
-                            '" width="1.15" height="1.15" />',
+                            '" width="1.5" height="1.5" />',
                             '<rect fill="',
                             pos.color4,
                             '" x="',
                             lookup[pos.x + 3],
                             '" y="',
                             lookup[pos.y],
-                            '" width="1.15" height="1.15" />'
+                            '" width="1.5" height="1.5" />'
                         )
                     )
                 )

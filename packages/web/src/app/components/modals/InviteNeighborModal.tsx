@@ -1,4 +1,9 @@
-import getContract from '@app/features/getContract';
+import {
+  getSignatureForTypedData,
+  inviteNeighbor,
+  submitTx
+} from '@app/features/Forwarder';
+import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import { generateTokenID } from '@app/features/TileUtils';
 import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
@@ -9,24 +14,28 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
     (state) =>
       state.openNeighbors.find((tile) => tile.x == x && tile.y == y)!.ownTokenId
   );
-  const { provider } = useWallet();
+  const { provider, account } = useWallet();
   const [isGeneratingCoin, setGeneratingCoin] = useState(false);
   const [isCoinGenerated, setCoinGenerated] = useState(false);
 
-  const inviteNeighbor = async () => {
-    if (!provider) return;
+  const inviteNeighborClicked = async () => {
+    if (!provider || !account) return;
     if (isGeneratingCoin) return;
     setGeneratingCoin(true);
-    const contract = getContract(provider.getSigner());
-    const tx = await contract.inviteNeighbor(
+    const dataToSign = await inviteNeighbor(
       ownTokenId,
       x,
       y,
-      process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string
+      process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string,
+      account,
+      getJsonRpcProvider()
     );
-    await tx.wait(1);
-    setCoinGenerated(true);
+    const signature = await getSignatureForTypedData(provider, dataToSign);
+    const tx = await submitTx(dataToSign, signature);
     console.log(tx.hash);
+    const receipt = await tx.wait(2);
+    console.log(receipt);
+    setCoinGenerated(true);
   };
 
   return (
@@ -60,7 +69,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
               [{x}, {y}]
             </h3>
           </div>
-          <button onClick={inviteNeighbor}>generate coin</button>
+          <button onClick={inviteNeighborClicked}>generate coin</button>
         </>
       )}
       <style jsx>{`

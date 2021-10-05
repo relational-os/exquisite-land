@@ -5,7 +5,7 @@ import { ENSName, AddressDisplayEnum } from 'react-ens-name';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 
 const ConnectWalletButton = () => {
-  const { connect, account, network } = useWallet();
+  const { connect, account } = useWallet();
 
   const providerOptions = {
     walletconnect: {
@@ -19,17 +19,13 @@ const ConnectWalletButton = () => {
   return (
     <div>
       {account ? (
-        network?.chainId != 80001 ? (
-          <div className="wrong-network">wrong network!</div>
-        ) : (
-          <div className="account">
-            <ENSName
-              address={account}
-              displayType={AddressDisplayEnum.FIRST4_LAST4}
-              withEllipses={true}
-            />
-          </div>
-        )
+        <div className="account">
+          <ENSName
+            address={account}
+            displayType={AddressDisplayEnum.FIRST4_LAST4}
+            withEllipses={true}
+          />
+        </div>
       ) : (
         <button
           className="connect-wallet-button"
