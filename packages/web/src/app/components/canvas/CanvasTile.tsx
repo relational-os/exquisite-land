@@ -4,6 +4,7 @@ import useTilesInWallet from '@app/features/useTilesInWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName } from 'react-ens-name';
 import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
+import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 const CanvasTile = ({
   x,
@@ -53,7 +54,10 @@ const CanvasTile = ({
               process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS?.toLowerCase() ? (
                 'UNCLAIMED'
               ) : (
-                <ENSName address={tile.owner.id} />
+                <ENSName
+                  address={tile.owner.id}
+                  provider={ethJsonRpcProvider}
+                />
               )}
             </div>
           )}

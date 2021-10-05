@@ -4,10 +4,11 @@ import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName } from 'ethereum-ens-name';
+import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 export const SIGNING_MESSAGE = 'ALL HAIL KING SEAWORM';
 
-export const getServerSideProps: GetServerSideProps = async ctx => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const user = await prisma.user.findUnique({
     where: { id: ctx.query.id as string },
     select: {
@@ -46,7 +47,7 @@ const LinkWallet = ({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ signature, account, id: user.id })
-    }).then(res => res.json());
+    }).then((res) => res.json());
     if (error) setError(error);
     if (success) setLinked(true);
   };
@@ -59,13 +60,13 @@ const LinkWallet = ({
       </div>
       {isLinked ? (
         <>
-          <ENSName address={account} /> linked!
+          <ENSName address={account} provider={ethJsonRpcProvider} /> linked!
         </>
       ) : error ? (
         <div className="error">{error}</div>
       ) : account ? (
         <>
-          <ENSName address={account} />
+          <ENSName address={account} provider={ethJsonRpcProvider} />
           <button onClick={signMessage}>Sign message</button>
         </>
       ) : (
