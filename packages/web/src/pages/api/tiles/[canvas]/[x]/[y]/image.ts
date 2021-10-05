@@ -19,13 +19,16 @@ const api: NextApiHandler = async (req, res) => {
       }
     `
   );
-  // if (!tile?.svg) return res.status(404).end();
-  const image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
-    density: 2000
-  })
-    .resize(700, 700)
+
+  if (!tile?.svg) {
+    return res.status(404).end();
+  }
+
+  const image = await sharp(Buffer.from(tile.svg, 'utf-8'))
+    .resize(32, 32)
     .png()
     .toBuffer();
+
   res.setHeader('Content-Type', 'image/png');
   res.setHeader('Cache-Control', 'public, max-age=31536000');
   return res.send(image);

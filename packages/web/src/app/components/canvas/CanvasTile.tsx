@@ -125,6 +125,7 @@ const CanvasTile = ({
         .tile-image {
           width: 100%;
           height: auto;
+          image-rendering: pixelated;
         }
         .svg {
           width: 100%;
