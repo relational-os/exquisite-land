@@ -5021,10 +5021,10 @@ react-dropzone@^11.3.5:
     file-selector "^0.2.2"
     prop-types "^15.7.2"
 
-react-ens-name@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.npmjs.org/react-ens-name/-/react-ens-name-0.1.1.tgz"
-  integrity sha512-ipc/F9DO/zMa1Y1tfGtXV9LUQJUC9qHfa4cOT9Gn3NBV9kG85a8UoSTsWNCb+CFmWN6+mYmGT+xKTPUtto3t0Q==
+react-ens-name@^0.2.2:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/react-ens-name/-/react-ens-name-0.2.3.tgz#06eae4221c63d5d12244ef1cac17b307995b5e6f"
+  integrity sha512-5Pzi8aNSkeqzveRl0BlT8aUpJNQ4+3Q6SHjf0Uxe8DxdfSIa/B1cWUhd39Ir3CeNm7dDbINJQ2f84dxltj50fw==
   dependencies:
     ethers "^5.4.5"
     zustand "^3.5.9"
@@ -6255,12 +6255,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zustand@^3.5.10:
-  version "3.5.10"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.5.10.tgz#d2622efd64530ffda285ee5b13ff645b68ab0faf"
-  integrity sha512-upluvSRWrlCiExu2UbkuMIPJ9AigyjRFoO7O9eUossIj7rPPq7pcJ0NKk6t2P7KF80tg/UdPX6/pNKOSbs9DEg==
-
-zustand@^3.5.5, zustand@^3.5.9:
+zustand@^3.5.10, zustand@^3.5.5, zustand@^3.5.9:
   version "3.5.10"
   resolved "https://registry.npmjs.org/zustand/-/zustand-3.5.10.tgz"
   integrity sha512-upluvSRWrlCiExu2UbkuMIPJ9AigyjRFoO7O9eUossIj7rPPq7pcJ0NKk6t2P7KF80tg/UdPX6/pNKOSbs9DEg==

@@ -12,6 +12,7 @@ const CreateSeed = () => {
   const [x, setX] = useState<string>('');
   const [y, setY] = useState<string>('');
   const [hash, setHash] = useState<string>();
+  const [txDone, setTxDone] = useState(false);
   const { provider, account } = useWallet();
   const onSubmit = async () => {
     if (!provider || !account) return;
@@ -25,8 +26,9 @@ const CreateSeed = () => {
     const tx = await submitTx(dataToSign, signature);
     console.log(tx.hash);
     setHash(tx.hash);
-    const receipt = await tx.wait(1);
+    const receipt = await tx.wait(2);
     console.log(receipt);
+    setTxDone(true);
   };
   return (
     <div className="create-seed">
@@ -45,7 +47,7 @@ const CreateSeed = () => {
       />
       <button onClick={onSubmit}>Submit</button>
 
-      {hash && (
+      {txDone && (
         <>
           <img
             src={`/api/land-granter/generate?tokenId=${generateTokenID(

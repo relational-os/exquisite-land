@@ -22,9 +22,6 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
     // * Addresses * //
     address private _landGranter;
 
-    // * Admin controls * //
-    bool allowEditing = true;
-
     // * SVG Presets * //
     string[16] PALETTE = [
         "#e4a672",
@@ -47,8 +44,9 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
 
     // * Canvas Data Storage * //
     mapping(uint32 => bytes) private _svgData;
+    mapping(uint32 => bool) private _tileFilled;
     mapping(uint32 => uint256) private _lastTransferred;
-    uint32[4] private _seeds;
+    uint8 private _seedCount;
 
     // * Event definitions * //
     event SeedCreated(uint32 tokenId, address recipient);
@@ -95,16 +93,14 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         isInitialized
         isValidTile(x, y)
     {
+        require(
+            _seedCount < MAX_SEEDS_PER_CANVAS,
+            "Max seeds per canvas reached"
+        );
         uint32 tokenId = generateTokenID(x, y);
-        // require(seedNearExistingSeeds(tokenId), "Seed is too far from other seeds.")
-        for (uint32 i = 0; i < MAX_SEEDS_PER_CANVAS; i++) {
-            if (_seeds[i] == 0) {
-                _seeds[i] = tokenId;
-                _safeMint(_landGranter, tokenId);
-                emit SeedCreated(tokenId, _landGranter);
-                return;
-            }
-        }
+        _safeMint(_landGranter, tokenId);
+        _seedCount++;
+        emit SeedCreated(tokenId, _landGranter);
     }
 
     function inviteNeighbor(
@@ -128,27 +124,6 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         emit NeighborInvited(targetTileId, recipient);
     }
 
-    function resetTile(uint32 x, uint32 y) public onlyOwner isValidTile(x, y) {
-        uint32 tokenId = generateTokenID(x, y);
-        require(
-            ownerOf(tokenId) != address(0) && ownerOf(tokenId) != _landGranter
-        );
-
-        delete _svgData[tokenId];
-        _transfer(ownerOf(tokenId), _landGranter, tokenId);
-        emit TileReset(tokenId);
-    }
-
-    function recirculateTile(uint32 x, uint32 y)
-        public
-        onlyOwner
-        isValidTile(x, y)
-    {
-        uint32 tokenId = generateTokenID(x, y);
-        require(block.timestamp > _lastTransferred[tokenId] + 12 hours);
-        resetTile(x, y);
-    }
-
     function createTile(
         uint32 x,
         uint32 y,
@@ -158,10 +133,11 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         uint32 tokenId = generateTokenID(x, y);
         require(ownerOf(tokenId) == _msgSender(), "u r not owner rawr");
         require(
-            allowEditing || targetTileIsBlank(tokenId),
+            _tileFilled[tokenId] == false,
             "Someone already drew that tile."
         );
         _svgData[tokenId] = pixels;
+        _tileFilled[tokenId] = true;
         emit TileCreated(tokenId, _msgSender());
     }
 
@@ -183,10 +159,6 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         else checkSouth = false;
         bool checkNorth = ((senderY == inviteY + 1) && (senderX == inviteX));
         return (checkWest || checkEast || checkSouth || checkNorth);
-    }
-
-    function targetTileIsBlank(uint32 tokenId) public view returns (bool) {
-        return true;
     }
 
     function getTileSVG(uint32 tokenId) public view returns (string memory) {
@@ -220,10 +192,6 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         return (x, y);
     }
 
-    function toggleAllowEditing() public onlyOwner {
-        allowEditing = !allowEditing;
-    }
-
     // * Public Read Methods * //
     function tokenURI(uint256 tokenId)
         public
@@ -241,15 +209,17 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         string[32] memory LOOKUP=["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
         string memory json = _b64.encode(
-            string(
-                abi.encodePacked(
-                    '{"name": "Exquisite Land Tile ',
-                    LOOKUP[x],
-                    " ",
-                    LOOKUP[y],
-                    '", "description": "Blank for now", "image": "data:image/svg+xml;base64,',
-                    _b64.encode(output),
-                    '"}'
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{"name": "Exquisite Land Tile ',
+                        LOOKUP[x],
+                        " ",
+                        LOOKUP[y],
+                        '", "description": "Blank for now", "image": "data:image/svg+xml;base64,',
+                        _b64.encode(bytes(output)),
+                        '"}'
+                    )
                 )
             )
         );
@@ -260,14 +230,14 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
     }
 
     /* Prevent a user from inviting themselves to the board as a neighbor */
-    function validateTransfer(uint256 tokenId, address to) internal {
+    function validateTransfer(uint256 tokenId, address to) internal view {
         (uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
         if (to != address(0) && to != _landGranter) {
             // check east is in bounds
             if (x < MAX_CANVAS_WIDTH - 1) {
                 uint32 id = generateTokenID(x + 1, y);
                 require(
-                    _exists(id) && ownerOf(id) != to,
+                    !_exists(id) || ownerOf(id) != to,
                     "failed on east bound check"
                 );
             }
@@ -276,7 +246,7 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
             if (x > 0) {
                 uint32 id = generateTokenID(x - 1, y);
                 require(
-                    _exists(id) && ownerOf(id) != to,
+                    !_exists(id) || ownerOf(id) != to,
                     "failed on west bound check"
                 );
             }
@@ -285,7 +255,7 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
             if (y < MAX_CANVAS_HEIGHT - 1) {
                 uint32 id = generateTokenID(x, y + 1);
                 require(
-                    _exists(id) && ownerOf(id) != to,
+                    !_exists(id) || ownerOf(id) != to,
                     "failed on south bound check"
                 );
             }
@@ -294,26 +264,25 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
             if (y > 0) {
                 uint32 id = generateTokenID(x, y - 1);
                 require(
-                    _exists(id) && ownerOf(id) != to,
+                    !_exists(id) || ownerOf(id) != to,
                     "failed on north bound check"
                 );
             }
         }
     }
 
-    // function _beforeTokenTransfer(
-    //     address from,
-    //     address to,
-    //     uint256 tokenId
-    // ) internal virtual override {
-    //     super._beforeTokenTransfer(from, to, tokenId);
-    //     validateTransfer(tokenId, to);
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
+        super._beforeTokenTransfer(from, to, tokenId);
 
-    //     // do stuff before every transfer
-    //     // e.g. check that vote (other than when minted)
-    //     // being transferred to registered candidate
-    //     _lastTransferred[uint32(tokenId)] = block.timestamp;
-    // }
+        // Ensure the token isn't being transferred to someone who owns a neighboring tile already
+        validateTransfer(tokenId, to);
+
+        _lastTransferred[uint32(tokenId)] = block.timestamp;
+    }
 
     // * Admin Only Methods * //
     function setLandGranter(address granter) public onlyOwner {
@@ -324,13 +293,34 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         _renderer = IRender(addr);
     }
 
+    function resetTile(uint32 x, uint32 y) public onlyOwner isValidTile(x, y) {
+        uint32 tokenId = generateTokenID(x, y);
+        require(
+            ownerOf(tokenId) != address(0) && ownerOf(tokenId) != _landGranter
+        );
+
+        delete _svgData[tokenId];
+        _transfer(ownerOf(tokenId), _landGranter, tokenId);
+        emit TileReset(tokenId);
+    }
+
+    function recirculateTile(uint32 x, uint32 y)
+        public
+        onlyOwner
+        isValidTile(x, y)
+    {
+        uint32 tokenId = generateTokenID(x, y);
+        require(block.timestamp > _lastTransferred[tokenId] + 12 hours);
+        resetTile(x, y);
+    }
+
     function _msgSender()
         internal
         view
         override(Context, TrustedForwarderRecipient)
         returns (address)
     {
-        return TrustedForwarderRecipient._msgSender();
+        return super._msgSender();
     }
 
     function _msgData()
@@ -339,6 +329,6 @@ contract ExquisiteLand is ERC721, Ownable, TrustedForwarderRecipient {
         override(Context, TrustedForwarderRecipient)
         returns (bytes memory ret)
     {
-        return TrustedForwarderRecipient._msgData();
+        return super._msgData();
     }
 }

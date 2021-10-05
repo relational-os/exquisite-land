@@ -57,8 +57,8 @@ const Canvas = () => {
             <Grid
               width={width}
               height={height}
-              columnCount={32}
-              rowCount={32}
+              columnCount={16}
+              rowCount={16}
               columnWidth={tileSize}
               rowHeight={tileSize}
             >
