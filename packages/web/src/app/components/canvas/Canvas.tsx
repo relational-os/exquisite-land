@@ -51,6 +51,7 @@ const Canvas = () => {
 
   // Scroll to tile based on query params
   const gridRef = useRef<FixedSizeGrid>(null);
+  const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     if (!gridRef.current) return;
 
@@ -59,10 +60,10 @@ const Canvas = () => {
     const y = params.get('y');
 
     if (x != null && y != null) {
-      gridRef.current.scrollToItem({
-        align: 'center',
-        columnIndex: +x,
-        rowIndex: +y
+      // scrollToItem wasn't scrolling the x axis on full width viewports for some reason, so we calculate this ourselves
+      gridRef.current.scrollTo({
+        scrollLeft: +x * tileSize - gridSize.width / 2 + tileSize / 2,
+        scrollTop: +y * tileSize - gridSize.height / 2 + tileSize / 2
       });
     }
   }, [gridRef.current]);
@@ -70,8 +71,8 @@ const Canvas = () => {
   return (
     <>
       <div className="surface">
-        <AutoSizer>
-          {({ height, width }: { width: number; height: number }) => (
+        <AutoSizer onResize={setGridSize}>
+          {({ height, width }) => (
             <FixedSizeGrid
               ref={gridRef}
               width={width}
