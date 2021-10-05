@@ -8,12 +8,11 @@ import { generateTokenID } from '@app/features/TileUtils';
 import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
-import Button from '../Button';
 
 const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   const ownTokenId = useOpenNeighborStore(
-    state =>
-      state.openNeighbors.find(tile => tile.x == x && tile.y == y)!.ownTokenId
+    (state) =>
+      state.openNeighbors.find((tile) => tile.x == x && tile.y == y)!.ownTokenId
   );
   const { provider, account } = useWallet();
   const [isGeneratingCoin, setGeneratingCoin] = useState(false);
@@ -42,27 +41,103 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   return (
     <div className="invite-neighbor-modal">
       <div className="message">
-        Invite someone to [{x}, {y}]
+        invite a neighbor to [{x}, {y}]
       </div>
+
       {isCoinGenerated ? (
-        <img
-          src={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
-          width={100}
-          height={100}
-        />
+        <>
+          <img
+            src={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+            width={250}
+            height={250}
+            className="coin"
+          />
+          <button>download coin</button>
+        </>
       ) : isGeneratingCoin ? (
-        <div className="message">Generating...</div>
+        <>
+          <div className="coin-blank">
+            <img src="/graphics/coin-spin.gif" className="coin-spin" />
+          </div>
+          <button disabled>generating...</button>
+        </>
       ) : (
-        <Button onClick={inviteNeighborClicked}>Generate Coin</Button>
+        <>
+          <div className="coin-blank">
+            <p>neighbor</p>
+            <h3>
+              [{x}, {y}]
+            </h3>
+          </div>
+          <button onClick={inviteNeighborClicked}>generate coin</button>
+        </>
       )}
       <style jsx>{`
         .invite-neighbor-modal {
-          background-color: white;
-          border: 1px solid black;
+          background-color: #c066ea;
+          width: 400px;
           padding: 20px;
+          text-align: center;
         }
+        .coin-blank {
+          width: 200px;
+          height: 200px;
+          margin: 20px auto;
+          border-radius: 50%;
+          border: 1px dashed #000;
+          font-size: 42px;
+        }
+
+        .coin-blank p {
+          margin-top: 3.2rem;
+          margin-bottom: -3rem;
+        }
+        .coin-blank p,
+        .coin-blank h3 {
+          opacity: 0.4;
+          font-weight: normal;
+        }
+
+        img.coin {
+          margin: 0 auto;
+        }
+
+        img.coin-spin {
+          width: 50%;
+          height: auto;
+          margin: 44px auto;
+        }
+
+        button {
+          display: block;
+          margin: 0 auto;
+          padding: 8px 14px;
+          border: 0;
+          background: #ffda00;
+          font-size: 24px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: rgba(0, 0, 0, 1);
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
+        }
+        button:disabled {
+          background: transparent;
+          border-bottom-color: transparent;
+          color: rgba(0, 0, 0, 0.5);
+        }
+        button:disabled:hover {
+          box-shadow: none;
+          cursor: default;
+        }
+
         .message {
           font-size: 24px;
+          color: #fff;
         }
       `}</style>
     </div>

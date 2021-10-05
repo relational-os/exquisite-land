@@ -45,7 +45,12 @@ const UseCoinButton = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)'
+    backgroundColor: 'rgba(51, 51, 51, 0.95)',
+    backgroundImage: 'url(/graphics/coinbox-background.png)',
+    backgroundPosition: 'center center',
+    backgroundSize: '75%',
+    backgroundRepeat: 'no-repeat',
+    zIndex: 1112
   },
   content: {
     top: '50%',

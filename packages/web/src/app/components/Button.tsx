@@ -1,48 +1,48 @@
-import React from "react";
+import React from 'react';
 
 const Button = React.forwardRef(function Button(
-	props: React.ComponentPropsWithoutRef<"button">,
-	ref: React.Ref<HTMLButtonElement>
+  props: React.ComponentPropsWithoutRef<'button'>,
+  ref: React.Ref<HTMLButtonElement>
 ) {
-	return (
-		<>
-			<button ref={ref} {...props} className={`button ${props.className}`} />
-			<style jsx>{`
-				.button {
-					padding: 8px 16px;
-					border: 0;
-					background: hsl(0deg 0% 90%);
-					font-size: 24px;
-					font-family: inherit;
-					cursor: pointer;
-					will-change: transform;
-					transition: transform 0.2s ease-in-out;
-					color: gray;
-					border-bottom: 4px solid rgba(0, 0, 0, 0.3);
-				}
+  return (
+    <>
+      <button ref={ref} {...props} className={`button ${props.className}`} />
+      <style jsx>{`
+        .button {
+          padding: 8px 16px;
+          border: 0;
+          background: #222;
+          font-size: 24px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: gray;
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
 
-				.button:hover {
-					box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
-				}
-			`}</style>
-		</>
-	);
+        .button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
+        }
+      `}</style>
+    </>
+  );
 });
 
 export const ButtonSuccess = React.forwardRef(function ButtonSuccess(
-	props: React.ComponentPropsWithoutRef<"button">,
-	ref: React.Ref<HTMLButtonElement>
+  props: React.ComponentPropsWithoutRef<'button'>,
+  ref: React.Ref<HTMLButtonElement>
 ) {
-	return (
-		<Button
-			ref={ref}
-			{...props}
-			style={{
-				color: "hsl(173deg 58% 20%)",
-				background: "hsl(173deg 58% 80%)",
-			}}
-		/>
-	);
+  return (
+    <Button
+      ref={ref}
+      {...props}
+      style={{
+        color: '#fff',
+        background: '#62c64c'
+      }}
+    />
+  );
 });
 
 export default Button;
