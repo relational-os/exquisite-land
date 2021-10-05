@@ -40,7 +40,12 @@ const CanvasTile = ({
   return (
     <div className="tile" onClick={onClick} style={style}>
       {tile?.svg && (
-        <div className="svg" dangerouslySetInnerHTML={{ __html: tile.svg }} />
+        <img
+          src={`/api/tiles/terramasu/${x}/${y}/image`}
+          width="100"
+          height="100"
+          className="tile-image"
+        />
       )}
       <div className="meta">
         <div className="coords">
@@ -112,6 +117,10 @@ const CanvasTile = ({
 
           ${isOwned &&
           'background-image: linear-gradient(-45deg, #ffe761, #fb922b); '};
+        }
+        .tile-image {
+          width: 100%;
+          height: auto;
         }
         .svg {
           width: 100%;
