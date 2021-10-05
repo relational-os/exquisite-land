@@ -59,7 +59,6 @@ const Canvas = () => {
   const zoomOut = () =>
     router.replace({ query: { ...router.query, z: zoom - 1 } });
 
-  // Scroll to tile based on query params
   const gridRef = useRef<FixedSizeGrid>(null);
   const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
 
