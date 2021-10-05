@@ -1,5 +1,6 @@
-import React, { CSSProperties, useState } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
+import React, { CSSProperties, useState, useRef, useLayoutEffect } from 'react';
+import { useRouter } from 'next/router';
+import { FixedSizeGrid } from 'react-window';
 import CanvasTile from './CanvasTile';
 import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
@@ -8,10 +9,17 @@ import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
 import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import { useDebouncedCallback } from 'use-debounce';
+
 Modal.setAppElement('#__next');
 
 const Canvas = () => {
-  const [tileSize, setTileSize] = useState(170);
+  const router = useRouter();
+  const zoom =
+    typeof router.query.z === 'string'
+      ? Math.max(1, Math.min(8, +router.query.z))
+      : 3;
+  const tileSize = zoom * 64;
 
   const [selectedX, setSelectedX] = useState<number>();
   const [selectedY, setSelectedY] = useState<number>();
@@ -46,21 +54,65 @@ const Canvas = () => {
     setIsInviteNeighborModalOpen(true);
   };
 
-  const zoomIn = () => setTileSize((s) => s * 1.25);
-  const zoomOut = () => setTileSize((s) => Math.max(0, s / 1.25));
+  const zoomIn = () =>
+    router.replace({ query: { ...router.query, z: zoom + 1 } });
+  const zoomOut = () =>
+    router.replace({ query: { ...router.query, z: zoom - 1 } });
+
+  const gridRef = useRef<FixedSizeGrid>(null);
+  const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
+
+  // Scroll to tile specified by URL query params
+  useLayoutEffect(() => {
+    if (!gridRef.current) return;
+
+    const scrollLeft =
+      typeof router.query.x === 'string'
+        ? +router.query.x * tileSize - gridSize.width / 2 + tileSize / 2
+        : undefined;
+
+    const scrollTop =
+      typeof router.query.y === 'string'
+        ? +router.query.y * tileSize - gridSize.height / 2 + tileSize / 2
+        : undefined;
+
+    if (scrollLeft != null || scrollTop != null) {
+      gridRef.current.scrollTo({
+        scrollLeft,
+        scrollTop
+      });
+    }
+  }, [gridRef.current, tileSize]);
+
+  const onScroll = useDebouncedCallback(
+    ({ scrollLeft, scrollTop }: { scrollLeft: number; scrollTop: number }) => {
+      // Update URL based on scroll position and currently-centered tile
+      const x = Math.floor(
+        (scrollLeft + gridSize.width / 2) / tileSize
+      ).toString();
+      const y = Math.floor(
+        (scrollTop + gridSize.height / 2) / tileSize
+      ).toString();
+
+      router.replace({ query: { ...router.query, x, y, z: zoom } });
+    },
+    200
+  );
 
   return (
     <>
       <div className="surface">
-        <AutoSizer>
-          {({ height, width }: { width: number; height: number }) => (
-            <Grid
+        <AutoSizer onResize={setGridSize}>
+          {({ height, width }) => (
+            <FixedSizeGrid
+              ref={gridRef}
               width={width}
               height={height}
               columnCount={16}
               rowCount={16}
               columnWidth={tileSize}
               rowHeight={tileSize}
+              onScroll={onScroll}
             >
               {({
                 columnIndex,
@@ -81,7 +133,7 @@ const Canvas = () => {
                   style={style}
                 />
               )}
-            </Grid>
+            </FixedSizeGrid>
           )}
         </AutoSizer>
       </div>
