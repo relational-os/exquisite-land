@@ -1,4 +1,5 @@
-import React, { CSSProperties, useState, useRef, useEffect } from 'react';
+import React, { CSSProperties, useState, useRef, useLayoutEffect } from 'react';
+import { useRouter } from 'next/router';
 import { FixedSizeGrid } from 'react-window';
 import CanvasTile from './CanvasTile';
 import Editor from '../editor/Editor';
@@ -8,10 +9,17 @@ import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
 import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
+import { useDebouncedCallback } from 'use-debounce';
+
 Modal.setAppElement('#__next');
 
 const Canvas = () => {
-  const [tileSize, setTileSize] = useState(170);
+  const router = useRouter();
+  const zoom =
+    typeof router.query.z === 'string'
+      ? Math.max(1, Math.min(8, +router.query.z))
+      : 3;
+  const tileSize = zoom * 64;
 
   const [selectedX, setSelectedX] = useState<number>();
   const [selectedY, setSelectedY] = useState<number>();
@@ -46,27 +54,51 @@ const Canvas = () => {
     setIsInviteNeighborModalOpen(true);
   };
 
-  const zoomIn = () => setTileSize((s) => s * 1.25);
-  const zoomOut = () => setTileSize((s) => Math.max(0, s / 1.25));
+  const zoomIn = () =>
+    router.replace({ query: { ...router.query, z: zoom + 1 } });
+  const zoomOut = () =>
+    router.replace({ query: { ...router.query, z: zoom - 1 } });
 
   // Scroll to tile based on query params
   const gridRef = useRef<FixedSizeGrid>(null);
   const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
-  useEffect(() => {
+
+  // Scroll to tile specified by URL query params
+  useLayoutEffect(() => {
     if (!gridRef.current) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const x = params.get('x');
-    const y = params.get('y');
+    const scrollLeft =
+      typeof router.query.x === 'string'
+        ? +router.query.x * tileSize - gridSize.width / 2 + tileSize / 2
+        : undefined;
 
-    if (x != null && y != null) {
-      // scrollToItem wasn't scrolling the x axis on full width viewports for some reason, so we calculate this ourselves
+    const scrollTop =
+      typeof router.query.y === 'string'
+        ? +router.query.y * tileSize - gridSize.height / 2 + tileSize / 2
+        : undefined;
+
+    if (scrollLeft != null || scrollTop != null) {
       gridRef.current.scrollTo({
-        scrollLeft: +x * tileSize - gridSize.width / 2 + tileSize / 2,
-        scrollTop: +y * tileSize - gridSize.height / 2 + tileSize / 2
+        scrollLeft,
+        scrollTop
       });
     }
-  }, [gridRef.current]);
+  }, [gridRef.current, tileSize]);
+
+  const onScroll = useDebouncedCallback(
+    ({ scrollLeft, scrollTop }: { scrollLeft: number; scrollTop: number }) => {
+      // Update URL based on scroll position and currently-centered tile
+      const x = Math.floor(
+        (scrollLeft + gridSize.width / 2) / tileSize
+      ).toString();
+      const y = Math.floor(
+        (scrollTop + gridSize.height / 2) / tileSize
+      ).toString();
+
+      router.replace({ query: { ...router.query, x, y, z: zoom } });
+    },
+    200
+  );
 
   return (
     <>
@@ -81,6 +113,7 @@ const Canvas = () => {
               rowCount={16}
               columnWidth={tileSize}
               rowHeight={tileSize}
+              onScroll={onScroll}
             >
               {({
                 columnIndex,
