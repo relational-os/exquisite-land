@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import Button, { ButtonSuccess } from '@app/components/Button';
-import useEditor from '@app/hooks/use-editor';
+import useEditor, { Pixels } from '@app/hooks/use-editor';
 import { Tool } from '@app/features/State';
 import Icon from './Icon';
 import EditorPreview from './EditorPreview';
 import TileSVG from '../canvas/TileSVG';
+import update from 'immutability-helper';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface EditorProps {
   x: number;
@@ -12,24 +14,23 @@ interface EditorProps {
   closeModal: () => void;
 }
 
-const emptyBoard = () => {
-  return Array(32)
-    .fill(0)
-    .map(() => Array(32).fill(13));
-};
-
-const PIXEL_SIZE = 18;
-const columns = Array.from(Array(32).keys());
-const rows = Array.from(Array(32).keys());
-
 const MAX = 32;
-const EMPTY = Array(32)
-  .fill(0)
-  .map(() => Array(32).fill(13));
+const PIXEL_SIZE = 18;
+
+const columns = Array.from(Array(MAX).keys());
+const rows = Array.from(Array(MAX).keys());
+
+const EMPTY: Pixels = columns.map(() => rows.map(() => 13));
 
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
-  const [pixels, setPixels] = useState<number[][]>(EMPTY);
+  const [pixels, setPixels] = useState<Pixels>(EMPTY);
+  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
+
+  const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
+    setPixelsHistory([newPixels, ...pixelsHistory]);
+  }, 500);
+
   const {
     palette,
     activeColor,
@@ -46,41 +47,39 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     startColor: number,
     x: number,
     y: number,
-    d: number[][],
-    checked: Record<string, boolean>
+    d: Pixels,
+    checked: Record<string, boolean> = {}
   ) => {
+    if (x < 0 || x >= MAX) return d;
+    if (y < 0 || y >= MAX) return d;
+
+    const key = `${x},${y}`;
     // If we've already checked this pixel don't check again
-    if (checked[`${x}-${y}`]) return d;
+    if (checked[key]) return d;
 
     // if this is no longer the same color stop checking
-    if (pixels[x][y] != startColor) return d;
+    if (d[x][y] !== startColor) return d;
+
+    // TODO: set up a linter to prevent mutating arguments?
 
     // paint this pixels color
-    d[x][y] = color;
+    d = update(d, { [x]: { [y]: { $set: color } } });
 
-    // Find Neighbors and add them to the stack
-    if (x + 1 < MAX) {
-      d = paintNeighbors(color, startColor, x + 1, y, d, checked);
-    }
-    if (x - 1 >= 0) {
-      d = paintNeighbors(color, startColor, x - 1, y, d, checked);
-    }
-    if (y + 1 < MAX) {
-      d = paintNeighbors(color, startColor, x, y + 1, d, checked);
-    }
-    if (y - 1 >= 0) {
-      d = paintNeighbors(color, startColor, x, y - 1, d, checked);
-    }
+    // paint each adjacent pixel
+    d = paintNeighbors(color, startColor, x + 1, y, d, checked);
+    d = paintNeighbors(color, startColor, x - 1, y, d, checked);
+    d = paintNeighbors(color, startColor, x, y + 1, d, checked);
+    d = paintNeighbors(color, startColor, x, y - 1, d, checked);
 
     // Since we've just checked this one, make sure we don't check it again
-    checked[`${x}-${y}`] = true;
+    checked[key] = true;
 
     return d;
   };
 
   const handleClear = () => {
-    console.log(EMPTY);
-    setPixels(emptyBoard());
+    setPixelsHistory([EMPTY]);
+    setPixels(EMPTY);
   };
 
   const handleSave = async () => {
@@ -100,21 +99,16 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
     if (activeTool == Tool.BRUSH) {
       elem.setAttribute('style', `background-color: ${palette[activeColor]}`);
-      setPixels((pixels) => {
-        if (!pixels[x]) {
-          pixels[x] = [];
-        }
-        pixels[x][y] = activeColor;
-
-        return pixels;
-      });
+      const newPixels = update(pixels, { [x]: { [y]: { $set: activeColor } } });
+      setPixels(newPixels);
+      addPixelsToHistory(newPixels);
     } else if (activeTool == Tool.EYEDROPPER) {
-      console.log(prevTool);
       setActiveColor(palette[pixels[x][y]]);
       setActiveTool(prevTool);
     } else if (activeTool == Tool.BUCKET) {
-      const d = paintNeighbors(activeColor, pixels[x][y], x, y, pixels, {});
-      setPixels(d);
+      const newPixels = paintNeighbors(activeColor, pixels[x][y], x, y, pixels);
+      setPixels(newPixels);
+      addPixelsToHistory(newPixels);
     }
   };
 
@@ -301,7 +295,15 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
                 }}
               />
             </button>
-            <button className="undo">
+            <button
+              className="undo"
+              disabled={!pixelsHistory.length || pixelsHistory[0] === EMPTY}
+              onClick={() => {
+                const [_pixels, ...prevPixelsHistory] = pixelsHistory;
+                setPixelsHistory(prevPixelsHistory);
+                setPixels(prevPixelsHistory[0] || EMPTY);
+              }}
+            >
               <Icon
                 name="undo"
                 style={{
@@ -487,9 +489,13 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           opacity: 0.5;
           cursor: pointer;
         }
-        .toolbar button:hover {
+        .toolbar button:hover:not([disabled]) {
           background: #111;
           opacity: 0.9;
+        }
+        .toolbar button[disabled] {
+          cursor: not-allowed;
+          opacity: 0.2;
         }
         .toolbar button.active {
           opacity: 1;

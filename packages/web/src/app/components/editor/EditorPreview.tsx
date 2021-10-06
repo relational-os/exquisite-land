@@ -1,9 +1,9 @@
-import useEditor from '@app/hooks/use-editor';
+import useEditor, { Pixels } from '@app/hooks/use-editor';
 import React from 'react';
 import CanvasTile from '../canvas/CanvasTile';
 
 interface EditorPreviewProps {
-  pixels: number[][];
+  pixels: Pixels;
   columns: number[];
   rows: number[];
   x: number;
@@ -16,7 +16,6 @@ const tileStyle = {
 };
 
 const EditorPreview = ({ pixels, x, y, columns, rows }: EditorPreviewProps) => {
-  console.log(pixels);
   const { palette } = useEditor();
 
   return (
