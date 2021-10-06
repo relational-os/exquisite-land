@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Button, { ButtonSuccess } from '@app/components/Button';
-import useEditor from '@app/hooks/use-editor';
+import useEditor, { Pixels } from '@app/hooks/use-editor';
 import { Tool } from '@app/features/State';
 import Icon from './Icon';
 import EditorPreview from './EditorPreview';
 import TileSVG from '../canvas/TileSVG';
+import update from 'immutability-helper';
 
 interface EditorProps {
   x: number;
@@ -12,24 +13,18 @@ interface EditorProps {
   closeModal: () => void;
 }
 
-const emptyBoard = () => {
-  return Array(32)
-    .fill(0)
-    .map(() => Array(32).fill(13));
-};
-
-const PIXEL_SIZE = 18;
-const columns = Array.from(Array(32).keys());
-const rows = Array.from(Array(32).keys());
-
 const MAX = 32;
-const EMPTY = Array(32)
-  .fill(0)
-  .map(() => Array(32).fill(13));
+const PIXEL_SIZE = 18;
+
+const columns = Array.from(Array(MAX).keys());
+const rows = Array.from(Array(MAX).keys());
+
+const EMPTY: Pixels = columns.map(() => rows.map(() => 13));
 
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
-  const [pixels, setPixels] = useState<number[][]>(EMPTY);
+  const [pixels, setPixels] = useState<Pixels>(EMPTY);
+
   const {
     palette,
     activeColor,
@@ -46,17 +41,21 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     startColor: number,
     x: number,
     y: number,
-    d: number[][],
+    d: Pixels,
     checked: Record<string, boolean>
   ) => {
+    const key = `${x},${y}`;
+
     // If we've already checked this pixel don't check again
-    if (checked[`${x}-${y}`]) return d;
+    if (checked[key]) return d;
 
     // if this is no longer the same color stop checking
-    if (pixels[x][y] != startColor) return d;
+    if (pixels[x][y] !== startColor) return d;
+
+    // TODO: set up a linter to prevent mutating arguments?
 
     // paint this pixels color
-    d[x][y] = color;
+    d = update(d, { [x]: { [y]: { $set: color } } });
 
     // Find Neighbors and add them to the stack
     if (x + 1 < MAX) {
@@ -73,14 +72,13 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     }
 
     // Since we've just checked this one, make sure we don't check it again
-    checked[`${x}-${y}`] = true;
+    checked[key] = true;
 
     return d;
   };
 
   const handleClear = () => {
-    console.log(EMPTY);
-    setPixels(emptyBoard());
+    setPixels(EMPTY);
   };
 
   const handleSave = async () => {
@@ -100,16 +98,9 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
 
     if (activeTool == Tool.BRUSH) {
       elem.setAttribute('style', `background-color: ${palette[activeColor]}`);
-      setPixels((pixels) => {
-        if (!pixels[x]) {
-          pixels[x] = [];
-        }
-        pixels[x][y] = activeColor;
-
-        return pixels;
-      });
+      const newPixels = update(pixels, { [x]: { [y]: { $set: activeColor } } });
+      setPixels(newPixels);
     } else if (activeTool == Tool.EYEDROPPER) {
-      console.log(prevTool);
       setActiveColor(palette[pixels[x][y]]);
       setActiveTool(prevTool);
     } else if (activeTool == Tool.BUCKET) {
