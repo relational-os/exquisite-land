@@ -6,6 +6,7 @@ import Icon from './Icon';
 import EditorPreview from './EditorPreview';
 import TileSVG from '../canvas/TileSVG';
 import update from 'immutability-helper';
+import { useDebouncedCallback } from 'use-debounce';
 
 interface EditorProps {
   x: number;
@@ -24,6 +25,11 @@ const EMPTY: Pixels = columns.map(() => rows.map(() => 13));
 const Editor = ({ x, y, closeModal }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
   const [pixels, setPixels] = useState<Pixels>(EMPTY);
+  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
+
+  const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
+    setPixelsHistory([newPixels, ...pixelsHistory]);
+  }, 500);
 
   const {
     palette,
@@ -78,6 +84,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
   };
 
   const handleClear = () => {
+    setPixelsHistory([EMPTY]);
     setPixels(EMPTY);
   };
 
@@ -100,12 +107,14 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       elem.setAttribute('style', `background-color: ${palette[activeColor]}`);
       const newPixels = update(pixels, { [x]: { [y]: { $set: activeColor } } });
       setPixels(newPixels);
+      addPixelsToHistory(newPixels);
     } else if (activeTool == Tool.EYEDROPPER) {
       setActiveColor(palette[pixels[x][y]]);
       setActiveTool(prevTool);
     } else if (activeTool == Tool.BUCKET) {
       const d = paintNeighbors(activeColor, pixels[x][y], x, y, pixels, {});
       setPixels(d);
+      addPixelsToHistory(d);
     }
   };
 
@@ -292,7 +301,15 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
                 }}
               />
             </button>
-            <button className="undo">
+            <button
+              className="undo"
+              disabled={!pixelsHistory.length || pixelsHistory[0] === EMPTY}
+              onClick={() => {
+                const [_pixels, ...prevPixelsHistory] = pixelsHistory;
+                setPixelsHistory(prevPixelsHistory);
+                setPixels(prevPixelsHistory[0] || EMPTY);
+              }}
+            >
               <Icon
                 name="undo"
                 style={{
@@ -478,9 +495,13 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           opacity: 0.5;
           cursor: pointer;
         }
-        .toolbar button:hover {
+        .toolbar button:hover:not([disabled]) {
           background: #111;
           opacity: 0.9;
+        }
+        .toolbar button[disabled] {
+          cursor: not-allowed;
+          opacity: 0.2;
         }
         .toolbar button.active {
           opacity: 1;
