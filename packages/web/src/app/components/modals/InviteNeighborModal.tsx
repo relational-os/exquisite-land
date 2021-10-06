@@ -45,15 +45,20 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       </div>
 
       {isCoinGenerated ? (
-        <>
+        <a
+          href={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+          download={`[${x}, ${y}].png`}
+          className="download-button"
+          target="_blank"
+        >
           <img
             src={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
             width={250}
             height={250}
             className="coin"
           />
-          <button>download coin</button>
-        </>
+          download coin
+        </a>
       ) : isGeneratingCoin ? (
         <>
           <div className="coin-blank">
@@ -108,7 +113,8 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           margin: 44px auto;
         }
 
-        button {
+        button,
+        .download-button {
           display: block;
           margin: 0 auto;
           padding: 8px 14px;
@@ -119,18 +125,22 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           cursor: pointer;
           will-change: transform;
           transition: transform 0.2s ease-in-out;
+          text-decoration: none;
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
-        button:hover {
+        button:hover,
+        .download-button:hover {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
         }
-        button:disabled {
+        button:disabled,
+        .download-button:disabled {
           background: transparent;
           border-bottom-color: transparent;
           color: rgba(0, 0, 0, 0.5);
         }
-        button:disabled:hover {
+        button:disabled:hover,
+        .download-button:disabled:hover {
           box-shadow: none;
           cursor: default;
         }
