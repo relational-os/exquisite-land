@@ -48,34 +48,28 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     x: number,
     y: number,
     d: Pixels,
-    checked: Record<string, boolean>
+    checked: Record<string, boolean> = {}
   ) => {
-    const key = `${x},${y}`;
+    if (x < 0 || x >= MAX) return d;
+    if (y < 0 || y >= MAX) return d;
 
+    const key = `${x},${y}`;
     // If we've already checked this pixel don't check again
     if (checked[key]) return d;
 
     // if this is no longer the same color stop checking
-    if (pixels[x][y] !== startColor) return d;
+    if (d[x][y] !== startColor) return d;
 
     // TODO: set up a linter to prevent mutating arguments?
 
     // paint this pixels color
     d = update(d, { [x]: { [y]: { $set: color } } });
 
-    // Find Neighbors and add them to the stack
-    if (x + 1 < MAX) {
-      d = paintNeighbors(color, startColor, x + 1, y, d, checked);
-    }
-    if (x - 1 >= 0) {
-      d = paintNeighbors(color, startColor, x - 1, y, d, checked);
-    }
-    if (y + 1 < MAX) {
-      d = paintNeighbors(color, startColor, x, y + 1, d, checked);
-    }
-    if (y - 1 >= 0) {
-      d = paintNeighbors(color, startColor, x, y - 1, d, checked);
-    }
+    // paint each adjacent pixel
+    d = paintNeighbors(color, startColor, x + 1, y, d, checked);
+    d = paintNeighbors(color, startColor, x - 1, y, d, checked);
+    d = paintNeighbors(color, startColor, x, y + 1, d, checked);
+    d = paintNeighbors(color, startColor, x, y - 1, d, checked);
 
     // Since we've just checked this one, make sure we don't check it again
     checked[key] = true;
@@ -112,9 +106,9 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
       setActiveColor(palette[pixels[x][y]]);
       setActiveTool(prevTool);
     } else if (activeTool == Tool.BUCKET) {
-      const d = paintNeighbors(activeColor, pixels[x][y], x, y, pixels, {});
-      setPixels(d);
-      addPixelsToHistory(d);
+      const newPixels = paintNeighbors(activeColor, pixels[x][y], x, y, pixels);
+      setPixels(newPixels);
+      addPixelsToHistory(newPixels);
     }
   };
 
