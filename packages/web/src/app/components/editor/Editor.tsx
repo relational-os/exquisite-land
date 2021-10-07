@@ -50,6 +50,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
     d: Pixels,
     checked: Record<string, boolean> = {}
   ) => {
+    if (color == startColor) return d;
     if (x < 0 || x >= MAX) return d;
     if (y < 0 || y >= MAX) return d;
 
