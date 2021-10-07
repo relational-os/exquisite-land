@@ -67,13 +67,17 @@ const Canvas = () => {
     router.replace({ query: { ...router.query, z: zoom - 1 } });
 
   const gridRef = useRef<FixedSizeGrid>(null);
-  const [gridSize, setGridSize] = useState({ width: 1000, height: 1000 });
+  const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    setGridSize({
-      width: document.body.clientWidth,
-      height: document.body.clientHeight
-    });
+    const updateGridSize = () => {
+      setGridSize({
+        width: document.body.clientWidth,
+        height: document.body.clientHeight
+      });
+    };
+    window.addEventListener('resize', updateGridSize);
+    updateGridSize();
   }, []);
 
   // Scroll to tile specified by URL query params
