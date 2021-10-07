@@ -4,7 +4,6 @@ import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName, AddressDisplayEnum } from 'react-ens-name';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
-import { Web3Provider } from '@ethersproject/providers';
 
 const ConnectWalletButton = () => {
   const { connect, account, web3Modal } = useWallet();

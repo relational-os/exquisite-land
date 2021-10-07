@@ -1,4 +1,10 @@
-import React, { CSSProperties, useState, useRef, useLayoutEffect } from 'react';
+import React, {
+  CSSProperties,
+  useState,
+  useRef,
+  useLayoutEffect,
+  useEffect
+} from 'react';
 import { useRouter } from 'next/router';
 import { FixedSizeGrid } from 'react-window';
 import CanvasTile from './CanvasTile';
@@ -14,6 +20,7 @@ import { useDebouncedCallback } from 'use-debounce';
 Modal.setAppElement('#__next');
 
 const Canvas = () => {
+  console.log('load canvas');
   const router = useRouter();
   const zoom =
     typeof router.query.z === 'string'
@@ -60,10 +67,17 @@ const Canvas = () => {
     router.replace({ query: { ...router.query, z: zoom - 1 } });
 
   const gridRef = useRef<FixedSizeGrid>(null);
-  const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
+  const [gridSize, setGridSize] = useState({ width: 1000, height: 1000 });
+
+  useEffect(() => {
+    setGridSize({
+      width: document.body.clientWidth,
+      height: document.body.clientHeight
+    });
+  }, []);
 
   // Scroll to tile specified by URL query params
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!gridRef.current) return;
 
     const scrollLeft =
@@ -102,40 +116,41 @@ const Canvas = () => {
   return (
     <>
       <div className="surface">
-        <AutoSizer onResize={setGridSize}>
-          {({ height, width }) => (
-            <FixedSizeGrid
-              ref={gridRef}
-              width={width}
-              height={height}
-              columnCount={16}
-              rowCount={16}
-              columnWidth={tileSize}
-              rowHeight={tileSize}
-              onScroll={onScroll}
-            >
-              {({
-                columnIndex,
-                rowIndex,
-                style
-              }: {
-                columnIndex: number;
-                rowIndex: number;
-                style: CSSProperties;
-              }) => (
-                <CanvasTile
-                  x={columnIndex}
-                  y={rowIndex}
-                  openEditor={() => openEditor(columnIndex, rowIndex)}
-                  openGenerateInvite={() =>
-                    openGenerateInvite(columnIndex, rowIndex)
-                  }
-                  style={style}
-                />
-              )}
-            </FixedSizeGrid>
+        {/* <AutoSizer onResize={setGridSize}>
+          {({ height, width }) => ( */}
+        <FixedSizeGrid
+          ref={gridRef}
+          width={gridSize.width}
+          height={gridSize.height}
+          columnCount={16}
+          rowCount={16}
+          columnWidth={tileSize}
+          rowHeight={tileSize}
+          onScroll={onScroll}
+        >
+          {({
+            columnIndex,
+            rowIndex,
+            style
+          }: {
+            columnIndex: number;
+            rowIndex: number;
+            style: CSSProperties;
+          }) => (
+            <CanvasTile
+              x={columnIndex}
+              y={rowIndex}
+              openEditor={() => openEditor(columnIndex, rowIndex)}
+              openGenerateInvite={() =>
+                openGenerateInvite(columnIndex, rowIndex)
+              }
+              style={style}
+            />
           )}
-        </AutoSizer>
+        </FixedSizeGrid>
+
+        {/* )}
+        </AutoSizer> */}
       </div>
       <div className="controls">
         <button onClick={zoomIn}>+</button>
