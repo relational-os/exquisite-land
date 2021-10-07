@@ -4,9 +4,10 @@ import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName, AddressDisplayEnum } from 'react-ens-name';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { Web3Provider } from '@ethersproject/providers';
 
 const ConnectWalletButton = () => {
-  const { connect, account } = useWallet();
+  const { connect, account, web3Modal } = useWallet();
 
   const providerOptions = {
     walletconnect: {
@@ -27,7 +28,9 @@ const ConnectWalletButton = () => {
 
   // try an initial connect, we might be cached
   useEffect(() => {
-    connectWallet();
+    if (web3Modal?.cachedProvider) {
+      connectWallet();
+    }
   }, [connectWallet]);
 
   return (
