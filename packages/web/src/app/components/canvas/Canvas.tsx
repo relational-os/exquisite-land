@@ -1,4 +1,10 @@
-import React, { CSSProperties, useState, useRef, useLayoutEffect } from 'react';
+import React, {
+  CSSProperties,
+  useState,
+  useRef,
+  useLayoutEffect,
+  useEffect
+} from 'react';
 import { useRouter } from 'next/router';
 import { FixedSizeGrid } from 'react-window';
 import CanvasTile from './CanvasTile';
@@ -13,13 +19,37 @@ import { useDebouncedCallback } from 'use-debounce';
 
 Modal.setAppElement('#__next');
 
+// TODO: decide if we want to make this dynamic based on tiles painted?
+const DEFAULT_X = 7;
+const DEFAULT_Y = 7;
+const DEFAULT_Z = 2;
+
 const Canvas = () => {
   const router = useRouter();
   const zoom =
     typeof router.query.z === 'string'
       ? Math.max(1, Math.min(8, +router.query.z))
-      : 3;
+      : DEFAULT_Z;
   const tileSize = zoom * 64;
+
+  // Populate any missing query params to center the map on the default x, y, z
+  useEffect(() => {
+    if (
+      router.isReady &&
+      (router.query.x == null ||
+        router.query.y == null ||
+        router.query.z == null)
+    ) {
+      router.replace({
+        query: {
+          ...router.query,
+          x: router.query.x ?? DEFAULT_X,
+          y: router.query.y ?? DEFAULT_Y,
+          z: router.query.z ?? DEFAULT_Z
+        }
+      });
+    }
+  }, [router.isReady, router.query.x, router.query.y, router.query.z]);
 
   const [selectedX, setSelectedX] = useState<number>();
   const [selectedY, setSelectedY] = useState<number>();
@@ -94,7 +124,7 @@ const Canvas = () => {
         (scrollTop + gridSize.height / 2) / tileSize
       ).toString();
 
-      router.replace({ query: { ...router.query, x, y, z: zoom } });
+      router.replace({ query: { ...router.query, x, y } });
     },
     200
   );
