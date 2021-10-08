@@ -137,26 +137,19 @@ const Canvas = () => {
       >
         <div
           style={{
-            position: 'relative',
-            width: `${tileSize * columns.length}px`,
-            height: `${tileSize * rows.length}px`
+            display: 'grid',
+            gridTemplateColumns: `repeat(${columns.length}, ${tileSize}px)`,
+            gridTemplateRows: `repeat(${rows.length}, ${tileSize}px)`
           }}
         >
-          {columns.map((x) =>
-            rows.map((y) => (
+          {rows.map((y) =>
+            columns.map((x) => (
               <CanvasTile
                 key={`${x},${y}`}
                 x={x}
                 y={y}
                 openEditor={() => openEditor(x, y)}
                 openGenerateInvite={() => openGenerateInvite(x, y)}
-                style={{
-                  width: `${tileSize}px`,
-                  height: `${tileSize}px`,
-                  position: 'absolute',
-                  top: `${y * tileSize}px`,
-                  left: `${x * tileSize}px`
-                }}
               />
             ))
           )}
