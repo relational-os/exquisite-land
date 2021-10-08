@@ -135,25 +135,17 @@ const Canvas = () => {
           onScroll({ scrollTop, scrollLeft });
         }}
       >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${columns.length}, ${tileSize}px)`,
-            gridTemplateRows: `repeat(${rows.length}, ${tileSize}px)`
-          }}
-        >
-          {rows.map((y) =>
-            columns.map((x) => (
-              <CanvasTile
-                key={`${x},${y}`}
-                x={x}
-                y={y}
-                openEditor={() => openEditor(x, y)}
-                openGenerateInvite={() => openGenerateInvite(x, y)}
-              />
-            ))
-          )}
-        </div>
+        {rows.map((y) =>
+          columns.map((x) => (
+            <CanvasTile
+              key={`${x},${y}`}
+              x={x}
+              y={y}
+              openEditor={() => openEditor(x, y)}
+              openGenerateInvite={() => openGenerateInvite(x, y)}
+            />
+          ))
+        )}
       </div>
       <div className="controls">
         <button onClick={zoomIn}>+</button>
@@ -188,6 +180,9 @@ const Canvas = () => {
           width: 100vw;
           height: 100vh;
           overflow: auto;
+          display: grid;
+          grid-template-columns: repeat(${columns.length}, ${tileSize}px);
+          grid-template-rows: repeat(${rows.length}, ${tileSize}px);
         }
         .controls {
           position: fixed;
