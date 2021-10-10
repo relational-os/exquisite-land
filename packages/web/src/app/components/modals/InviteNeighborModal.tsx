@@ -45,20 +45,22 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       </div>
 
       {isCoinGenerated ? (
-        <a
-          href={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
-          download={`[${x}, ${y}].png`}
-          className="download-button"
-          target="_blank"
-        >
+        <>
           <img
             src={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
             width={250}
             height={250}
             className="coin"
           />
-          download coin
-        </a>
+          <a
+            href={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+            download={`[${x}, ${y}].png`}
+            className="download-button"
+            target="_blank"
+          >
+            download coin
+          </a>
+        </>
       ) : isGeneratingCoin ? (
         <>
           <div className="coin-blank">
