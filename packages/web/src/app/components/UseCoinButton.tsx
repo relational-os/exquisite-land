@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import CoinDropModal from '@app/components/modals/CoinDropModal';
+import Head from 'next/head';
 
 const listen = (
   target: EventTarget,
@@ -47,9 +48,44 @@ const UseCoinButton = () => {
 
   return (
     <div className="use-coin-button">
+      <Head>
+        {/* Preload coin images */}
+        <link
+          rel="preload"
+          href="/graphics/coinbox-empty.png"
+          as="image"
+          type="image/png"
+        />
+        <link
+          rel="preload"
+          href="/graphics/coinbox-arrow.png"
+          as="image"
+          type="image/png"
+        />
+        <link
+          rel="preload"
+          href="/graphics/coinbox-background.png"
+          as="image"
+          type="image/png"
+        />
+        <link
+          rel="preload"
+          href="/graphics/coinbox-valid.png"
+          as="image"
+          type="image/png"
+        />
+        <link
+          rel="preload"
+          href="/graphics/coinbox-invalid.png"
+          as="image"
+          type="image/png"
+        />
+      </Head>
+
       <button className="invite-button" onClick={openCoinModal}>
         have a coin?
       </button>
+
       <Modal
         isOpen={isCoinModalOpen || hasDrop}
         onRequestClose={closeCoinModal}
