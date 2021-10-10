@@ -63,4 +63,12 @@ const TileSVG = ({
   );
 };
 
-export default TileSVG;
+export default React.memo(
+  TileSVG,
+  (prev, next) =>
+    prev.viewbox == next.viewbox &&
+    prev.svgWidth == next.svgWidth &&
+    prev.svgHeight == next.svgHeight &&
+    prev.x == next.x &&
+    prev.y == next.y
+);
