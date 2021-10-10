@@ -1,16 +1,8 @@
-import React, {
-  CSSProperties,
-  useState,
-  useRef,
-  useLayoutEffect,
-  useEffect
-} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { FixedSizeGrid } from 'react-window';
 import CanvasTile from './CanvasTile';
 import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
@@ -23,6 +15,9 @@ Modal.setAppElement('#__next');
 const DEFAULT_X = 7;
 const DEFAULT_Y = 7;
 const DEFAULT_Z = 2;
+
+const columns = Array.from(Array(16).keys());
+const rows = Array.from(Array(16).keys());
 
 const Canvas = () => {
   const router = useRouter();
@@ -89,39 +84,40 @@ const Canvas = () => {
   const zoomOut = () =>
     router.replace({ query: { ...router.query, z: zoom - 1 } });
 
-  const gridRef = useRef<FixedSizeGrid>(null);
-  const [gridSize, setGridSize] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Scroll to tile specified by URL query params
-  useLayoutEffect(() => {
-    if (!gridRef.current) return;
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-    const scrollLeft =
+    const containerSize = containerRef.current.getBoundingClientRect();
+
+    const left =
       typeof router.query.x === 'string'
-        ? +router.query.x * tileSize - gridSize.width / 2 + tileSize / 2
+        ? +router.query.x * tileSize - containerSize.width / 2 + tileSize / 2
         : undefined;
 
-    const scrollTop =
+    const top =
       typeof router.query.y === 'string'
-        ? +router.query.y * tileSize - gridSize.height / 2 + tileSize / 2
+        ? +router.query.y * tileSize - containerSize.height / 2 + tileSize / 2
         : undefined;
 
-    if (scrollLeft != null || scrollTop != null) {
-      gridRef.current.scrollTo({
-        scrollLeft,
-        scrollTop
-      });
+    if (left != null || top != null) {
+      containerRef.current.scrollTo({ left, top });
     }
-  }, [gridRef.current, tileSize]);
+  }, [containerRef.current, tileSize]);
 
   const onScroll = useDebouncedCallback(
     ({ scrollLeft, scrollTop }: { scrollLeft: number; scrollTop: number }) => {
+      if (!containerRef.current) return;
+      const containerSize = containerRef.current.getBoundingClientRect();
+
       // Update URL based on scroll position and currently-centered tile
       const x = Math.floor(
-        (scrollLeft + gridSize.width / 2) / tileSize
+        (scrollLeft + containerSize.width / 2) / tileSize
       ).toString();
       const y = Math.floor(
-        (scrollTop + gridSize.height / 2) / tileSize
+        (scrollTop + containerSize.height / 2) / tileSize
       ).toString();
 
       router.replace({ query: { ...router.query, x, y } });
@@ -131,41 +127,25 @@ const Canvas = () => {
 
   return (
     <>
-      <div className="surface">
-        <AutoSizer onResize={setGridSize}>
-          {({ height, width }) => (
-            <FixedSizeGrid
-              ref={gridRef}
-              width={width}
-              height={height}
-              columnCount={16}
-              rowCount={16}
-              columnWidth={tileSize}
-              rowHeight={tileSize}
-              onScroll={onScroll}
-            >
-              {({
-                columnIndex,
-                rowIndex,
-                style
-              }: {
-                columnIndex: number;
-                rowIndex: number;
-                style: CSSProperties;
-              }) => (
-                <CanvasTile
-                  x={columnIndex}
-                  y={rowIndex}
-                  openEditor={() => openEditor(columnIndex, rowIndex)}
-                  openGenerateInvite={() =>
-                    openGenerateInvite(columnIndex, rowIndex)
-                  }
-                  style={style}
-                />
-              )}
-            </FixedSizeGrid>
-          )}
-        </AutoSizer>
+      <div
+        ref={containerRef}
+        className="surface"
+        onScroll={(event) => {
+          const { scrollTop, scrollLeft } = event.currentTarget;
+          onScroll({ scrollTop, scrollLeft });
+        }}
+      >
+        {rows.map((y) =>
+          columns.map((x) => (
+            <CanvasTile
+              key={`${x},${y}`}
+              x={x}
+              y={y}
+              openEditor={() => openEditor(x, y)}
+              openGenerateInvite={() => openGenerateInvite(x, y)}
+            />
+          ))
+        )}
       </div>
       <div className="controls">
         <button onClick={zoomIn}>+</button>
@@ -177,7 +157,7 @@ const Canvas = () => {
         style={editModalStyles}
         contentLabel="Tile Editor Modal"
       >
-        {selectedX != undefined && selectedY != undefined && (
+        {selectedX != null && selectedY != null && (
           <Editor
             x={selectedX}
             y={selectedY}
@@ -191,15 +171,18 @@ const Canvas = () => {
         style={modalStyles}
         contentLabel="Invite Neighbor Modal"
       >
-        {selectedX != undefined && selectedY != undefined && (
+        {selectedX != null && selectedY != null && (
           <InviteNeighborModal x={selectedX} y={selectedY} />
         )}
       </Modal>
       <style jsx>{`
         .surface {
-          width: 100%;
-          height: 100%;
+          width: 100vw;
+          height: 100vh;
           overflow: auto;
+          display: grid;
+          grid-template-columns: repeat(${columns.length}, ${tileSize}px);
+          grid-template-rows: repeat(${rows.length}, ${tileSize}px);
         }
         .controls {
           position: fixed;

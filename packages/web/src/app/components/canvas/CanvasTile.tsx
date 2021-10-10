@@ -205,7 +205,4 @@ const CanvasTile = ({
   );
 };
 
-export default React.memo(
-  CanvasTile,
-  (prev, next) => prev.x === next.x && prev.y === next.y
-);
+export default CanvasTile;
