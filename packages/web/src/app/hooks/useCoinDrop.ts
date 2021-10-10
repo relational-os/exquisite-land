@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export const useCoinDrop = () => {
