@@ -205,4 +205,4 @@ const CanvasTile = ({
   );
 };
 
-export default React.memo(CanvasTile);
+export default CanvasTile;
