@@ -68,5 +68,7 @@ export default React.memo(
   (prev, next) =>
     prev.viewbox == next.viewbox &&
     prev.svgWidth == next.svgWidth &&
-    prev.svgHeight == next.svgHeight
+    prev.svgHeight == next.svgHeight &&
+    prev.x == next.x &&
+    prev.y == next.y
 );
