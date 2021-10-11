@@ -6,17 +6,21 @@ import Modal from 'react-modal';
 import ConnectWalletModal from './ConnectWalletModal';
 import { useCoinDrop } from '@app/hooks/useCoinDrop';
 
+const test = true;
+
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
   const [claimed, setClaimed] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
 
   const { tokenId, dropError, reset, getRootProps, getInputProps } =
-    useCoinDrop();
+    useCoinDrop(setProcessing);
 
   const claimCoin = async () => {
     if (tokenId == undefined) return;
     if (!account) setIsConnectedModalOpen(true);
+    setProcessing(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
       body: JSON.stringify({ tokenId, recipient: account }),
@@ -25,6 +29,11 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       }
     }).then((r) => r.json());
 
+    // TODO: only set processing as false once TheGraph has been updated?
+    // this will prevent the player from getting into a state where they need to refresh the page
+    // otherwise let them work with local state and assume the chain is good to go?
+    // -> save button in the editor could be disabled until chain has confirmations?
+    setProcessing(false);
     if (tx && !error) {
       setClaimed(true);
       if (onClaim) setTimeout(onClaim, 1000);
@@ -42,7 +51,11 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           <div className="message" {...getRootProps()}>
             <img className="empty" src="/graphics/coinbox-empty.png" />
             <input {...getInputProps()} />
-            <div className="text">Drop your coin here!</div>
+            {processing ? (
+              <div className="text">Processing Coin...</div>
+            ) : (
+              <div className="text">Drop your coin here!</div>
+            )}
           </div>
           <div className="arrows">
             <img className="arrow-l" src="/graphics/coinbox-arrow.png" />
@@ -58,7 +71,11 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
               [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
             </div>
             <img src="/graphics/coinbox-valid.png" />
-            <div className="text">Your coin is valid!</div>
+            {processing ? (
+              <div className="text">Redeeming Coin...</div>
+            ) : (
+              <div className="text">Your coin is valid!</div>
+            )}
           </div>
           <Button onClick={claimCoin}>Redeem</Button>
         </div>

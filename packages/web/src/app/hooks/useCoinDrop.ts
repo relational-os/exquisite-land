@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-export const useCoinDrop = () => {
+export const useCoinDrop = (
+  setProcessing: React.Dispatch<React.SetStateAction<boolean>>
+) => {
   const [tokenId, setTokenId] = useState<number | null>(null);
   const [dropError, setDropError] = useState<string | null>(null);
 
@@ -17,6 +19,7 @@ export const useCoinDrop = () => {
     reader.onload = async () => {
       const coinB64 = (reader.result as string).replace(/^data:.+;base64,/, '');
 
+      setProcessing(true);
       const { tokenId, error } = await fetch('/api/land-granter/check-coin', {
         method: 'POST',
         headers: {
@@ -24,6 +27,7 @@ export const useCoinDrop = () => {
         },
         body: JSON.stringify({ coinB64 })
       }).then((r) => r.json());
+      setProcessing(false);
 
       if (error) {
         console.error('API error while checking coin:', error);
