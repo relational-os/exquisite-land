@@ -6,12 +6,15 @@ import Button from '../Button';
 import Modal from 'react-modal';
 import ConnectWalletModal from './ConnectWalletModal';
 
+const test = true;
+
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
   const [tokenId, setTokenId] = useState<number>();
   const [error, setError] = useState<string>();
   const [coinB64, setCoinB64] = useState<string>();
   const [claimed, setClaimed] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -20,6 +23,9 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     reader.onload = async () => {
       const coinB64 = (reader.result as string).replace(/^data:.+;base64,/, '');
       setCoinB64(coinB64);
+
+      // set validating coin
+      setProcessing(true);
       const { tokenId, error } = await fetch('/api/land-granter/check-coin', {
         method: 'POST',
         body: JSON.stringify({ coinB64 }),
@@ -27,8 +33,9 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           'Content-Type': 'application/json'
         }
       }).then((r) => r.json());
-      if (tokenId) setTokenId(tokenId);
+      setProcessing(false);
 
+      if (tokenId) setTokenId(tokenId);
       if (error) setError(error);
     };
     reader.readAsDataURL(file);
@@ -37,6 +44,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const claimCoin = async () => {
     if (!coinB64) return;
     if (!account) setIsConnectedModalOpen(true);
+    setProcessing(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
       body: JSON.stringify({ coinB64, recipient: account }),
@@ -44,6 +52,12 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         'Content-Type': 'application/json'
       }
     }).then((r) => r.json());
+
+    // TODO: only set processing as false once TheGraph has been updated?
+    // this will prevent the player from getting into a state where they need to refresh the page
+    // otherwise let them work with local state and assume the chain is good to go?
+    // -> save button in the editor could be disabled until chain has confirmations?
+    setProcessing(false);
     if (tx && !error) {
       setClaimed(true);
       if (onClaim) setTimeout(onClaim, 1000);
@@ -73,7 +87,11 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           <div className="message" {...getRootProps()}>
             <img className="empty" src="/graphics/coinbox-empty.png" />
             <input {...getInputProps()} />
-            <div className="text">Drop your coin here!</div>
+            {processing ? (
+              <div className="text">Processing Coin...</div>
+            ) : (
+              <div className="text">Drop your coin here!</div>
+            )}
           </div>
           <div className="arrows">
             <img className="arrow-l" src="/graphics/coinbox-arrow.png" />
@@ -89,7 +107,11 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
               [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
             </div>
             <img src="/graphics/coinbox-valid.png" />
-            <div className="text">Your coin is valid!</div>
+            {processing ? (
+              <div className="text">Redeeming Coin...</div>
+            ) : (
+              <div className="text">Your coin is valid!</div>
+            )}
           </div>
           <Button onClick={claimCoin}>Redeem</Button>
         </div>
