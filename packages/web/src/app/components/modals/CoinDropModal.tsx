@@ -6,8 +6,6 @@ import Modal from 'react-modal';
 import ConnectWalletModal from './ConnectWalletModal';
 import { useCoinDrop } from '@app/hooks/useCoinDrop';
 
-const test = true;
-
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
   const [claimed, setClaimed] = useState(false);
