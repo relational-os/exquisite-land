@@ -23,7 +23,9 @@ async function start() {
   const env = require('dotenv').config({ path }).parsed;
   const provider = new JsonRpcProvider(env.RPC_ENDPOINT);
   const wallet = new Wallet(`0x${env.PRIVATE_KEY}`, provider);
-  const addressesPath = `${process.cwd()}/addresses/${chainId}.json`;
+  const addressesPath = `${process.cwd()}/addresses/${chainId}${
+    args.dev ? '-dev' : ''
+  }.json`;
   const addressBook = JSON.parse(
     await fs.readFileSync(addressesPath).toString()
   );
