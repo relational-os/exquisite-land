@@ -1,3 +1,4 @@
+import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import getContract from '@app/features/getContract';
 import { generateTokenID } from '@app/features/TileUtils';
 import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
@@ -5,7 +6,7 @@ import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
 
 const InviteNeighbors = () => {
-  const openNeighbors = useOpenNeighborStore(state => state.openNeighbors);
+  const openNeighbors = useOpenNeighborStore((state) => state.openNeighbors);
   const { provider } = useWallet();
 
   const [tokenId, setTokenId] = useState<number>();
@@ -18,7 +19,7 @@ const InviteNeighbors = () => {
       tokenId,
       x,
       y,
-      process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string
+      LAND_GRANTER_CONTRACT_ADDRESS
     );
     await tx.wait(1);
     console.log(tx.hash);
@@ -26,7 +27,7 @@ const InviteNeighbors = () => {
   };
   return (
     <div className="invite-neighbors">
-      {openNeighbors.map(neighbor => (
+      {openNeighbors.map((neighbor) => (
         <div className="open-neighbor" key={neighbor.tokenId}>
           {neighbor.x}, {neighbor.y}{' '}
           <button

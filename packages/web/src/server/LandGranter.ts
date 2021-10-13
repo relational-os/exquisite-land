@@ -16,6 +16,10 @@ import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import { Wallet } from '@ethersproject/wallet';
 import path from 'path';
 import { getCoordinates } from '@app/features/TileUtils';
+import {
+  EXQUISITE_LAND_CONTRACT_ADDRESS,
+  LAND_GRANTER_CONTRACT_ADDRESS
+} from '@app/features/AddressBook';
 
 export const getTokenIDForCoin = (coinB64: string): number | null => {
   try {
@@ -33,16 +37,13 @@ export const checkTokenIdIsOwnedByLandGranter = async (
 ): Promise<boolean> => {
   try {
     const contract = ExquisiteLand__factory.connect(
-      process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
+      EXQUISITE_LAND_CONTRACT_ADDRESS,
       getJsonRpcProvider()
     );
     const ownerAddress = await contract.ownerOf(tokenId);
 
     return (
-      ownerAddress.toLowerCase() ===
-      (
-        process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string
-      ).toLowerCase()
+      ownerAddress.toLowerCase() === LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase()
     );
   } catch (err) {
     console.log(err);
@@ -59,7 +60,7 @@ export const grantLandTile = (
     getJsonRpcProvider()
   );
   const contract = LandGranter__factory.connect(
-    process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string,
+    LAND_GRANTER_CONTRACT_ADDRESS,
     wallet
   );
   return contract.grant(tokenId, recipient);

@@ -8,6 +8,7 @@
     "start": "cross-env NODE_ENV=production node dist/index.js"
   },
   "dependencies": {
+    "@exquisiteland/contracts": "^0.0.1",
     "@gimmixorg/use-wallet": "^0.0.25",
     "@prisma/client": "2.29.1",
     "cross-env": "^7.0.2",
