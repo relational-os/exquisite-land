@@ -1,5 +1,6 @@
 {
-  "name": "exquisite-land",
+  "name": "@exquisiteland/subgraph",
+  "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
