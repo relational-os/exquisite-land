@@ -19,6 +19,10 @@ import path from 'path';
 import { generateTokenID, getCoordinates } from '@app/features/TileUtils';
 import { parse, stringify } from 'svgson';
 import PALETTES from '@constants/Palettes';
+import {
+  EXQUISITE_LAND_CONTRACT_ADDRESS,
+  LAND_GRANTER_CONTRACT_ADDRESS
+} from '@app/features/AddressBook';
 
 const xyLUT = new Map<string, { x: number; y: number; tokenId: number }>();
 for (var x = 0; x < 16; x++) {
@@ -110,16 +114,13 @@ export const checkTokenIdIsOwnedByLandGranter = async (
 ): Promise<boolean> => {
   try {
     const contract = ExquisiteLand__factory.connect(
-      process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
+      EXQUISITE_LAND_CONTRACT_ADDRESS,
       getJsonRpcProvider()
     );
     const ownerAddress = await contract.ownerOf(tokenId);
 
     return (
-      ownerAddress.toLowerCase() ===
-      (
-        process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string
-      ).toLowerCase()
+      ownerAddress.toLowerCase() === LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase()
     );
   } catch (err) {
     console.log(err);
@@ -136,7 +137,7 @@ export const grantLandTile = (
     getJsonRpcProvider()
   );
   const contract = LandGranter__factory.connect(
-    process.env.NEXT_PUBLIC_LAND_GRANTER_CONTRACT_ADDRESS as string,
+    LAND_GRANTER_CONTRACT_ADDRESS,
     wallet
   );
   return contract.grant(tokenId, recipient);

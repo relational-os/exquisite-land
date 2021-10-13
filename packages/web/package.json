@@ -1,6 +1,7 @@
 {
   "name": "@exquisiteland/web",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,6 +12,7 @@
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/wallet": "^5.4.0",
+    "@exquisiteland/contracts": "^0.1.0",
     "@gimmixorg/use-wallet": "^0.0.25",
     "@svgr/webpack": "^5.5.0",
     "@walletconnect/web3-provider": "^1.6.5",
@@ -32,6 +34,7 @@
     "steggy": "^2.0.1",
     "steggy-noencrypt": "^2.0.3",
     "svgo": "^2.5.0",
+    "svgson": "^5.2.1",
     "swr": "^1.0.1",
     "use-debounce": "^7.0.0",
     "zustand": "^3.5.10"

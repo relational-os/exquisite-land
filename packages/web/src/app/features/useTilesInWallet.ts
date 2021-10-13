@@ -1,6 +1,6 @@
 import request, { gql } from 'graphql-request';
 import useSWR, { SWRConfiguration } from 'swr';
-import { GRAPH_URL } from './Graph';
+import { GRAPH_URL } from './AddressBook';
 import { GraphTile } from './useTile';
 
 const query = gql`
@@ -23,10 +23,10 @@ export const useTilesInWallet = (
 ) => {
   const { data, error, mutate } = useSWR<{ player: { tiles: GraphTile[] } }>(
     address ? [address, 'useTilesInWallet'] : null,
-    address => request(GRAPH_URL, query, { address: address.toLowerCase() }),
+    (address) => request(GRAPH_URL, query, { address: address.toLowerCase() }),
     swrOptions
   );
-  const tiles = data?.player?.tiles.map(tile => ({
+  const tiles = data?.player?.tiles.map((tile) => ({
     ...tile,
     x: Number(tile.x),
     y: Number(tile.y)

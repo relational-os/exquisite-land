@@ -1,5 +1,6 @@
 {
-  "name": "exquisite-land",
+  "name": "@exquisiteland/subgraph",
+  "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
@@ -11,7 +12,9 @@
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 relational-os/exquisite-land"
   },
   "dependencies": {
+    "@exquisiteland/contracts": "^0.1.0",
     "@graphprotocol/graph-cli": "0.21.1",
     "@graphprotocol/graph-ts": "0.20.0"
-  }
+  },
+  "version": "0.1.0"
 }

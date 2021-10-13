@@ -1,7 +1,5 @@
+import { GRAPH_URL } from '@app/features/AddressBook';
 import request, { gql } from 'graphql-request';
-
-export const GRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land';
 
 export const getTilesInWallet = async (address: string) => {
   const query = gql`

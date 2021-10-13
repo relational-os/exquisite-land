@@ -1,65 +1,34 @@
 import { getCoordinates } from '@app/features/TileUtils';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import Button from '../Button';
 import Modal from 'react-modal';
 import ConnectWalletModal from './ConnectWalletModal';
+import { useCoinDrop } from '@app/hooks/useCoinDrop';
 
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
-  const [tokenId, setTokenId] = useState<number>();
-  const [error, setError] = useState<string>();
-  const [coinB64, setCoinB64] = useState<string>();
   const [claimed, setClaimed] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
 
-  const onDrop = (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const coinB64 = (reader.result as string).replace(/^data:.+;base64,/, '');
-      setCoinB64(coinB64);
-      const { tokenId, error } = await fetch('/api/land-granter/check-coin', {
-        method: 'POST',
-        body: JSON.stringify({ coinB64 }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((r) => r.json());
-      if (tokenId) setTokenId(tokenId);
-
-      if (error) setError(error);
-    };
-    reader.readAsDataURL(file);
-  };
+  const { tokenId, dropError, reset, getRootProps, getInputProps } =
+    useCoinDrop();
 
   const claimCoin = async () => {
-    if (!coinB64) return;
+    if (!tokenId) return;
     if (!account) setIsConnectedModalOpen(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
-      body: JSON.stringify({ coinB64, recipient: account }),
+      body: JSON.stringify({ tokenId, recipient: account }),
       headers: {
         'Content-Type': 'application/json'
       }
     }).then((r) => r.json());
+
     if (tx && !error) {
       setClaimed(true);
       if (onClaim) setTimeout(onClaim, 1000);
     }
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: 'image/png',
-    multiple: false
-  });
-
-  const reset = () => {
-    setTokenId(undefined);
-    setCoinB64(undefined);
-    setError(undefined);
   };
 
   useEffect(() => {
@@ -68,7 +37,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
 
   return (
     <div className="coindrop">
-      {tokenId == undefined && error == undefined ? (
+      {tokenId == null && dropError == null ? (
         <>
           <div className="message" {...getRootProps()}>
             <img className="empty" src="/graphics/coinbox-empty.png" />
@@ -98,9 +67,9 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           <div className="message">
             <div className="coords">Error!</div>
             <img src="/graphics/coinbox-invalid.png" />
-            <div className="text"> {error}</div>
+            <div className="text">{dropError}</div>
           </div>
-          <Button onClick={reset}>Try Again</Button>
+          <Button onClick={reset}>Try again</Button>
         </div>
       )}
       <Modal
@@ -127,6 +96,9 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           margin-left: 5px;
         }
 
+        .arrows {
+          pointer-events: none;
+        }
         .arrows img.arrow-l {
           position: absolute;
           bottom: 4.6rem;

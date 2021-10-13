@@ -11,12 +11,13 @@ const api: NextApiHandler = async (req, res) => {
     return res.status(400).json({ error: 'Missing coin data or recipient.' });
 
   const tokenId = await getTokenIDForCoin(coinB64);
-  if (tokenId == null)
-    return res.status(400).json({ error: 'Invalid coin data.' });
+  console.log(tokenId);
+  // if (tokenId == null)
+  //   return res.status(400).json({ error: 'Invalid coin data.' });
 
-  const isGrantable = await checkTokenIdIsOwnedByLandGranter(tokenId);
-  if (!isGrantable)
-    return res.status(400).json({ error: 'Coin has already been claimed.' });
+  // const isGrantable = await checkTokenIdIsOwnedByLandGranter(tokenId);
+  // if (!isGrantable)
+  //   return res.status(400).json({ error: 'Coin has already been claimed.' });
 
   return res.json({ tokenId });
 };

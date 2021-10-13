@@ -2,6 +2,7 @@ import { NextApiHandler } from 'next';
 import { Wallet } from 'ethers';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { TrustedForwarder__factory } from '@sdk/factories/TrustedForwarder__factory';
+import { FORWARDER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 
 const api: NextApiHandler = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,7 +24,7 @@ const api: NextApiHandler = async (req, res) => {
       new JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL)
     );
     const forwarder = TrustedForwarder__factory.connect(
-      process.env.NEXT_PUBLIC_FORWARDER_ADDRESS as string,
+      FORWARDER_CONTRACT_ADDRESS,
       wallet
     );
     const tx = await forwarder.execute(data.message, signature, {

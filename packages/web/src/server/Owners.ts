@@ -1,10 +1,11 @@
+import { EXQUISITE_LAND_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import { verifyMessage } from '@ethersproject/wallet';
 import { ExquisiteLand__factory } from '@sdk/factories/ExquisiteLand__factory';
 
 export const getOwnerAddress = () => {
   const contract = ExquisiteLand__factory.connect(
-    process.env.NEXT_PUBLIC_TILE_CONTRACT_ADDRESS as string,
+    EXQUISITE_LAND_CONTRACT_ADDRESS,
     getJsonRpcProvider()
   );
   return contract.owner();

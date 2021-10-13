@@ -1,8 +1,8 @@
 import { NextApiHandler } from 'next';
 import sharp from 'sharp';
 import { gql, request } from 'graphql-request';
-import { GRAPH_URL } from '@app/features/Graph';
 import { generateTokenID } from '@app/features/TileUtils';
+import { GRAPH_URL } from '@app/features/AddressBook';
 
 const api: NextApiHandler = async (req, res) => {
   const tokenId = generateTokenID(
