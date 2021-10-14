@@ -27,7 +27,9 @@ const Header = () => {
           align-items: center;
           gap: 10px;
           z-index: 111;
-          background: rgba(51, 51, 51, 0.95);
+           {
+            /* background: rgba(51, 51, 51, 0.95); */
+          }
           backdrop-filter: blur(4px);
         }
         .logo {
