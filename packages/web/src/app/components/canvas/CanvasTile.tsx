@@ -56,8 +56,6 @@ const CanvasTile = ({
   );
   const pendingSvg = isPending ? getSVGFromPixels(isPending.pixels!) : null;
 
-  console.log({ isPending, pendingSvg });
-
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
       {tile?.svg && (
