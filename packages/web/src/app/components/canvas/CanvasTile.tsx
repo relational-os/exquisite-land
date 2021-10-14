@@ -6,6 +6,7 @@ import { ENSName } from 'react-ens-name';
 import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
 import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
+import Button from '../Button';
 
 const CanvasTile = ({
   x,
@@ -21,15 +22,33 @@ const CanvasTile = ({
   style?: React.CSSProperties;
 }) => {
   const { tile } = useFetchTile(x, y);
-
   const { account } = useWallet();
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
+
   useEffect(() => {
     if (tilesOwned?.find((t) => t.x == x && t.y == y)) {
       setOwned(true);
     }
   }, [JSON.stringify(tilesOwned)]);
+
+  const canRegenerate = () => {
+    if (tilesOwned) {
+      for (var i = 0; i < tilesOwned.length; i++) {
+        const tile = tilesOwned[i];
+        // NORTH
+        if (tile.x == x && tile.y + 1 == y) return true;
+        // SOUTH
+        if (tile.x == x && tile.y - 1 == y) return true;
+        // EAST
+        if (tile.x + 1 == x && tile.y == y) return true;
+        // WEST
+        if (tile.x - 1 == x && tile.y == y) return true;
+      }
+    }
+  };
+
+  console.log(useOpenNeighborStore((state) => state.openNeighbors));
 
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
@@ -58,7 +77,10 @@ const CanvasTile = ({
             <div className="owner">
               {tile.owner.id.toLowerCase() ==
               LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase() ? (
-                'UNCLAIMED'
+                <>
+                  {canRegenerate() && <Button>regen coin</Button>}
+                  UNCLAIMED
+                </>
               ) : (
                 <ENSName
                   address={tile.owner.id}
@@ -67,6 +89,7 @@ const CanvasTile = ({
               )}
             </div>
           )}
+
           {isOwned && <div className="owned">Your tile!</div>}
           {isInvitable && (
             <div className="invitable">

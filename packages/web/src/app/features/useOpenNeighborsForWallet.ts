@@ -12,14 +12,14 @@ export const useOpenNeighborStore = create<{
     tokenId: number;
     ownTokenId: number;
   }[];
-}>(set => ({
+}>((set) => ({
   openNeighbors: []
 }));
 
 const useOpenNeighborsForWallet = () => {
   const { account } = useWallet();
   const { tiles } = useTilesInWallet(account);
-  const openNeighbors = useOpenNeighborStore(state => state.openNeighbors);
+  const openNeighbors = useOpenNeighborStore((state) => state.openNeighbors);
 
   useEffect(() => {
     console.log('in useOpenNeighbor effect');
