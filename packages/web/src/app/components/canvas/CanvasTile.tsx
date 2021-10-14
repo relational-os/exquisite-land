@@ -9,6 +9,8 @@ import {
 } from '@app/features/useOpenNeighborsForWallet';
 import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
+import useTransactionsStore from '@app/features/useTransactionsStore';
+import { getSVGFromPixels } from '@app/features/TileUtils';
 
 const CanvasTile = ({
   x,
@@ -47,6 +49,15 @@ const CanvasTile = ({
     else if (isInvitable && openGenerateInvite) openGenerateInvite();
   };
 
+  const isPending = useTransactionsStore((state) =>
+    state.transactions.find(
+      (t) => t.x == x && t.y == y && t.type == 'create-tile'
+    )
+  );
+  const pendingSvg = isPending ? getSVGFromPixels(isPending.pixels!) : null;
+
+  console.log({ isPending, pendingSvg });
+
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
       {tile?.svg && (
@@ -57,6 +68,7 @@ const CanvasTile = ({
           className="tile-image"
         />
       )}
+      {pendingSvg && <svg dangerouslySetInnerHTML={{ __html: pendingSvg }} />}
       <div className="meta">
         <div className="coords">
           [{x},{y}]
@@ -140,15 +152,13 @@ const CanvasTile = ({
           height: auto;
           image-rendering: pixelated;
         }
-        .svg {
-          width: 100%;
-          height: 100%;
-        }
-        .svg :global(svg) {
+
+        svg {
           display: block;
           width: 100%;
           height: 100%;
         }
+
         .meta {
           display: ${isInvitable
             ? 'block'

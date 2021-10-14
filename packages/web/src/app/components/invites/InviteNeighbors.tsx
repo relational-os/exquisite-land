@@ -2,6 +2,7 @@ import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import getContract from '@app/features/getContract';
 import { generateTokenID } from '@app/features/TileUtils';
 import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
+import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
 
@@ -21,6 +22,13 @@ const InviteNeighbors = () => {
       y,
       LAND_GRANTER_CONTRACT_ADDRESS
     );
+    useTransactionsStore.getState().addTransaction({
+      title: `Inviting neighbor to ${x}, ${y}`,
+      hash: tx.hash,
+      status: 'pending',
+      date: new Date(),
+      type: 'invite-neighbor'
+    });
     await tx.wait(1);
     console.log(tx.hash);
     setHash(tx.hash);

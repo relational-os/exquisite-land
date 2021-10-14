@@ -5,6 +5,7 @@ import {
 } from '@app/features/Forwarder';
 import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import useStore, { Tool } from '@app/features/State';
+import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
 import PALETTES from 'src/constants/Palettes';
 
@@ -83,6 +84,16 @@ const useEditor = () => {
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
+    useTransactionsStore.getState().addTransaction({
+      title: `Submitting tile at ${x}, ${y}`,
+      hash: tx.hash,
+      status: 'pending',
+      date: new Date(),
+      type: 'create-tile',
+      x,
+      y,
+      pixels
+    });
     const receipt = await tx.wait(2);
     console.log(receipt);
     console.log(`tile(${x}, ${y}) saved!`);

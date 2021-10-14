@@ -10,6 +10,7 @@ import {
   OpenNeighborStatus,
   useOpenNeighborStore
 } from '@app/features/useOpenNeighborsForWallet';
+import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useEffect, useState } from 'react';
 
@@ -52,6 +53,13 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
+    useTransactionsStore.getState().addTransaction({
+      title: `Inviting neighbor to ${x}, ${y}`,
+      hash: tx.hash,
+      status: 'pending',
+      date: new Date(),
+      type: 'invite-neighbor'
+    });
     console.log(tx.hash);
     const receipt = await tx.wait(2);
     console.log(receipt);

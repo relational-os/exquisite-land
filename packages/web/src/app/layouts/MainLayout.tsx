@@ -1,8 +1,12 @@
 import Header from '@app/components/Header';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Head from 'next/head';
+import useTransactionsStore from '@app/features/useTransactionsStore';
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
+  useEffect(() => {
+    useTransactionsStore.getState().initialize();
+  }, []);
   return (
     <div className="main-layout">
       <Head>
