@@ -15,7 +15,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     useCoinDrop();
 
   const claimCoin = async () => {
-    if (!tokenId) return;
+    if (tokenId == undefined) return;
     if (!account) setIsConnectedModalOpen(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',

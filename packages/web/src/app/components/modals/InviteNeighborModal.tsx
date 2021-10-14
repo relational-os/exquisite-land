@@ -6,23 +6,42 @@ import {
 } from '@app/features/Forwarder';
 import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
 import { generateTokenID } from '@app/features/TileUtils';
-import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
+import {
+  OpenNeighborStatus,
+  useOpenNeighborStore
+} from '@app/features/useOpenNeighborsForWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   const ownTokenId = useOpenNeighborStore(
     (state) =>
       state.openNeighbors.find((tile) => tile.x == x && tile.y == y)!.ownTokenId
   );
+  const tileToInvite = useOpenNeighborStore((state) =>
+    state.openNeighbors.find((tile) => tile.x == x && tile.y == y)
+  );
   const { provider, account } = useWallet();
   const [isGeneratingCoin, setGeneratingCoin] = useState(false);
   const [isCoinGenerated, setCoinGenerated] = useState(false);
+
+  useEffect(() => {
+    if (tileToInvite?.status == OpenNeighborStatus.COIN_GENERATED) {
+      setCoinGenerated(true);
+
+      // UNCOMMENT THIS TO SEE REGENERATION FLOW UI
+      // setCoinGenerated(false);
+    }
+  }, [tileToInvite]);
 
   const inviteNeighborClicked = async () => {
     if (!provider || !account) return;
     if (isGeneratingCoin) return;
     setGeneratingCoin(true);
+
+    // UNCOMMENT THIS TO SEE REGENERATION FLOW UI
+    // if (tileToInvite?.status == OpenNeighborStatus.COIN_GENERATED) return;
+
     const dataToSign = await inviteNeighbor(
       ownTokenId,
       x,
@@ -67,7 +86,11 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           <div className="coin-blank">
             <img src="/graphics/coin-spin.gif" className="coin-spin" />
           </div>
-          <button disabled>generating...</button>
+          <button disabled>
+            {tileToInvite?.status == OpenNeighborStatus.OPEN
+              ? 'generating...'
+              : 'sign to continue...'}
+          </button>
         </>
       ) : (
         <>
