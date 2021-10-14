@@ -3,6 +3,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
 import {
   ExquisiteLand__factory,
+  TerraMasu__factory,
   LandGranter__factory,
   Render__factory,
   TrustedForwarder__factory,
@@ -67,8 +68,8 @@ async function start() {
   }
 
   if (!addressBook.contract) {
-    console.log('Deploying exquisite land...');
-    const deployTx = await new ExquisiteLand__factory(wallet).deploy(
+    console.log('Deploying terra masu...');
+    const deployTx = await new TerraMasu__factory(wallet).deploy(
       addressBook.forwarder,
       addressBook.renderer,
       addressBook.base64
@@ -98,10 +99,7 @@ async function start() {
     await exec(
       `npx hardhat verify --network mumbai ${addressBook.landGranter} ${addressBook.contract}`
     );
-    const contract = ExquisiteLand__factory.connect(
-      addressBook.contract,
-      wallet
-    );
+    const contract = TerraMasu__factory.connect(addressBook.contract, wallet);
     console.log('Setting LandGranter address in ExquisiteLand...');
     await contract.setLandGranter(addressBook.landGranter);
     console.log('Done!');

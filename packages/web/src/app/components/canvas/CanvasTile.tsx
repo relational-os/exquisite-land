@@ -3,7 +3,10 @@ import { useFetchTile } from '@app/features/Graph';
 import useTilesInWallet from '@app/features/useTilesInWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName } from 'react-ens-name';
-import { useOpenNeighborStore } from '@app/features/useOpenNeighborsForWallet';
+import {
+  useOpenNeighborStore,
+  OpenNeighborStatus
+} from '@app/features/useOpenNeighborsForWallet';
 import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 
@@ -25,6 +28,7 @@ const CanvasTile = ({
   const { account } = useWallet();
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
+
   useEffect(() => {
     if (tilesOwned?.find((t) => t.x == x && t.y == y)) {
       setOwned(true);
@@ -34,11 +38,15 @@ const CanvasTile = ({
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
   );
+  const inviteState = useOpenNeighborStore(
+    (state) => state.openNeighbors.find((t) => t.x == x && t.y == y)?.status
+  );
 
   const onClick = () => {
     if (isOwned && tile.status == 'UNLOCKED' && openEditor) openEditor();
     else if (isInvitable && openGenerateInvite) openGenerateInvite();
   };
+
   return (
     <div className="tile" onClick={onClick} style={style}>
       {tile?.svg && (
@@ -54,7 +62,7 @@ const CanvasTile = ({
           [{x},{y}]
         </div>
         <div className="deets">
-          {tile?.owner && (
+          {!isInvitable && tile?.owner && (
             <div className="owner">
               {tile.owner.id.toLowerCase() ==
               LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase() ? (
@@ -71,7 +79,11 @@ const CanvasTile = ({
           {isInvitable && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
-              <button>invite!</button>
+              <button>
+                {inviteState == OpenNeighborStatus.OPEN
+                  ? 'invite!'
+                  : 'regenerate'}
+              </button>
             </div>
           )}
         </div>

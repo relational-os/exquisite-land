@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.9;
 
 interface IBase64 {
-    function encode(bytes memory data) external pure returns (string memory);
+  function encode(bytes memory data) external pure returns (string memory);
 }

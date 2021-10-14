@@ -31,7 +31,7 @@ export const useCoinDrop = () => {
         return;
       }
 
-      if (tokenId) {
+      if (tokenId != null) {
         setTokenId(tokenId);
         return;
       }

@@ -8,7 +8,7 @@ const api: NextApiHandler = async (req, res) => {
   const { tokenId, recipient }: { tokenId?: number; recipient?: string } =
     req.body;
 
-  if (!tokenId || !recipient)
+  if (tokenId == undefined || !recipient)
     return res.status(400).json({ error: 'Missing coin data or recipient.' });
 
   const isGrantable = await checkTokenIdIsOwnedByLandGranter(tokenId);
