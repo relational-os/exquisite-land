@@ -7,25 +7,20 @@ import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
 import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
-import { useDebouncedCallback } from 'use-debounce';
+import {
+  ReactZoomPanPinchRef,
+  TransformComponent,
+  TransformWrapper
+} from 'react-zoom-pan-pinch';
 
 Modal.setAppElement('#__next');
-
-// TODO: decide if we want to make this dynamic based on tiles painted?
-const DEFAULT_X = 7;
-const DEFAULT_Y = 7;
-const DEFAULT_Z = 2;
 
 const columns = Array.from(Array(16).keys());
 const rows = Array.from(Array(16).keys());
 
 const Canvas = () => {
   const router = useRouter();
-  const zoom =
-    typeof router.query.z === 'string'
-      ? Math.max(1, Math.min(8, +router.query.z))
-      : DEFAULT_Z;
-  const tileSize = zoom * 64;
+  const tileSize = 2 * 64; // TODO: zoom
 
   // Populate any missing query params to center the map on the default x, y, z
   useEffect(() => {
@@ -38,9 +33,9 @@ const Canvas = () => {
       router.replace({
         query: {
           ...router.query,
-          x: router.query.x ?? DEFAULT_X,
-          y: router.query.y ?? DEFAULT_Y,
-          z: router.query.z ?? DEFAULT_Z
+          x: router.query.x,
+          y: router.query.y,
+          z: router.query.z
         }
       });
     }
@@ -53,6 +48,8 @@ const Canvas = () => {
     useState(false);
   useFetchCanvas();
   useOpenNeighborsForWallet();
+
+  const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
 
   const closeEditorModal = () => {
     setIsEditorModalOpen(false);
@@ -79,74 +76,61 @@ const Canvas = () => {
     setIsInviteNeighborModalOpen(true);
   };
 
-  const zoomIn = () =>
-    router.replace({ query: { ...router.query, z: zoom + 1 } });
-  const zoomOut = () =>
-    router.replace({ query: { ...router.query, z: zoom - 1 } });
+  const zoomIn = () => wrapperRef.current?.zoomIn();
+  const zoomOut = () => wrapperRef.current?.zoomOut();
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Scroll to tile specified by URL query params
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    const containerSize = containerRef.current.getBoundingClientRect();
-
-    const left =
-      typeof router.query.x === 'string'
-        ? +router.query.x * tileSize - containerSize.width / 2 + tileSize / 2
-        : undefined;
-
-    const top =
-      typeof router.query.y === 'string'
-        ? +router.query.y * tileSize - containerSize.height / 2 + tileSize / 2
-        : undefined;
-
-    if (left != null || top != null) {
-      containerRef.current.scrollTo({ left, top });
+    if (
+      router.query.x != null ||
+      router.query.y != null ||
+      router.query.z != null
+    ) {
+      // set the params in the header
+      console.log(parseInt(router.query.x as string));
+      console.log(parseInt(router.query.y as string));
+      // wrapperRef.current?.setTransform(
+      //   parseInt(router.query.x as string),
+      //   parseInt(router.query.y as string),
+      //   1
+      // );
+    } else {
+      wrapperRef.current?.centerView();
     }
-  }, [containerRef.current, tileSize]);
-
-  const onScroll = useDebouncedCallback(
-    ({ scrollLeft, scrollTop }: { scrollLeft: number; scrollTop: number }) => {
-      if (!containerRef.current) return;
-      const containerSize = containerRef.current.getBoundingClientRect();
-
-      // Update URL based on scroll position and currently-centered tile
-      const x = Math.floor(
-        (scrollLeft + containerSize.width / 2) / tileSize
-      ).toString();
-      const y = Math.floor(
-        (scrollTop + containerSize.height / 2) / tileSize
-      ).toString();
-
-      router.replace({ query: { ...router.query, x, y } });
-    },
-    200
-  );
+  }, [wrapperRef, router.query]);
 
   return (
     <>
-      <div
-        ref={containerRef}
-        className="surface"
-        onScroll={(event) => {
-          const { scrollTop, scrollLeft } = event.currentTarget;
-          onScroll({ scrollTop, scrollLeft });
+      <TransformWrapper
+        ref={wrapperRef}
+        centerOnInit
+        minScale={0.5}
+        onPanningStop={(_, event) => {
+          console.log(event);
+          // router.replace({ query: { ...router.query, x: getClientX(event), y: getClientX } });
         }}
       >
-        {rows.map((y) =>
-          columns.map((x) => (
-            <CanvasTile
-              key={`${x},${y}`}
-              x={x}
-              y={y}
-              openEditor={() => openEditor(x, y)}
-              openGenerateInvite={() => openGenerateInvite(x, y)}
-            />
-          ))
-        )}
-      </div>
+        <TransformComponent
+          wrapperStyle={{
+            maxWidth: '100%',
+            maxHeight: '100vh'
+          }}
+        >
+          <div className="surface">
+            {rows.map((y) =>
+              columns.map((x) => (
+                <CanvasTile
+                  key={`${x},${y}`}
+                  x={x}
+                  y={y}
+                  openEditor={() => openEditor(x, y)}
+                  openGenerateInvite={() => openGenerateInvite(x, y)}
+                />
+              ))
+            )}
+          </div>
+        </TransformComponent>
+      </TransformWrapper>
+      {/* </div> */}
       <div className="controls">
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
@@ -177,9 +161,9 @@ const Canvas = () => {
       </Modal>
       <style jsx>{`
         .surface {
-          width: 100vw;
-          height: 100vh;
-          overflow: auto;
+          padding: 5rem;
+          width: 100%;
+          height: 100%;
           display: grid;
           grid-template-columns: repeat(${columns.length}, ${tileSize}px);
           grid-template-rows: repeat(${rows.length}, ${tileSize}px);
