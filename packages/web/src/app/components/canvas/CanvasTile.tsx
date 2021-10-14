@@ -141,7 +141,8 @@ const CanvasTile = ({
             ? `none`
             : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
 
-          cursor: pointer;
+          cursor: move;
+          cursor: grab;
           cursor: ${tile?.status == 'LOCKED' && 'default'};
 
           ${isOwned &&

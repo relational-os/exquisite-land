@@ -39,7 +39,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
           margin: 0;
           padding: 0;
           height: 100%;
-          background: #333;
+          background: #222;
         }
         #__next {
           min-height: 100%;

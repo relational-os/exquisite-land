@@ -161,12 +161,15 @@ const Canvas = () => {
       </Modal>
       <style jsx>{`
         .surface {
-          padding: 5rem;
+          margin: 10rem;
+          padding: 1rem;
           width: 100%;
           height: 100%;
           display: grid;
           grid-template-columns: repeat(${columns.length}, ${tileSize}px);
           grid-template-rows: repeat(${rows.length}, ${tileSize}px);
+          box-shadow: 0 10px 64px 2px rgba(0, 0, 0, 0.3);
+          background: #333;
         }
         .controls {
           position: fixed;
