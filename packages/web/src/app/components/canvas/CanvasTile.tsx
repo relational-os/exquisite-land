@@ -17,12 +17,14 @@ const CanvasTile = ({
   y,
   openEditor,
   openGenerateInvite,
+  openTileModal,
   style
 }: {
   x: number;
   y: number;
   openEditor?: () => void;
   openGenerateInvite?: () => void;
+  openTileModal?: () => void;
   style?: React.CSSProperties;
 }) => {
   const { tile } = useFetchTile(x, y);
@@ -45,8 +47,9 @@ const CanvasTile = ({
   );
 
   const onClick = () => {
-    if (isOwned && tile.status == 'UNLOCKED' && openEditor) openEditor();
+    if (isOwned && tile?.status == 'UNLOCKED' && openEditor) openEditor();
     else if (isInvitable && openGenerateInvite) openGenerateInvite();
+    else if (tile?.status == 'LOCKED' && openTileModal) openTileModal();
   };
 
   const isPending = useTransactionsStore((state) =>
@@ -141,9 +144,7 @@ const CanvasTile = ({
             ? `none`
             : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
 
-          cursor: move;
           cursor: grab;
-          cursor: ${tile?.status == 'LOCKED' && 'default'};
 
           ${isOwned &&
           'background-image: linear-gradient(-45deg, #ffe761, #fb922b); '};
