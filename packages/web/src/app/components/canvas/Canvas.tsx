@@ -103,7 +103,10 @@ const Canvas = () => {
       <TransformWrapper
         ref={wrapperRef}
         centerOnInit
-        minScale={0.5}
+        centerZoomedOut
+        minScale={0.25}
+        maxScale={2}
+        velocityAnimation={{ animationTime: 1000, sensitivity: 1000 }}
         onPanningStop={(_, event) => {
           console.log(event);
           // router.replace({ query: { ...router.query, x: getClientX(event), y: getClientX } });
