@@ -66,7 +66,9 @@ const CanvasTile = ({
           className="tile-image"
         />
       )}
-      {pendingSvg && <svg dangerouslySetInnerHTML={{ __html: pendingSvg }} />}
+      {!tile?.svg && pendingSvg && (
+        <svg dangerouslySetInnerHTML={{ __html: pendingSvg }} />
+      )}
       <div className="meta">
         <div className="coords">
           [{x},{y}]
@@ -227,4 +229,4 @@ const CanvasTile = ({
   );
 };
 
-export default CanvasTile;
+export default React.memo(CanvasTile);

@@ -1,15 +1,20 @@
+import useTransactionsStore from '@app/features/useTransactionsStore';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
 
 const OpenTransactionHistoryButton = () => {
+  const transactionCount = useTransactionsStore(
+    (state) => state.transactions.length
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  if (transactionCount === 0) return null;
   return (
     <>
-      <button onClick={openModal}>Open Transaction History</button>
+      <button onClick={openModal}>transactions</button>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
