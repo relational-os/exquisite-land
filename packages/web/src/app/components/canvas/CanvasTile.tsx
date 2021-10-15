@@ -163,7 +163,7 @@ const CanvasTile = ({
         .meta {
           display: ${isInvitable
             ? 'block'
-            : tile?.status == 'UNLOCKED'
+            : tile?.status == 'UNLOCKED' && !pendingSvg
             ? 'block'
             : 'none'};
           padding: 10px;
@@ -178,7 +178,7 @@ const CanvasTile = ({
         }
 
         .tile:hover .meta {
-          ${tile?.svg &&
+          ${(tile?.svg || pendingSvg) &&
           'display: block; cursor: pointer; background: rgba(0,0,0,0.25); color:#fff; text-shadow: 2px 2px #000; opacity: 1;'};
         }
 
