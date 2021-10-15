@@ -12,6 +12,7 @@ import {
   TransformComponent,
   TransformWrapper
 } from 'react-zoom-pan-pinch';
+import TileModal from '../modals/TileModal';
 
 Modal.setAppElement('#__next');
 
@@ -46,6 +47,7 @@ const Canvas = () => {
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
   const [isInviteNeighborModalOpen, setIsInviteNeighborModalOpen] =
     useState(false);
+  const [isTilePreviewModalOpen, setIsTilePreviewModalOpen] = useState(false);
   useFetchCanvas();
   useOpenNeighborsForWallet();
 
@@ -78,6 +80,16 @@ const Canvas = () => {
 
   const zoomIn = () => wrapperRef.current?.zoomIn();
   const zoomOut = () => wrapperRef.current?.zoomOut();
+  const openTileModal = (x: number, y: number) => {
+    setSelectedX(x);
+    setSelectedY(y);
+    setIsTilePreviewModalOpen(true);
+  };
+  const closeTilePreviewModal = () => {
+    setIsTilePreviewModalOpen(false);
+    setSelectedX(undefined);
+    setSelectedY(undefined);
+  };
 
   useEffect(() => {
     if (
@@ -103,8 +115,8 @@ const Canvas = () => {
       <TransformWrapper
         ref={wrapperRef}
         centerOnInit
-        centerZoomedOut
         minScale={0.25}
+        centerZoomedOut
         maxScale={2}
         velocityAnimation={{ animationTime: 1000, sensitivity: 1000 }}
         onPanningStop={(_, event) => {
@@ -127,13 +139,14 @@ const Canvas = () => {
                   y={y}
                   openEditor={() => openEditor(x, y)}
                   openGenerateInvite={() => openGenerateInvite(x, y)}
+                  openTileModal={() => openTileModal(x, y)}
                 />
               ))
             )}
           </div>
         </TransformComponent>
       </TransformWrapper>
-      {/* </div> */}
+
       <div className="controls">
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
@@ -160,6 +173,16 @@ const Canvas = () => {
       >
         {selectedX != null && selectedY != null && (
           <InviteNeighborModal x={selectedX} y={selectedY} />
+        )}
+      </Modal>
+      <Modal
+        isOpen={isTilePreviewModalOpen}
+        onRequestClose={closeTilePreviewModal}
+        style={modalStyles}
+        contentLabel="Tile Preview Modal"
+      >
+        {selectedX != undefined && selectedY != undefined && (
+          <TileModal x={selectedX} y={selectedY} />
         )}
       </Modal>
       <style jsx>{`
