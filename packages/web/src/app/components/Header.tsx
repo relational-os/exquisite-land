@@ -10,8 +10,6 @@ const Header = () => {
 
       <div className="spacer" />
 
-      <div className="canvas">Terra Masu</div>
-
       <div className="spacer" />
 
       <OpenTransactionHistoryButton />
@@ -29,10 +27,6 @@ const Header = () => {
           align-items: center;
           gap: 10px;
           z-index: 111;
-           {
-            /* background: rgba(51, 51, 51, 0.95); */
-          }
-          backdrop-filter: blur(4px);
         }
         .logo {
           font-size: 32px;
