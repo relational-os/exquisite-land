@@ -118,7 +118,15 @@ const Canvas = () => {
         minScale={0.25}
         centerZoomedOut
         maxScale={2}
-        velocityAnimation={{ animationTime: 1000, sensitivity: 1000 }}
+        wheel={{ step: 0.07 }}
+        velocityAnimation={{
+          animationTime: 1000,
+          animationType: 'easeInOutCubic',
+          equalToMove: false
+        }}
+        alignmentAnimation={{
+          animationType: 'easeInOutCubic'
+        }}
         onPanningStop={(_, event) => {
           console.log(event);
           // router.replace({ query: { ...router.query, x: getClientX(event), y: getClientX } });
@@ -187,7 +195,7 @@ const Canvas = () => {
       </Modal>
       <style jsx>{`
         .surface {
-          margin: 10rem;
+          margin: 15rem;
           padding: 1rem;
           width: 100%;
           height: 100%;

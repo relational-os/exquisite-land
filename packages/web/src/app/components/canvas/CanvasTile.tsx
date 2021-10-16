@@ -129,6 +129,8 @@ const CanvasTile = ({
           'linear-gradient(-45deg, #ffe761, #fb922b)'};
           background-size: ${isOwned && '400% 400%'};
           animation: gradient ${isOwned && ' 3s ease infinite'};
+          transition: all 0.15s ease-in-out;
+          ${tile?.status == 'UNLOCKED' && 'box-shadow: inset 0 1px #333;'};
         }
 
         .tile:hover {
@@ -162,20 +164,30 @@ const CanvasTile = ({
         }
 
         .meta {
-          display: ${isInvitable
-            ? 'block'
-            : tile?.status == 'UNLOCKED' && !pendingSvg
-            ? 'block'
-            : 'none'};
+          display: block;
           padding: 10px;
-          opacity: 0.7;
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
-          font-size: 1.5rem;
+          font-size: 1.1rem;
           text-align: center;
+          transition: all 0.15s ease-in-out;
+        }
+
+        .meta .coords {
+          ${isInvitable
+            ? ''
+            : tile?.status == 'UNLOCKED'
+            ? ``
+            : 'background: #333; color: #222; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; width: 52%; height: 36px; line-height: 36px;'};
+          ${(tile?.svg || pendingSvg) &&
+          'position: relative; background: transparent; color: #fff; height: auto; line-height: inherit;'};
+        }
+
+        .tile .meta {
+          ${(tile?.svg || pendingSvg) && 'opacity: 0;'};
         }
 
         .tile:hover .meta {
@@ -194,20 +206,20 @@ const CanvasTile = ({
           display: block;
           width: 35%;
           height: auto;
-          margin: 0 auto 10px;
+          margin: 0 auto 8px;
         }
 
         .invitable button {
           padding: 6px 14px;
           border: 0;
           background: #ffe131;
-          font-size: 24px;
+          font-size: 16px;
           font-family: inherit;
           cursor: pointer;
           will-change: transform;
           transition: transform 0.2s ease-in-out;
           color: #000;
-          border-bottom: 4px solid rgba(0, 0, 0, 0.7);
+          border-bottom: 4px solid #843ea5;
         }
 
         .invitable button:hover {
