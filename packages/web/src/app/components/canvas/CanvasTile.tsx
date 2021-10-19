@@ -30,6 +30,7 @@ const CanvasTile = ({
   const { tile } = useFetchTile(x, y);
 
   const { account } = useWallet();
+
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
 

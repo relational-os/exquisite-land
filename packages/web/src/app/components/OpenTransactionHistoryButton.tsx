@@ -1,3 +1,4 @@
+import useIsMounted from '@app/features/useIsMounted';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
@@ -10,8 +11,10 @@ const OpenTransactionHistoryButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
+  const isMounted = useIsMounted();
   if (transactionCount === 0) return null;
+  if (!isMounted) return null;
+
   return (
     <>
       <button onClick={openModal}>transactions</button>
@@ -22,7 +25,6 @@ const OpenTransactionHistoryButton = () => {
       >
         <TransactionHistoryModal />
       </Modal>
-
       <style jsx>{`
         button {
           display: block;

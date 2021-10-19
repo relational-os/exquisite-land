@@ -30,7 +30,7 @@ const useOpenNeighborsForWallet = () => {
 
   useEffect(() => {
     (async () => {
-      if (!tiles) return;
+      if (!tiles) return useOpenNeighborStore.setState({ openNeighbors: [] });
       const openNeighbors = [];
       for (const tile of tiles) {
         if (tile.status == 'UNLOCKED') continue;

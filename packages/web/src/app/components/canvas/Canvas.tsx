@@ -98,8 +98,8 @@ const Canvas = () => {
       router.query.z != null
     ) {
       // set the params in the header
-      console.log(parseInt(router.query.x as string));
-      console.log(parseInt(router.query.y as string));
+      // console.log(parseInt(router.query.x as string));
+      // console.log(parseInt(router.query.y as string));
       // wrapperRef.current?.setTransform(
       //   parseInt(router.query.x as string),
       //   parseInt(router.query.y as string),
