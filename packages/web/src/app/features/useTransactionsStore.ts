@@ -18,6 +18,7 @@ type TransactionStore = {
   transactions: LocalTransactionState[];
   addTransaction: (transaction: LocalTransactionState) => void;
   initialize: () => void;
+  clearAll: () => void;
 };
 
 const useTransactionsStore = create<TransactionStore>(
@@ -60,7 +61,8 @@ const useTransactionsStore = create<TransactionStore>(
             }));
           });
         });
-      }
+      },
+      clearAll: () => set({ transactions: [] })
     }),
     {
       name: 'exquisite-land-transactions'
