@@ -12,6 +12,8 @@ interface EditorProps {
   x: number;
   y: number;
   closeModal: () => void;
+  hideControls?: boolean;
+  hideMinimap?: boolean;
 }
 
 const MAX = 32;
@@ -22,7 +24,13 @@ const rows = Array.from(Array(MAX).keys());
 
 const EMPTY: Pixels = columns.map(() => rows.map(() => 13));
 
-const Editor = ({ x, y, closeModal }: EditorProps) => {
+const Editor = ({
+  x,
+  y,
+  closeModal,
+  hideControls,
+  hideMinimap
+}: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
   const [pixels, setPixels] = useState<Pixels>(EMPTY);
   const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
@@ -166,86 +174,90 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           })}
         </div>
 
-        <div className="peek-north">
-          <TileSVG
-            x={x - 1}
-            y={y - 1}
-            viewbox={'30 30 32 32'}
-            style={{
-              height: `${PIXEL_SIZE * 2}px`,
-              width: `${PIXEL_SIZE * 2}px`
-            }}
-            svgWidth={`${PIXEL_SIZE * 32}px`}
-          ></TileSVG>
-          <TileSVG
-            x={x}
-            y={y - 1}
-            viewbox={'0 30 32 32'}
-            style={{
-              height: `${PIXEL_SIZE * 2}px`,
-              width: `${PIXEL_SIZE * 32}px`
-            }}
-          ></TileSVG>
-          <TileSVG
-            x={x + 1}
-            y={y - 1}
-            viewbox={'0 30 32 32'}
-            style={{
-              height: `${PIXEL_SIZE * 2}px`,
-              width: `${PIXEL_SIZE * 2}px`
-            }}
-            svgWidth={`${PIXEL_SIZE * 32}px`}
-          ></TileSVG>
-        </div>
+        {!hideMinimap && (
+          <>
+            <div className="peek-north">
+              <TileSVG
+                x={x - 1}
+                y={y - 1}
+                viewbox={'30 30 32 32'}
+                style={{
+                  height: `${PIXEL_SIZE * 2}px`,
+                  width: `${PIXEL_SIZE * 2}px`
+                }}
+                svgWidth={`${PIXEL_SIZE * 32}px`}
+              ></TileSVG>
+              <TileSVG
+                x={x}
+                y={y - 1}
+                viewbox={'0 30 32 32'}
+                style={{
+                  height: `${PIXEL_SIZE * 2}px`,
+                  width: `${PIXEL_SIZE * 32}px`
+                }}
+              ></TileSVG>
+              <TileSVG
+                x={x + 1}
+                y={y - 1}
+                viewbox={'0 30 32 32'}
+                style={{
+                  height: `${PIXEL_SIZE * 2}px`,
+                  width: `${PIXEL_SIZE * 2}px`
+                }}
+                svgWidth={`${PIXEL_SIZE * 32}px`}
+              ></TileSVG>
+            </div>
 
-        <div className="peek-south">
-          <TileSVG
-            x={x - 1}
-            y={y + 1}
-            viewbox={'30 0 32 32'}
-            style={{
-              height: `${PIXEL_SIZE * 2}px`,
-              width: `${PIXEL_SIZE * 2}px`
-            }}
-            svgHeight={`${PIXEL_SIZE * 32}px`}
-          ></TileSVG>
-          <TileSVG
-            x={x}
-            y={y + 1}
-            viewbox={'0 0 32 32'}
-            style={{
-              height: `${PIXEL_SIZE * 2}px`,
-              width: `${PIXEL_SIZE * 32}px`
-            }}
-          ></TileSVG>
-          <TileSVG
-            x={x + 1}
-            y={y + 1}
-            viewbox={'0 0 32 32'}
-            style={{
-              height: `${PIXEL_SIZE * 2}px`,
-              width: `${PIXEL_SIZE * 2}px`
-            }}
-            svgHeight={`${PIXEL_SIZE * 32}px`}
-          ></TileSVG>
-        </div>
+            <div className="peek-south">
+              <TileSVG
+                x={x - 1}
+                y={y + 1}
+                viewbox={'30 0 32 32'}
+                style={{
+                  height: `${PIXEL_SIZE * 2}px`,
+                  width: `${PIXEL_SIZE * 2}px`
+                }}
+                svgHeight={`${PIXEL_SIZE * 32}px`}
+              ></TileSVG>
+              <TileSVG
+                x={x}
+                y={y + 1}
+                viewbox={'0 0 32 32'}
+                style={{
+                  height: `${PIXEL_SIZE * 2}px`,
+                  width: `${PIXEL_SIZE * 32}px`
+                }}
+              ></TileSVG>
+              <TileSVG
+                x={x + 1}
+                y={y + 1}
+                viewbox={'0 0 32 32'}
+                style={{
+                  height: `${PIXEL_SIZE * 2}px`,
+                  width: `${PIXEL_SIZE * 2}px`
+                }}
+                svgHeight={`${PIXEL_SIZE * 32}px`}
+              ></TileSVG>
+            </div>
 
-        <div className="peek-west">
-          <TileSVG
-            x={x - 1}
-            y={y}
-            viewbox={'30 0 32 32'}
-            svgHeight={`${PIXEL_SIZE * 32}px`}
-          ></TileSVG>
-        </div>
-        <div className="peek-east">
-          <TileSVG
-            x={x + 1}
-            y={y}
-            viewbox={'0 0 32 32'}
-            svgHeight={`${PIXEL_SIZE * 32}px`}
-          ></TileSVG>
-        </div>
+            <div className="peek-west">
+              <TileSVG
+                x={x - 1}
+                y={y}
+                viewbox={'30 0 32 32'}
+                svgHeight={`${PIXEL_SIZE * 32}px`}
+              ></TileSVG>
+            </div>
+            <div className="peek-east">
+              <TileSVG
+                x={x + 1}
+                y={y}
+                viewbox={'0 0 32 32'}
+                svgHeight={`${PIXEL_SIZE * 32}px`}
+              ></TileSVG>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="canvas-aside-left">
@@ -332,25 +344,29 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         </div>
       </div>
 
-      <div className="canvas-aside-right">
-        <div className="preview-minimap">
-          <EditorPreview
-            pixels={pixels}
-            y={y}
-            x={x}
-            columns={columns}
-            rows={rows}
-          ></EditorPreview>
+      {!hideMinimap && (
+        <div className="canvas-aside-right">
+          <div className="preview-minimap">
+            <EditorPreview
+              pixels={pixels}
+              y={y}
+              x={x}
+              columns={columns}
+              rows={rows}
+            ></EditorPreview>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="canvas-footer">
-        <Button onClick={handleClear}>reset</Button>
-        <div className="canvas-footer-right">
-          <Button onClick={closeModal}>cancel</Button>
-          <ButtonSuccess onClick={handleSave}>publish</ButtonSuccess>
+      {!hideControls && (
+        <div className="canvas-footer">
+          <Button onClick={handleClear}>reset</Button>
+          <div className="canvas-footer-right">
+            <Button onClick={closeModal}>cancel</Button>
+            <ButtonSuccess onClick={handleSave}>publish</ButtonSuccess>
+          </div>
         </div>
-      </div>
+      )}
 
       <style jsx>{`
         .canvas {
@@ -390,6 +406,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
           bottom: 0;
           overflow: hidden;
           margin: 2rem;
+          flex: 1 1 auto;
         }
 
         .canvas-aside-left {
@@ -427,7 +444,7 @@ const Editor = ({ x, y, closeModal }: EditorProps) => {
         }
 
         .canvas-peek {
-          display: grid;
+          display: ${!hideMinimap ? 'grid' : 'block'};
           grid-template-columns: 36px auto 36px;
           grid-template-rows: 36px auto 31px;
           gap: 0px 0px;
