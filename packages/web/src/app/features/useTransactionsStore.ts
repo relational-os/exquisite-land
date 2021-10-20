@@ -1,7 +1,7 @@
 import { Pixels } from '@app/hooks/use-editor';
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
-import getJsonRpcProvider from './getJsonRpcProvider';
+import { getJsonRpcProvider } from './getJsonRpcProvider';
 
 export type LocalTransactionState = {
   title: string;
@@ -26,7 +26,7 @@ const useTransactionsStore = create<TransactionStore>(
     (set, get) => ({
       transactions: [],
       initialize: () => {
-        const provider = getJsonRpcProvider();
+        const provider = getJsonRpcProvider;
         for (const transaction of get().transactions.filter(
           (t) => t.status === 'pending'
         )) {
@@ -49,7 +49,7 @@ const useTransactionsStore = create<TransactionStore>(
         set((state) => ({
           transactions: [...state.transactions, transaction]
         }));
-        const provider = getJsonRpcProvider();
+        const provider = getJsonRpcProvider;
         provider.getTransaction(transaction.hash).then((tx) => {
           tx.wait().then((receipt) => {
             console.log({ receipt });

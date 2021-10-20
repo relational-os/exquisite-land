@@ -1,6 +1,5 @@
 import { ContractTransaction } from '@ethersproject/contracts';
 import { LandGranter__factory } from '@sdk/factories/LandGranter__factory';
-import { ExquisiteLand__factory } from '@sdk/factories/ExquisiteLand__factory';
 import sharp from 'sharp';
 import crypto from 'crypto';
 
@@ -13,29 +12,15 @@ path.resolve(basePath, 'fonts', 'VT323-Regular.ttf');
 
 // @ts-ignore
 import steggy from 'steggy';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { Wallet } from '@ethersproject/wallet';
 import path from 'path';
-import {
-  EXQUISITE_LAND_CONTRACT_ADDRESS,
-  LAND_GRANTER_CONTRACT_ADDRESS
-} from '@app/features/AddressBook';
-import { generateTokenID, getCoordinates } from '@app/features/TileUtils';
+import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
+import { getCoordinates } from '@app/features/TileUtils';
 import { parse, stringify } from 'svgson';
 import PALETTES from '@constants/Palettes';
-
-const xyLUT = new Map<string, { x: number; y: number; tokenId: number }>();
-for (var x = 0; x < 16; x++) {
-  for (var y = 0; y < 16; y++) {
-    const tokenId = generateTokenID(x, y);
-    const hash = crypto
-      .createHash('sha256')
-      .update(`${process.env.LAND_GRANTER_SALT}_${x}_${y}`)
-      .digest('hex')
-      .slice(0, 23);
-    xyLUT.set(hash, { x, y, tokenId });
-  }
-}
+import prisma from 'lib/prisma';
+import getContract from '@app/features/getContract';
 
 const colorLUT = new Map<
   string,
@@ -71,7 +56,7 @@ const findClosestColor = (red: number, green: number, blue: number) => {
   return val;
 };
 
-export const decodePencil = async (data: string) => {
+export const decodePencil = async (data: string): Promise<string> => {
   const coinBuffer = await sharp(Buffer.from(data, 'base64')).resize(800, 800);
 
   let decoded = Array(23).fill('');
@@ -97,26 +82,29 @@ export const decodePencil = async (data: string) => {
   let decodedString = '';
   decoded.map((v) => (decodedString += v));
 
-  return xyLUT.get(decodedString);
+  return decodedString;
 };
 
 export const getTokenIDForCoin = async (
   coinB64: string
-): Promise<number | null> => {
+): Promise<number | undefined> => {
   // TODO: lookup x_y from db, for now this is done in memory
   const decoded = await decodePencil(coinB64);
-  if (decoded) return decoded.tokenId;
-  return null;
+
+  const result = await prisma.generatedCoin.findFirst({
+    where: {
+      digest: decoded
+    }
+  });
+
+  return result?.tokenID;
 };
 
 export const checkTokenIdIsOwnedByLandGranter = async (
   tokenId: number
 ): Promise<boolean> => {
   try {
-    const contract = ExquisiteLand__factory.connect(
-      EXQUISITE_LAND_CONTRACT_ADDRESS,
-      getJsonRpcProvider()
-    );
+    const contract = getContract(getJsonRpcProvider);
     const ownerAddress = await contract.ownerOf(tokenId);
 
     return (
@@ -130,26 +118,27 @@ export const checkTokenIdIsOwnedByLandGranter = async (
 
 export const grantLandTile = (
   tokenId: number,
-  recipient: string
+  recipient: string,
+  coinCreator: string
 ): Promise<ContractTransaction> => {
   const wallet = new Wallet(
     process.env.CONTRACT_OWNER_PRIVATE_KEY as string,
-    getJsonRpcProvider()
+    getJsonRpcProvider
   );
   const contract = LandGranter__factory.connect(
     LAND_GRANTER_CONTRACT_ADDRESS,
     wallet
   );
-  return contract.grant(tokenId, recipient);
+  return contract.grant(tokenId, recipient, coinCreator);
 };
 
-export const encodePencil = async (x: number, y: number) => {
+export const encodePencil = async (x: number, y: number, addr: string) => {
   const parsedPencilSVG = await parse(pencilSVG);
   console.log(parsedPencilSVG.children.length);
 
   const data = crypto
     .createHash('sha256')
-    .update(`${process.env.LAND_GRANTER_SALT}_${x}_${y}`)
+    .update(`${process.env.LAND_GRANTER_SALT}${x}${y}${addr.slice(2)}`)
     .digest('hex')
     .slice(0, 23);
 
@@ -158,17 +147,21 @@ export const encodePencil = async (x: number, y: number) => {
     rect.attributes.fill = PALETTES[0][colorIndex];
   });
 
-  return stringify(parsedPencilSVG);
+  return { svg: stringify(parsedPencilSVG), digest: data };
 };
 
 // Should only be called by admin
-export const generateCoin = async (tokenId: number): Promise<Buffer> => {
+export const generateCoin = async (
+  tokenId: number,
+  address: string
+): Promise<{ coin: Buffer; digest: string }> => {
   const [x, y] = getCoordinates(tokenId);
   const baseCoinBuffer = Buffer.from(baseCoinB64String, 'base64');
+  const { svg: encodedPencil, digest } = await encodePencil(x, y, address);
   const coinBuffer = await sharp(baseCoinBuffer)
     .composite([
       {
-        input: Buffer.from(await encodePencil(x, y)),
+        input: Buffer.from(encodedPencil),
         top: 213,
         left: 298
       },
@@ -180,11 +173,8 @@ export const generateCoin = async (tokenId: number): Promise<Buffer> => {
     ])
     .png()
     .toBuffer();
-  const concealed: Buffer = steggy.conceal(process.env.LAND_GRANTER_SALT)(
-    coinBuffer,
-    `${tokenId}`
-  );
-  return concealed;
+
+  return { coin: coinBuffer, digest };
 };
 
 const pencilSVG =

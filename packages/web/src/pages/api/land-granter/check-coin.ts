@@ -11,7 +11,7 @@ const api: NextApiHandler = async (req, res) => {
     return res.status(400).json({ error: 'Missing coin data or recipient.' });
 
   const tokenId = await getTokenIDForCoin(coinB64);
-  if (tokenId == null)
+  if (tokenId == undefined)
     return res.status(400).json({ error: 'Invalid coin data.' });
 
   const isGrantable = await checkTokenIdIsOwnedByLandGranter(tokenId);

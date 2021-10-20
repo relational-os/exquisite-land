@@ -3,7 +3,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName, AddressDisplayEnum } from 'react-ens-name';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 const ConnectWalletButton = () => {
   const { connect, account, web3Modal } = useWallet();
@@ -40,7 +40,7 @@ const ConnectWalletButton = () => {
             address={account}
             displayType={AddressDisplayEnum.FIRST4_LAST4}
             withEllipses={true}
-            provider={ethJsonRpcProvider}
+            provider={getEthJsonRpcProvider}
           />
         </div>
       ) : (

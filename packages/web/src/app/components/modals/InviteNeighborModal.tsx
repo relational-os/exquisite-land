@@ -4,7 +4,7 @@ import {
   inviteNeighbor,
   submitTx
 } from '@app/features/Forwarder';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { generateTokenID } from '@app/features/TileUtils';
 import {
   OpenNeighborStatus,
@@ -49,7 +49,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       y,
       LAND_GRANTER_CONTRACT_ADDRESS,
       account,
-      getJsonRpcProvider()
+      getJsonRpcProvider
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
@@ -75,13 +75,19 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       {isCoinGenerated ? (
         <>
           <img
-            src={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+            src={`/api/land-granter/generate?tokenId=${generateTokenID(
+              x,
+              y
+            )}&address=${account}`}
             width={250}
             height={250}
             className="coin"
           />
           <a
-            href={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+            href={`/api/land-granter/generate?tokenId=${generateTokenID(
+              x,
+              y
+            )}&address=${account}`}
             download={`[${x}, ${y}].png`}
             className="download-button"
             target="_blank"

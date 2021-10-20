@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-interface IExquisiteLand {
+import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+
+interface IExquisiteLand is IERC721 {
   // * Event definitions * //
   event SeedCreated(uint32 tokenId, address recipient);
   event NeighborInvited(uint32 tokenId, address recipient);
@@ -40,6 +42,9 @@ interface IExquisiteLand {
     external
     pure
     returns (uint32, uint32);
+
+  // * Land Granter Only Functions * //
+  function setCoinCreator(uint32 tokenId, address coinCreator) external;
 
   // * Admin only functions * //
   function setLandGranter(address granter) external;

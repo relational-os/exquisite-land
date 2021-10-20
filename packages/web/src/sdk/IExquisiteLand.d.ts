@@ -19,15 +19,27 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface IERC721Interface extends ethers.utils.Interface {
+interface IExquisiteLandInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "createSeed(uint32,uint32)": FunctionFragment;
+    "createTile(uint32,uint32,bytes)": FunctionFragment;
+    "generateTokenID(uint32,uint32)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getCoordinates(uint32)": FunctionFragment;
+    "getTileSVG(uint32)": FunctionFragment;
+    "inviteIsValid(uint32,uint32,uint32,uint32)": FunctionFragment;
+    "inviteNeighbor(uint32,uint32,uint32,address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "recirculateTile(uint32,uint32)": FunctionFragment;
+    "resetTile(uint32,uint32)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setCoinCreator(uint32,address)": FunctionFragment;
+    "setLandGranter(address)": FunctionFragment;
+    "setRenderer(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
@@ -38,8 +50,36 @@ interface IERC721Interface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "createSeed",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createTile",
+    values: [BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "generateTokenID",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCoordinates",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTileSVG",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "inviteIsValid",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "inviteNeighbor",
+    values: [BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -50,6 +90,14 @@ interface IERC721Interface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "recirculateTile",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "resetTile",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
   ): string;
@@ -57,6 +105,15 @@ interface IERC721Interface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setCoinCreator",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setLandGranter",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "setRenderer", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -68,8 +125,27 @@ interface IERC721Interface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createSeed", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createTile", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "generateTokenID",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCoordinates",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getTileSVG", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "inviteIsValid",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "inviteNeighbor",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -78,11 +154,28 @@ interface IERC721Interface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "recirculateTile",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "resetTile", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setCoinCreator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setLandGranter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRenderer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -97,11 +190,19 @@ interface IERC721Interface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "NeighborInvited(uint32,address)": EventFragment;
+    "SeedCreated(uint32,address)": EventFragment;
+    "TileCreated(uint32,address)": EventFragment;
+    "TileReset(uint32)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NeighborInvited"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SeedCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TileCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TileReset"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -121,11 +222,25 @@ export type ApprovalForAllEvent = TypedEvent<
   }
 >;
 
+export type NeighborInvitedEvent = TypedEvent<
+  [number, string] & { tokenId: number; recipient: string }
+>;
+
+export type SeedCreatedEvent = TypedEvent<
+  [number, string] & { tokenId: number; recipient: string }
+>;
+
+export type TileCreatedEvent = TypedEvent<
+  [number, string] & { tokenId: number; sender: string }
+>;
+
+export type TileResetEvent = TypedEvent<[number] & { tokenId: number }>;
+
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
-export class IERC721 extends BaseContract {
+export class IExquisiteLand extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -166,7 +281,7 @@ export class IERC721 extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IERC721Interface;
+  interface: IExquisiteLandInterface;
 
   functions: {
     approve(
@@ -180,10 +295,55 @@ export class IERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { balance: BigNumber }>;
 
+    createSeed(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    createTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      pixels: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    generateTokenID(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[number]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string] & { operator: string }>;
+
+    getCoordinates(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[number, number]>;
+
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    inviteNeighbor(
+      tokenId: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     isApprovedForAll(
       owner: string,
@@ -195,6 +355,18 @@ export class IERC721 extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string] & { owner: string }>;
+
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -214,6 +386,22 @@ export class IERC721 extends BaseContract {
     setApprovalForAll(
       operator: string,
       _approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setCoinCreator(
+      tokenId: BigNumberish,
+      coinCreator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setLandGranter(
+      granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setRenderer(
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -238,10 +426,52 @@ export class IERC721 extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  createSeed(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  createTile(
+    x: BigNumberish,
+    y: BigNumberish,
+    pixels: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  generateTokenID(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getCoordinates(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[number, number]>;
+
+  getTileSVG(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  inviteIsValid(
+    senderX: BigNumberish,
+    senderY: BigNumberish,
+    inviteX: BigNumberish,
+    inviteY: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  inviteNeighbor(
+    tokenId: BigNumberish,
+    inviteX: BigNumberish,
+    inviteY: BigNumberish,
+    recipient: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   isApprovedForAll(
     owner: string,
@@ -250,6 +480,18 @@ export class IERC721 extends BaseContract {
   ): Promise<boolean>;
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  recirculateTile(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  resetTile(
+    x: BigNumberish,
+    y: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -269,6 +511,22 @@ export class IERC721 extends BaseContract {
   setApprovalForAll(
     operator: string,
     _approved: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setCoinCreator(
+    tokenId: BigNumberish,
+    coinCreator: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setLandGranter(
+    granter: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setRenderer(
+    addr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -293,10 +551,55 @@ export class IERC721 extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    createSeed(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    createTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      pixels: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    generateTokenID(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<number>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getCoordinates(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[number, number]>;
+
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    inviteNeighbor(
+      tokenId: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      recipient: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     isApprovedForAll(
       owner: string,
@@ -305,6 +608,18 @@ export class IERC721 extends BaseContract {
     ): Promise<boolean>;
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -326,6 +641,16 @@ export class IERC721 extends BaseContract {
       _approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setCoinCreator(
+      tokenId: BigNumberish,
+      coinCreator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setLandGranter(granter: string, overrides?: CallOverrides): Promise<void>;
+
+    setRenderer(addr: string, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -377,6 +702,54 @@ export class IERC721 extends BaseContract {
       { owner: string; operator: string; approved: boolean }
     >;
 
+    "NeighborInvited(uint32,address)"(
+      tokenId?: null,
+      recipient?: null
+    ): TypedEventFilter<
+      [number, string],
+      { tokenId: number; recipient: string }
+    >;
+
+    NeighborInvited(
+      tokenId?: null,
+      recipient?: null
+    ): TypedEventFilter<
+      [number, string],
+      { tokenId: number; recipient: string }
+    >;
+
+    "SeedCreated(uint32,address)"(
+      tokenId?: null,
+      recipient?: null
+    ): TypedEventFilter<
+      [number, string],
+      { tokenId: number; recipient: string }
+    >;
+
+    SeedCreated(
+      tokenId?: null,
+      recipient?: null
+    ): TypedEventFilter<
+      [number, string],
+      { tokenId: number; recipient: string }
+    >;
+
+    "TileCreated(uint32,address)"(
+      tokenId?: null,
+      sender?: null
+    ): TypedEventFilter<[number, string], { tokenId: number; sender: string }>;
+
+    TileCreated(
+      tokenId?: null,
+      sender?: null
+    ): TypedEventFilter<[number, string], { tokenId: number; sender: string }>;
+
+    "TileReset(uint32)"(
+      tokenId?: null
+    ): TypedEventFilter<[number], { tokenId: number }>;
+
+    TileReset(tokenId?: null): TypedEventFilter<[number], { tokenId: number }>;
+
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -405,9 +778,54 @@ export class IERC721 extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    createSeed(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    createTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      pixels: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    generateTokenID(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getCoordinates(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    inviteNeighbor(
+      tokenId: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -419,6 +837,18 @@ export class IERC721 extends BaseContract {
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -439,6 +869,22 @@ export class IERC721 extends BaseContract {
     setApprovalForAll(
       operator: string,
       _approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setCoinCreator(
+      tokenId: BigNumberish,
+      coinCreator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setLandGranter(
+      granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setRenderer(
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -467,9 +913,54 @@ export class IERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    createSeed(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    createTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      pixels: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    generateTokenID(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCoordinates(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTileSVG(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    inviteIsValid(
+      senderX: BigNumberish,
+      senderY: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    inviteNeighbor(
+      tokenId: BigNumberish,
+      inviteX: BigNumberish,
+      inviteY: BigNumberish,
+      recipient: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
@@ -481,6 +972,18 @@ export class IERC721 extends BaseContract {
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    recirculateTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    resetTile(
+      x: BigNumberish,
+      y: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -501,6 +1004,22 @@ export class IERC721 extends BaseContract {
     setApprovalForAll(
       operator: string,
       _approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setCoinCreator(
+      tokenId: BigNumberish,
+      coinCreator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setLandGranter(
+      granter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setRenderer(
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

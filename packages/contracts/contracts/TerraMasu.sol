@@ -71,6 +71,7 @@ contract TerraMasu is
   mapping(uint32 => bytes) private _svgData;
   mapping(uint32 => bool) private _tileFilled;
   mapping(uint32 => uint256) private _lastTransferred;
+  mapping(uint32 => address) private _coinCreator;
   uint8 private _seedCount;
 
   // * Modifiers * //
@@ -113,6 +114,18 @@ contract TerraMasu is
     _safeMint(_landGranter, tokenId);
     _seedCount++;
     emit SeedCreated(tokenId, _landGranter);
+  }
+
+  function setCoinCreator(uint32 tokenId, address coinCreator) public {
+    require(
+      msg.sender == _landGranter,
+      'Only the LandGranter can set the Coin Creator'
+    );
+    require(
+      _coinCreator[tokenId] == address(0),
+      'Coin Creator already exists for this token'
+    );
+    _coinCreator[tokenId] = coinCreator;
   }
 
   function inviteNeighbor(
@@ -250,6 +263,7 @@ contract TerraMasu is
     require(ownerOf(tokenId) != address(0) && ownerOf(tokenId) != _landGranter);
 
     delete _svgData[tokenId];
+    delete _coinCreator[tokenId];
     _transfer(ownerOf(tokenId), _landGranter, tokenId);
     emit TileReset(tokenId);
   }

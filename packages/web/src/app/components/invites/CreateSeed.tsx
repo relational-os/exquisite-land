@@ -3,7 +3,7 @@ import {
   getSignatureForTypedData,
   submitTx
 } from '@app/features/Forwarder';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { generateTokenID } from '@app/features/TileUtils';
 import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState } from 'react';
@@ -20,7 +20,7 @@ const CreateSeed = () => {
       parseInt(x),
       parseInt(y),
       account,
-      getJsonRpcProvider()
+      getJsonRpcProvider
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
@@ -37,13 +37,13 @@ const CreateSeed = () => {
         type="number"
         placeholder="x"
         value={x}
-        onChange={e => setX(e.target.value)}
+        onChange={(e) => setX(e.target.value)}
       />
       <input
         type="number"
         placeholder="y"
         value={y}
-        onChange={e => setY(e.target.value)}
+        onChange={(e) => setY(e.target.value)}
       />
       <button onClick={onSubmit}>Submit</button>
 
@@ -53,7 +53,7 @@ const CreateSeed = () => {
             src={`/api/land-granter/generate?tokenId=${generateTokenID(
               parseInt(x),
               parseInt(y)
-            )}`}
+            )}&address=${account}`}
             width="200"
             height="200"
           />

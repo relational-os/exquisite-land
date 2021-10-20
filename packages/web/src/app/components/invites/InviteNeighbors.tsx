@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 
 const InviteNeighbors = () => {
   const openNeighbors = useOpenNeighborStore((state) => state.openNeighbors);
-  const { provider } = useWallet();
+  const { provider, account } = useWallet();
 
   const [tokenId, setTokenId] = useState<number>();
   const [hash, setHash] = useState<string>();
@@ -51,7 +51,7 @@ const InviteNeighbors = () => {
         <>
           Token id: {tokenId}{' '}
           <img
-            src={`/api/land-granter/generate?tokenId=${tokenId}`}
+            src={`/api/land-granter/generate?tokenId=${tokenId}&address=${account}`}
             width="200"
             height="200"
           />
