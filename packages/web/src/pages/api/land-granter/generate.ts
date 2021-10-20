@@ -26,7 +26,7 @@ const api: NextApiHandler = async (req, res) => {
   if (address == undefined)
     return res
       .status(400)
-      .json({ error: 'Must send address to generate coin' });
+      .json({ error: 'Must send address to generate coin!' });
 
   if (tokenId == undefined && x != undefined && y != undefined)
     tokenId = `${generateTokenID(parseInt(x), parseInt(y))}`;
