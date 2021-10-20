@@ -7,7 +7,7 @@ import {
   useOpenNeighborStore,
   OpenNeighborStatus
 } from '@app/features/useOpenNeighborsForWallet';
-import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { getSVGFromPixels } from '@app/features/TileUtils';
@@ -86,7 +86,7 @@ const CanvasTile = ({
               ) : (
                 <ENSName
                   address={tile.owner.id}
-                  provider={ethJsonRpcProvider}
+                  provider={getEthJsonRpcProvider}
                 />
               )}
             </div>

@@ -5,7 +5,7 @@ import {
   FORWARDER_CONTRACT_ADDRESS
 } from './AddressBook';
 import getContract from './getContract';
-import getJsonRpcProvider from './getJsonRpcProvider';
+import { getJsonRpcProvider } from './getJsonRpcProvider';
 
 const FORWARDER_API_URL = '/api/forwarder/forward';
 
@@ -68,7 +68,7 @@ export const submitTx = async (dataToSign: TypedData, signature: string) => {
     body: JSON.stringify({ data: dataToSign, signature }),
     headers: { 'Content-Type': 'application/json' }
   }).then((res) => res.json());
-  return await getJsonRpcProvider().getTransaction(response.hash);
+  return await getJsonRpcProvider.getTransaction(response.hash);
 };
 
 // CONTRACT FUNCTIONS

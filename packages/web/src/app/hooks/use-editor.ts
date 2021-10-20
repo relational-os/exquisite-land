@@ -3,7 +3,7 @@ import {
   getSignatureForTypedData,
   submitTx
 } from '@app/features/Forwarder';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import useStore, { Tool } from '@app/features/State';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
@@ -80,7 +80,7 @@ const useEditor = () => {
       y,
       outputPixels,
       account,
-      getJsonRpcProvider()
+      getJsonRpcProvider
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
