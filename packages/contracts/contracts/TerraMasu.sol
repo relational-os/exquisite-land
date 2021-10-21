@@ -43,6 +43,7 @@ contract TerraMasu is
   uint8 constant MAX_CANVAS_HEIGHT = 16;
   uint8 constant MAX_TILE_WIDTH = 32;
   uint8 constant MAX_TILE_HEIGHT = 32;
+  uint8 constant NUM_COLORS = 16;
 
   // * Addresses * //
   address private _landGranter;
@@ -67,6 +68,10 @@ contract TerraMasu is
     '#0484d1'
   ];
 
+  // * Default Coin Data *//
+  string DEFAULT_COIN_OPENER =
+    '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><style>.small{font:8px serif;fill:#e68d3e}</style><circle id="coin" cx="50" cy="50" r="45" fill="#F5CB53"/><circle id="coin2" cx="50" cy="50" r="37" fill="transparent"/><path id="lowerhalf" d="M10 50a25 25 0 0 0 80 0" fill="transparent"/><text class="small"><textPath href="#lowerhalf" startOffset="32%">exquisite.land</textPath></text><text class="small"><textPath href="#coin2" startOffset="65%">play it forward</textPath></text><text x="50%" y="50%" text-anchor="middle" style="font:12px serif;fill:#e68d3e">[';
+  string DEFAULT_COIN_CLOSER = ']</text></svg>';
   // * Canvas Data Storage * //
   mapping(uint32 => bytes) private _svgData;
   mapping(uint32 => bool) private _tileFilled;
@@ -77,6 +82,7 @@ contract TerraMasu is
   // * Modifiers * //
   modifier isInitialized() {
     require(_landGranter != address(0), 'Not initialized');
+    // require(_renderer != address(0), "Not initialized");
     _;
   }
 
@@ -154,10 +160,14 @@ contract TerraMasu is
     uint32 y,
     bytes calldata pixels
   ) public isValidTile(x, y) {
-    require(pixels.length == 512, 'Data is not 512 bytes');
+    require(pixels.length == 1024, 'Data is not 1024 bytes');
     uint32 tokenId = generateTokenID(x, y);
-    require(ownerOf(tokenId) == _msgSender(), 'u r not owner rawr');
+    require(
+      ownerOf(tokenId) == _msgSender(),
+      'You are not the owner of this tile'
+    );
     require(_tileFilled[tokenId] == false, 'Someone already drew that tile.');
+
     _svgData[tokenId] = pixels;
     _tileFilled[tokenId] = true;
     emit TileCreated(tokenId, _msgSender());
@@ -184,7 +194,17 @@ contract TerraMasu is
   }
 
   function getTileSVG(uint32 tokenId) public view returns (string memory) {
-    return _renderer.renderSVG(_svgData[uint32(tokenId)], PALETTE);
+    string[] memory palette = new string[](16);
+
+    for (uint8 i; i < PALETTE.length; i++) palette[i] = PALETTE[i];
+
+    return
+      _renderer.renderSVG(
+        _svgData[uint32(tokenId)],
+        palette,
+        MAX_TILE_WIDTH,
+        MAX_TILE_HEIGHT
+      );
   }
 
   function generateTokenID(uint32 x, uint32 y)
@@ -264,6 +284,7 @@ contract TerraMasu is
 
     delete _svgData[tokenId];
     delete _coinCreator[tokenId];
+    delete _tileFilled[tokenId];
     _transfer(ownerOf(tokenId), _landGranter, tokenId);
     emit TileReset(tokenId);
   }
@@ -286,23 +307,41 @@ contract TerraMasu is
     returns (string memory)
   {
     (uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
+    string memory output;
+    string memory description;
 
-    string memory output = _renderer.renderSVG(
-      _svgData[uint32(tokenId)],
-      PALETTE
-    );
     // prettier-ignore
     string[32] memory LOOKUP=["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
+    if (_tileFilled[uint32(tokenId)]) {
+      output = getTileSVG(uint32(tokenId));
+      description = string(
+        abi.encodePacked('"A Terra Masu Tile drawn by ', ownerOf(tokenId), '"')
+      );
+    } else {
+      output = string(
+        abi.encodePacked(
+          DEFAULT_COIN_OPENER,
+          LOOKUP[x],
+          ',',
+          LOOKUP[y],
+          DEFAULT_COIN_CLOSER
+        )
+      );
+      description = '"A blank Terra Masu Tile"';
+    }
 
     string memory json = _b64.encode(
       bytes(
         string(
           abi.encodePacked(
-            '{"name": "Exquisite Land Tile ',
+            '{"name": "Exquisite Land Tile [',
             LOOKUP[x],
-            ' ',
+            ',',
             LOOKUP[y],
-            '", "description": "Blank for now", "image": "data:image/svg+xml;base64,',
+            ']", "description": ',
+            description,
+            ', "image": "data:image/svg+xml;base64,',
             _b64.encode(bytes(output)),
             '"}'
           )

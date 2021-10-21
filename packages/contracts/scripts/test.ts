@@ -1,11 +1,7 @@
 import fs from 'fs-extra';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
-<<<<<<< HEAD
 import { TerraMasu__factory, LandGranter__factory } from '../typechain';
-=======
-import { ExquisiteLand__factory, LandGranter__factory } from '../typechain';
->>>>>>> a9aa060 (initial generic)
 
 const data = new Uint8Array([
   0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
