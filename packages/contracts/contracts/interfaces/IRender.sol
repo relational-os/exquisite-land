@@ -5,7 +5,7 @@ interface IRender {
   function renderSVG(
     bytes calldata data,
     string[] calldata palette,
-    uint16 num_rows,
-    uint16 num_cols
+    uint16 numRows,
+    uint16 numCols
   ) external view returns (string memory);
 }

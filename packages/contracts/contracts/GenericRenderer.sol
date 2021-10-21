@@ -28,21 +28,21 @@ contract GenericRenderer {
   function renderSVG(
     bytes calldata data,
     string[] calldata palette,
-    uint16 num_rows,
-    uint16 num_cols
+    uint16 numRows,
+    uint16 numCols
   ) public view returns (string memory) {
     require(
       palette.length <= MAX_COLORS,
       'number of colors is greater than max'
     );
-    require(num_rows <= MAX_ROWS, 'number of rows is greater than max');
-    require(num_cols <= MAX_COLS, 'number of columns is greater than max');
+    require(numRows <= MAX_ROWS, 'number of rows is greater than max');
+    require(numCols <= MAX_COLS, 'number of columns is greater than max');
     require(
-      data.length == num_rows * num_cols,
+      data.length == numRows * numCols,
       'Amount of data provided does not match the number of rows and columns'
     );
 
-    uint8 num_colors = uint8(palette.length);
+    uint8 numColors = uint8(palette.length);
 
     // uint256 startGas = gasleft();
 
@@ -50,14 +50,14 @@ contract GenericRenderer {
     // prettier-ignore
     // uint8[16] memory multiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    for (uint16 h = 0; h < num_rows; h++) {
-      for (uint16 m = 0; m < num_cols; m) {
-        uint16 index = (h * num_cols) + m;
+    for (uint16 h = 0; h < numRows; h++) {
+      for (uint16 m = 0; m < numCols; m) {
+        uint16 index = (h * numCols) + m;
 
         /* == START: Get RLE length ==*/
         uint8 c = 1;
 
-        while ((index + c) % num_cols != 0) {
+        while ((index + c) % numCols != 0) {
           if (data[index] == data[index + c]) c++;
           else break;
         }
@@ -66,12 +66,12 @@ contract GenericRenderer {
         uint8 ci = uint8(data[index]);
 
         // Optimize gas by not creating long strings
-        // ci = uint8(ci + (num_colors * multiplier[ci]));
+        // ci = uint8(ci + (numColors * multiplier[ci]));
         // if (paths[ci].length > 500) {
-        //   if (multiplier[ci % num_colors] < 8) {
-        //     multiplier[ci % num_colors]++;
+        //   if (multiplier[ci % numColors] < 8) {
+        //     multiplier[ci % numColors]++;
         //   }
-        //   ci = uint8(ci + num_colors * multiplier[ci % num_colors]);
+        //   ci = uint8(ci + numColors * multiplier[ci % numColors]);
         // }
 
         paths[ci] = abi.encodePacked(
@@ -91,25 +91,25 @@ contract GenericRenderer {
     string memory output = string(
       abi.encodePacked(
         SVG_OPENER,
-        lookup[num_cols],
+        lookup[numCols],
         ' ',
-        lookup[num_rows],
+        lookup[numRows],
         CLOSE_SVG_OPENER
       )
     );
 
-    for (uint16 i = 0; i < num_colors; i++) {
+    for (uint16 i = 0; i < numColors; i++) {
       for (uint8 mul = 0; mul < 1; mul++) {
         // for (uint8 mul = 0; mul < 16; mul++) {
         // TODO for gas savings it might be worth inlining the function call
-        if (isEmptyString(paths[i + (num_colors * mul)])) break;
+        if (isEmptyString(paths[i + (numColors * mul)])) break;
         output = string(
           abi.encodePacked(
             output,
             PATH_PREFIX,
-            palette[i % num_colors],
+            palette[i % numColors],
             PATH_START_DATA,
-            paths[i + (num_colors * mul)],
+            paths[i + (numColors * mul)],
             END_TAG
           )
         );
