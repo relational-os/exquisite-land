@@ -5,7 +5,7 @@ import {
   ExquisiteLand__factory,
   TerraMasu__factory,
   LandGranter__factory,
-  Render__factory,
+  GenericRenderer__factory,
   TrustedForwarder__factory,
   Base64__factory
 } from '../typechain';
@@ -57,7 +57,7 @@ async function start() {
 
   if (!addressBook.renderer) {
     console.log('Deploying renderer...');
-    const deployTx = await new Render__factory(wallet).deploy();
+    const deployTx = await new GenericRenderer__factory(wallet).deploy();
     console.log('Deploy TX: ', deployTx.deployTransaction.hash);
     await deployTx.deployed();
     console.log('Contract deployed at ', deployTx.address);
