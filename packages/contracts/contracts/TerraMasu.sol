@@ -68,9 +68,12 @@ contract TerraMasu is
     '#0484d1'
   ];
 
+  // prettier-ignore
+  string[32] public LOOKUP=["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
+
   // * Default Coin Data *//
   string DEFAULT_COIN_OPENER =
-    '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><style>.small{font:8px serif;fill:#e68d3e}</style><circle id="coin" cx="50" cy="50" r="45" fill="#F5CB53"/><circle id="coin2" cx="50" cy="50" r="37" fill="transparent"/><path id="lowerhalf" d="M10 50a25 25 0 0 0 80 0" fill="transparent"/><text class="small"><textPath href="#lowerhalf" startOffset="32%">exquisite.land</textPath></text><text class="small"><textPath href="#coin2" startOffset="65%">play it forward</textPath></text><text x="50%" y="50%" text-anchor="middle" style="font:12px serif;fill:#e68d3e">[';
+    '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><style>.small{font:8px serif;fill:#e68d3e}</style><circle id="coin" cx="50" cy="50" r="45" fill="#F5CB53"/><circle id="coin2" cx="50" cy="50" r="37" fill="transparent"/><path id="lowerhalf" d="M10 50a25 25 0 0 0 80 0" fill="transparent"/><text class="small"><textPath href="#lowerhalf" startOffset="32%">exquisite.land</textPath></text><text class="small"><textPath href="#coin2" startOffset="65%">play it forward</textPath></text><text x="50%" y="50%" text-anchor="middle" class="small">[';
   string DEFAULT_COIN_CLOSER = ']</text></svg>';
   // * Canvas Data Storage * //
   mapping(uint32 => bytes) private _svgData;
@@ -86,12 +89,16 @@ contract TerraMasu is
     _;
   }
 
-  modifier isValidTile(uint32 x, uint32 y) {
+  function _validateTile(uint32 x, uint32 y) internal pure {
     require(
       x < MAX_CANVAS_WIDTH && x >= 0,
       'You are out of horizontal bounds.'
     );
     require(y < MAX_CANVAS_HEIGHT && y >= 0, 'You are out of vertical bounds');
+  }
+
+  modifier isValidTile(uint32 x, uint32 y) {
+    _validateTile(x, y);
     _;
   }
 
@@ -309,9 +316,6 @@ contract TerraMasu is
     (uint32 x, uint32 y) = getCoordinates(uint32(tokenId));
     string memory output;
     string memory description;
-
-    // prettier-ignore
-    string[32] memory LOOKUP=["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"];
 
     if (_tileFilled[uint32(tokenId)]) {
       output = getTileSVG(uint32(tokenId));

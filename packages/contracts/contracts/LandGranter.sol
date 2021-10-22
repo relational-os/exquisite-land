@@ -10,7 +10,7 @@ contract LandGranter is ILandGranter, IERC721Receiver, Ownable {
   IExquisiteLand private _exquisiteLand;
 
   event InviteCoinCreated(uint256 tokenId);
-  event InviteCoinUsed(uint256 tokenId, address recipient);
+  event InviteCoinUsed(uint256 tokenId, address recipient, address coinCreator);
 
   constructor(address exquisiteLandAddress) {
     _exquisiteLand = IExquisiteLand(exquisiteLandAddress);
@@ -41,6 +41,6 @@ contract LandGranter is ILandGranter, IERC721Receiver, Ownable {
     );
     _exquisiteLand.safeTransferFrom(address(this), recipient, tokenId);
     _exquisiteLand.setCoinCreator(uint32(tokenId), coinCreator);
-    emit InviteCoinUsed(tokenId, recipient);
+    emit InviteCoinUsed(tokenId, recipient, coinCreator);
   }
 }
