@@ -55,7 +55,11 @@ const CanvasTile = ({
 
   const isPending = useTransactionsStore((state) =>
     state.transactions.find(
-      (t) => t.x == x && t.y == y && t.type == 'create-tile'
+      (t) =>
+        t.x == x &&
+        t.y == y &&
+        t.type == 'create-tile' &&
+        t.status != 'confirmed'
     )
   );
   const pendingSvg = isPending ? getSVGFromPixels(isPending.pixels!) : null;
