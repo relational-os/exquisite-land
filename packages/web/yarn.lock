@@ -1359,10 +1359,10 @@
     "@ethersproject/properties" "^5.4.0"
     "@ethersproject/strings" "^5.4.0"
 
-"@exquisiteland/contracts@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@exquisiteland/contracts/-/contracts-0.1.0.tgz#5ea2812e1ff4a98a0d5b993f3b6f4454a72a45e4"
-  integrity sha512-m/CeUwmK0RC5iZDiFj22xBlh7X4/3eNoHbFwJKpwVluPfwZz9LjUI/tCMXkO4yF6RTM41AYvAaE5iXAcZVivVg==
+"@exquisiteland/contracts@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@exquisiteland/contracts/-/contracts-0.2.0.tgz#793194758e62dca5011b2918ede3a1845981eb01"
+  integrity sha512-keBNbny5bzfv3Zny6ybdRTMlN6eB467JYYja9BYFIFd3tl8oi8yf8LbKq+ZYwceYMuk7r4H5qv3MPrOuNXb44A==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 

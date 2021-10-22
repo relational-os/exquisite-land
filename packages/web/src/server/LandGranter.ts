@@ -87,7 +87,10 @@ export const decodePencil = async (data: string): Promise<string> => {
 
 export const getTokenIDForCoin = async (
   coinB64: string
-): Promise<number | undefined> => {
+): Promise<{
+  tokenId: number | undefined;
+  coinCreator: string | undefined;
+}> => {
   // TODO: lookup x_y from db, for now this is done in memory
   const decoded = await decodePencil(coinB64);
 
@@ -97,7 +100,7 @@ export const getTokenIDForCoin = async (
     }
   });
 
-  return result?.tokenID;
+  return { tokenId: result?.tokenID, coinCreator: result?.creator };
 };
 
 export const checkTokenIdIsOwnedByLandGranter = async (

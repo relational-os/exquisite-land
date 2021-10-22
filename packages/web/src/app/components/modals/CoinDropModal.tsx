@@ -5,6 +5,8 @@ import Button from '../Button';
 import Modal from 'react-modal';
 import ConnectWalletModal from './ConnectWalletModal';
 import { useCoinDrop } from '@app/hooks/useCoinDrop';
+import { AddressDisplayEnum, ENSName } from 'react-ens-name';
+import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
@@ -12,8 +14,14 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const [processing, setProcessing] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
 
-  const { tokenId, dropError, reset, getRootProps, getInputProps } =
-    useCoinDrop(setProcessing);
+  const {
+    tokenId,
+    coinCreator,
+    dropError,
+    reset,
+    getRootProps,
+    getInputProps
+  } = useCoinDrop(setProcessing);
 
   const claimCoin = async () => {
     if (tokenId == undefined) return;
@@ -21,7 +29,12 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     setProcessing(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
-      body: JSON.stringify({ tokenId, recipient: account }),
+      // TODO: body should also accept any coin creator (or fetch from db)
+      body: JSON.stringify({
+        tokenId,
+        recipient: account,
+        coinCreator
+      }),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -72,7 +85,14 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         <div className="valid-token">
           <div className="message">
             <div className="coords">
-              [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
+              Token [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
+              from{' '}
+              <ENSName
+                address={coinCreator!}
+                provider={getEthJsonRpcProvider}
+                displayType={AddressDisplayEnum.FIRST4_LAST4}
+                withEllipses={true}
+              />
             </div>
             <img src="/graphics/coinbox-valid.png" />
             {processing ? (
