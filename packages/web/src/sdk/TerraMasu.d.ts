@@ -21,6 +21,7 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface TerraMasuInterface extends ethers.utils.Interface {
   functions: {
+    "LOOKUP(uint256)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "createSeed(uint32,uint32)": FunctionFragment;
@@ -53,6 +54,10 @@ interface TerraMasuInterface extends ethers.utils.Interface {
     "versionRecipient()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "LOOKUP",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
@@ -159,6 +164,7 @@ interface TerraMasuInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(functionFragment: "LOOKUP", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createSeed", data: BytesLike): Result;
@@ -350,6 +356,8 @@ export class TerraMasu extends BaseContract {
   interface: TerraMasuInterface;
 
   functions: {
+    LOOKUP(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -513,6 +521,8 @@ export class TerraMasu extends BaseContract {
     versionRecipient(overrides?: CallOverrides): Promise<[string]>;
   };
 
+  LOOKUP(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -667,6 +677,8 @@ export class TerraMasu extends BaseContract {
   versionRecipient(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    LOOKUP(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -937,6 +949,8 @@ export class TerraMasu extends BaseContract {
   };
 
   estimateGas: {
+    LOOKUP(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1101,6 +1115,11 @@ export class TerraMasu extends BaseContract {
   };
 
   populateTransaction: {
+    LOOKUP(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,

@@ -63,7 +63,7 @@ interface LandGranterInterface extends ethers.utils.Interface {
 
   events: {
     "InviteCoinCreated(uint256)": EventFragment;
-    "InviteCoinUsed(uint256,address)": EventFragment;
+    "InviteCoinUsed(uint256,address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
@@ -77,7 +77,11 @@ export type InviteCoinCreatedEvent = TypedEvent<
 >;
 
 export type InviteCoinUsedEvent = TypedEvent<
-  [BigNumber, string] & { tokenId: BigNumber; recipient: string }
+  [BigNumber, string, string] & {
+    tokenId: BigNumber;
+    recipient: string;
+    coinCreator: string;
+  }
 >;
 
 export type OwnershipTransferredEvent = TypedEvent<
@@ -216,20 +220,22 @@ export class LandGranter extends BaseContract {
       tokenId?: null
     ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
 
-    "InviteCoinUsed(uint256,address)"(
+    "InviteCoinUsed(uint256,address,address)"(
       tokenId?: null,
-      recipient?: null
+      recipient?: null,
+      coinCreator?: null
     ): TypedEventFilter<
-      [BigNumber, string],
-      { tokenId: BigNumber; recipient: string }
+      [BigNumber, string, string],
+      { tokenId: BigNumber; recipient: string; coinCreator: string }
     >;
 
     InviteCoinUsed(
       tokenId?: null,
-      recipient?: null
+      recipient?: null,
+      coinCreator?: null
     ): TypedEventFilter<
-      [BigNumber, string],
-      { tokenId: BigNumber; recipient: string }
+      [BigNumber, string, string],
+      { tokenId: BigNumber; recipient: string; coinCreator: string }
     >;
 
     "OwnershipTransferred(address,address)"(

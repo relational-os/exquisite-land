@@ -15,9 +15,19 @@ const _abi = [
         type: "bytes",
       },
       {
-        internalType: "string[16]",
+        internalType: "string[]",
         name: "palette",
-        type: "string[16]",
+        type: "string[]",
+      },
+      {
+        internalType: "uint16",
+        name: "numRows",
+        type: "uint16",
+      },
+      {
+        internalType: "uint16",
+        name: "numCols",
+        type: "uint16",
       },
     ],
     name: "renderSVG",
@@ -28,7 +38,7 @@ const _abi = [
         type: "string",
       },
     ],
-    stateMutability: "pure",
+    stateMutability: "view",
     type: "function",
   },
 ];
