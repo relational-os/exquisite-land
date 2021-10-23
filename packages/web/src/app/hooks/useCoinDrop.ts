@@ -56,7 +56,7 @@ export const useCoinDrop = (
     onDrop,
     accept: 'image/png',
     multiple: false,
-    noClick: true,
+    // noClick: true,
     preventDropOnDocument: false
   });
 
