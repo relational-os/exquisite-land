@@ -29,6 +29,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
       `}</style>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
         * {
           box-sizing: border-box;
         }

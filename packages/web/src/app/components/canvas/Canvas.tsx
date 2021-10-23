@@ -6,6 +6,7 @@ import { useFetchCanvas } from '@app/features/Graph';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
+import TransactionHistoryModal from '../modals/TransactionHistoryModal';
 import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
 import {
   ReactZoomPanPinchRef,
@@ -135,10 +136,11 @@ const Canvas = () => {
         <TransformComponent
           wrapperStyle={{
             maxWidth: '100%',
-            maxHeight: '100vh'
+            maxHeight: '100vh',
+            cursor: 'grab'
           }}
         >
-          <div className="canvas-title">
+          <div className="canvas-header">
             ████████╗███████╗██████╗░██████╗░░█████╗░  ███╗░░░███╗░█████╗░░██████╗██╗░░░██╗
             ╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗  ████╗░████║██╔══██╗██╔════╝██║░░░██║
             ░░░██║░░░█████╗░░██████╔╝██████╔╝███████║  ██╔████╔██║███████║╚█████╗░██║░░░██║
@@ -146,19 +148,63 @@ const Canvas = () => {
             ░░░██║░░░███████╗██║░░██║██║░░██║██║░░██║  ██║░╚═╝░██║██║░░██║██████╔╝╚██████╔╝
             ░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝  ╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═════╝░░╚═════╝░
           </div>
-          <div className="surface">
-            {rows.map((y) =>
-              columns.map((x) => (
-                <CanvasTile
-                  key={`${x},${y}`}
-                  x={x}
-                  y={y}
-                  openEditor={() => openEditor(x, y)}
-                  openGenerateInvite={() => openGenerateInvite(x, y)}
-                  openTileModal={() => openTileModal(x, y)}
-                />
-              ))
-            )}
+          <div className="canvas-body">
+            <div className="left">
+              <div>
+                <a href="">About</a>
+              </div>
+              <div>
+                <a href="">FAQ</a>
+              </div>
+              <div>
+                <a href="">Discord</a>
+              </div>
+              <div>
+                <a href="">Tweeter</a>
+              </div>
+            </div>
+            <div className="surface">
+              {rows.map((y) =>
+                columns.map((x) => (
+                  <CanvasTile
+                    key={`${x},${y}`}
+                    x={x}
+                    y={y}
+                    openEditor={() => openEditor(x, y)}
+                    openGenerateInvite={() => openGenerateInvite(x, y)}
+                    openTileModal={() => openTileModal(x, y)}
+                  />
+                ))
+              )}
+            </div>
+            <div className="right">
+              <div className="activity">
+                <div className="activity-title">Your Activity</div>
+                <div className="activity-body">
+                  <TransactionHistoryModal />
+                </div>
+              </div>
+
+              <div className="discord">
+                <div className="discord-title">Discord</div>
+                <div className="discord-body">
+                  <div className="junk">hey hey heyhey discord time!</div>
+                </div>
+
+                <a
+                  className="discord-button"
+                  href="https://discord.gg/pma4YtD6xW"
+                >
+                  enter the Exquisite Land Discord
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="canvas-footer">
+            <a href="https://relational.fyi" target="_blank">
+              A Relational Game
+            </a>
           </div>
         </TransformComponent>
       </TransformWrapper>
@@ -202,14 +248,78 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
-        .canvas-title {
-          color: #000;
+        .canvas-header,
+        .canvas-body,
+        .canvas-footer {
+          display: flex;
+        }
+
+        .canvas-header {
+          color: #666;
           width: 800px;
           margin: 10rem auto 0;
         }
-        .surface {
-          margin: 5rem 15rem 15rem;
+
+        .canvas-body {
+          margin: 5rem 15rem 2rem 15rem;
+          padding: 0 1rem;
+          gap: 2rem;
+          font-size: 3rem;
+        }
+
+        .left,
+        .right {
+          display: flex;
+          min-width: 40rem;
+          flex-direction: column;
+        }
+
+        .activity {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 2rem;
+          flex: 1 1 auto;
+        }
+
+        .activity .activity-title {
+          padding-bottom: 1rem;
+          color: #666;
+        }
+
+        .activity .activity-body {
+          flex: 1 1 auto;
+          border: 2px solid #000;
+        }
+
+        .discord {
+          display: flex;
+          flex-direction: column;
+          flex: 2 1 auto;
+        }
+
+        .discord .discord-title {
+          padding-bottom: 1rem;
+          color: #666;
+        }
+
+        .discord .discord-body {
+          flex: 1 1 auto;
+          border: 2px solid #000;
+        }
+
+        .discord .discord-body .junk {
+          height: 100rem;
+          background: brown;
+        }
+
+        .discord a.discord-button {
+          text-align: center;
+          background: purple;
+          color: #fff;
           padding: 1rem;
+        }
+
+        .surface {
           width: 100%;
           height: 100%;
           display: grid;
@@ -218,6 +328,13 @@ const Canvas = () => {
           box-shadow: 0 10px 64px 2px rgba(0, 0, 0, 0.3);
           background: #333;
         }
+
+        .canvas-footer {
+          color: #666;
+          font-size: 2rem;
+          padding: 2rem;
+        }
+
         .controls {
           position: fixed;
           bottom: 0;
