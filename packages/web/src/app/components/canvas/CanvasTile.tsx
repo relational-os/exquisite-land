@@ -10,11 +10,6 @@ import {
 import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
-import {
-  getPathSVGFromPixels,
-  getPNGFromPixels,
-  getSVGFromPixels
-} from '@app/features/TileUtils';
 
 const CanvasTile = ({
   x,
