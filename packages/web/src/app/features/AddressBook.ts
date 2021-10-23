@@ -2,6 +2,10 @@ import AddressBook from '@exquisiteland/contracts/addresses/80001.json';
 import AddressBookDev from '@exquisiteland/contracts/addresses/80001-dev.json';
 import isProd from '@server/isProd';
 
+export const OPENSEA_URL = isProd
+  ? 'https://opensea.io/assets/matic/'
+  : 'https://testnets.opensea.io/assets/mumbai/';
+
 export const EXQUISITE_LAND_CONTRACT_ADDRESS = isProd
   ? AddressBook.contract
   : AddressBookDev.contract;
