@@ -38,6 +38,11 @@ export const getEthPixelData = (pixels: Pixels): string => {
   return outputPixels;
 };
 
+export const getPathSVGFromPixels = (pixels: Pixels) => {
+  const data = getEthPixelData(pixels);
+  return getSVGFromData(data, PALETTES[0], 32, 32);
+};
+
 export const getSVGFromPixels = (pixels: Pixels) => {
   var output = SVG_OPENER;
   for (var y = 0; y < pixels.length; y++) {
@@ -58,7 +63,7 @@ export const getSVGFromData = (
   numRows: number,
   numCols: number
 ) => {
-  const dataBytes = hexToBytes(data);
+  const dataBytes = hexToBytes(data.slice(2));
   let numColors = palette.length;
   let paths = new Array(numColors).fill('');
 
