@@ -150,6 +150,8 @@ const Editor = ({
             setDrawing(true);
           }}
           onPointerUp={() => setDrawing(false)}
+          onMouseLeave={() => setDrawing(false)}
+          onPointerLeave={() => setDrawing(false)}
         >
           {columns.map((y) => {
             return rows.map((x) => {
