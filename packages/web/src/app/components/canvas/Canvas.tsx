@@ -289,6 +289,8 @@ const Canvas = () => {
         .activity .activity-body {
           flex: 1 1 auto;
           border: 2px solid #000;
+          overflow: auto;
+          max-height: 50rem;
         }
 
         .discord {
