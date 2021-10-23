@@ -180,7 +180,7 @@ const Editor = ({
               <TileSVG
                 x={x - 1}
                 y={y - 1}
-                viewbox={'30 30 32 32'}
+                viewbox={'30 29.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -190,7 +190,7 @@ const Editor = ({
               <TileSVG
                 x={x}
                 y={y - 1}
-                viewbox={'0 30 32 32'}
+                viewbox={'0 29.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 32}px`
@@ -199,7 +199,7 @@ const Editor = ({
               <TileSVG
                 x={x + 1}
                 y={y - 1}
-                viewbox={'0 30 32 32'}
+                viewbox={'0 29.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -212,7 +212,7 @@ const Editor = ({
               <TileSVG
                 x={x - 1}
                 y={y + 1}
-                viewbox={'30 0 32 32'}
+                viewbox={'30 -0.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -222,7 +222,7 @@ const Editor = ({
               <TileSVG
                 x={x}
                 y={y + 1}
-                viewbox={'0 0 32 32'}
+                viewbox={'0 -0.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 32}px`
@@ -231,7 +231,7 @@ const Editor = ({
               <TileSVG
                 x={x + 1}
                 y={y + 1}
-                viewbox={'0 0 32 32'}
+                viewbox={'0 -0.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -244,7 +244,7 @@ const Editor = ({
               <TileSVG
                 x={x - 1}
                 y={y}
-                viewbox={'30 0 32 32'}
+                viewbox={'30 -0.5 32 32'}
                 svgHeight={`${PIXEL_SIZE * 32}px`}
               ></TileSVG>
             </div>
@@ -252,7 +252,7 @@ const Editor = ({
               <TileSVG
                 x={x + 1}
                 y={y}
-                viewbox={'0 0 32 32'}
+                viewbox={'0 -0.5 32 32'}
                 svgHeight={`${PIXEL_SIZE * 32}px`}
               ></TileSVG>
             </div>
