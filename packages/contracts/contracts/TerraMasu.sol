@@ -320,7 +320,7 @@ contract TerraMasu is
     if (_tileFilled[uint32(tokenId)]) {
       output = getTileSVG(uint32(tokenId));
       description = string(
-        abi.encodePacked('"A Terra Masu Tile drawn by ', ownerOf(tokenId), '"')
+        abi.encodePacked('"Terra Masu Tile [', LOOKUP[x], ',', LOOKUP[y], ']"')
       );
     } else {
       output = string(
