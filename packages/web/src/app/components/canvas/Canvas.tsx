@@ -272,6 +272,7 @@ const Canvas = () => {
           display: flex;
           min-width: 40rem;
           flex-direction: column;
+          max-height: ${columns.length * tileSize}px;
         }
 
         .activity {
@@ -279,6 +280,7 @@ const Canvas = () => {
           flex-direction: column;
           margin-bottom: 2rem;
           flex: 1 1 auto;
+          max-height: calc(${(columns.length * tileSize) / 3}px - 2rem);
         }
 
         .activity .activity-title {
@@ -290,13 +292,13 @@ const Canvas = () => {
           flex: 1 1 auto;
           border: 2px solid #000;
           overflow: auto;
-          max-height: 50rem;
         }
 
         .discord {
           display: flex;
           flex-direction: column;
           flex: 2 1 auto;
+          max-height: ${((columns.length * tileSize) / 3) * 2}px;
         }
 
         .discord .discord-title {
@@ -307,6 +309,7 @@ const Canvas = () => {
         .discord .discord-body {
           flex: 1 1 auto;
           border: 2px solid #000;
+          overflow: auto;
         }
 
         .discord .discord-body .junk {
