@@ -529,6 +529,10 @@ const Editor = ({
           fill: #fff;
         }
 
+        .undo:disabled:hover {
+          cursor: pointer;
+        }
+
         .color-palette {
           display: grid;
           grid-template-columns: 50% 50%;
