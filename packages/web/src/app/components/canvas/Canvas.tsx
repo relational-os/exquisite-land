@@ -111,6 +111,7 @@ const Canvas = () => {
     }
   }, [wrapperRef, router.query]);
 
+  const [isPanning, setPanning] = useState(false);
   return (
     <>
       <TransformWrapper
@@ -128,8 +129,15 @@ const Canvas = () => {
         alignmentAnimation={{
           animationType: 'easeInOutCubic'
         }}
+        onPanningStart={() => {
+          setTimeout(() => {
+            setPanning(true);
+          }, 150);
+        }}
         onPanningStop={(_, event) => {
-          console.log(event);
+          setTimeout(() => {
+            setPanning(false);
+          }, 150);
           // router.replace({ query: { ...router.query, x: getClientX(event), y: getClientX } });
         }}
       >
@@ -170,9 +178,11 @@ const Canvas = () => {
                     key={`${x},${y}`}
                     x={x}
                     y={y}
-                    openEditor={() => openEditor(x, y)}
-                    openGenerateInvite={() => openGenerateInvite(x, y)}
-                    openTileModal={() => openTileModal(x, y)}
+                    openEditor={() => !isPanning && openEditor(x, y)}
+                    openGenerateInvite={() =>
+                      !isPanning && openGenerateInvite(x, y)
+                    }
+                    openTileModal={() => !isPanning && openTileModal(x, y)}
                   />
                 ))
               )}
