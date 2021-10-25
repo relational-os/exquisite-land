@@ -1,5 +1,6 @@
 import React from 'react';
 import ConnectWalletButton from './ConnectWalletButton';
+import OpenTransactionHistoryButton from './OpenTransactionHistoryButton';
 import UseCoinButton from './UseCoinButton';
 
 const Header = () => {
@@ -9,6 +10,7 @@ const Header = () => {
 
       <div className="spacer" />
 
+      <OpenTransactionHistoryButton />
       <UseCoinButton />
       <ConnectWalletButton />
 

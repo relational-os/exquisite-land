@@ -17,7 +17,7 @@ const OpenTransactionHistoryButton = () => {
 
   return (
     <>
-      <button onClick={openModal}>transactions</button>
+      <button onClick={openModal}>tx</button>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}

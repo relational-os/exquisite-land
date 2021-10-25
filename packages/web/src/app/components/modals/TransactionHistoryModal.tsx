@@ -15,18 +15,20 @@ const TransactionHistoryModal = () => {
           transaction={transaction}
         />
       ))}
-      <div className="junk">transactions</div>
+      <div className="controls">
+        <button onClick={() => useTransactionsStore.getState().clearAll()}>
+          Clear all
+        </button>
+      </div>
       <style jsx>{`
         .transaction-history-modal {
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          overflow: hidden;
         }
-        .junk {
-          height: 100rem;
-          background: #000;
+        .controls {
+          padding: 10px;
         }
       `}</style>
     </div>
