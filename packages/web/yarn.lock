@@ -1366,10 +1366,10 @@
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
-"@gimmixorg/use-wallet@^0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@gimmixorg/use-wallet/-/use-wallet-0.0.25.tgz#8b81ffae7de0ee6f3fb7997382f0d0ee937a1bb5"
-  integrity sha512-nL+cVUQ15GrWWtxm1E3UlcOr9CUwAtRVR+RAbo1/EooaXxBxqMoFJYW5oqL/h0iIwIFowO12XxF9mIBu5SFu3A==
+"@gimmixorg/use-wallet@^0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@gimmixorg/use-wallet/-/use-wallet-0.0.28.tgz#9c39cdbf42b478f7757f71d61ad35d6ff66a1a5c"
+  integrity sha512-2wUpz98dpDm4Lbp4JAb9MIa4fV/xU3MmxMKlfVdnBSMfVS9mbLrx2jnoGM2QgCmrnfO0EEUDOmfwUs2IrrW5Fw==
   dependencies:
     "@ethersproject/providers" "5.4.1"
     web3modal "^1.9.3"
