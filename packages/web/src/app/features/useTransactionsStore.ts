@@ -32,7 +32,6 @@ const useTransactionsStore = create<TransactionStore>(
         )) {
           provider.getTransaction(transaction.hash).then((tx) => {
             tx.wait().then((receipt) => {
-              console.log({ receipt });
               set((transactions) => ({
                 ...transactions,
                 transactions: transactions.transactions.map((t) =>
@@ -52,7 +51,6 @@ const useTransactionsStore = create<TransactionStore>(
         const provider = getJsonRpcProvider;
         provider.getTransaction(transaction.hash).then((tx) => {
           tx.wait().then((receipt) => {
-            console.log({ receipt });
             set((transactions) => ({
               ...transactions,
               transactions: transactions.transactions.map((t) =>

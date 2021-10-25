@@ -48,7 +48,8 @@ const CanvasTile = ({
   );
 
   const onClick = () => {
-    if (isOwned && tile?.status == 'UNLOCKED' && openEditor) openEditor();
+    if (pendingSvg && openTileModal) openTileModal();
+    else if (isOwned && tile?.status == 'UNLOCKED' && openEditor) openEditor();
     else if (isInvitable && openGenerateInvite) openGenerateInvite();
     else if (tile?.status == 'LOCKED' && openTileModal) openTileModal();
   };

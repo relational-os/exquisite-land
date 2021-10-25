@@ -7,6 +7,8 @@ import EditorPreview from './EditorPreview';
 import TileSVG from '../canvas/TileSVG';
 import update from 'immutability-helper';
 import { useDebouncedCallback } from 'use-debounce';
+import { generateTokenID, getSVGFromPixels } from '@app/features/TileUtils';
+import useTile from '@app/features/useTile';
 
 interface EditorProps {
   x: number;
@@ -32,9 +34,9 @@ const Editor = ({
   hideMinimap
 }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
+  const { refresh } = useTile(generateTokenID(x, y));
   const [pixels, setPixels] = useState<Pixels>(EMPTY);
   const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
-
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
     setPixelsHistory([newPixels, ...pixelsHistory]);
   }, 500);
@@ -43,7 +45,8 @@ const Editor = ({
     palette,
     activeColor,
     setActiveColor,
-    setTile,
+    submitTile,
+    signToSubmitTile,
     activeTool,
     prevTool,
     setActiveTool,
@@ -91,11 +94,6 @@ const Editor = ({
     setPixels(EMPTY);
   };
 
-  const handleSave = async () => {
-    setTile({ x, y, pixels });
-    closeModal();
-  };
-
   const paintPixels = (rawX: number, rawY: number) => {
     const elem = document.elementFromPoint(rawX, rawY);
     if (!elem) return;
@@ -139,6 +137,112 @@ const Editor = ({
 
     paintPixels(e.clientX, e.clientY);
   };
+
+  // * PUBLISHING FLOW * //
+  const [isConfirming, setConfirming] = useState(false);
+  const [isSigning, setSigning] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
+  const [txHash, setTxHash] = useState<string>();
+  const [isFinishedSubmitting, setFinishedSubmitting] = useState(false);
+  const onPublishClick = async () => {
+    setConfirming(true);
+  };
+  const onConfirmPublish = async () => {
+    setSigning(true);
+    try {
+      const { dataToSign, signature } = await signToSubmitTile({
+        x,
+        y,
+        pixels
+      });
+      setSubmitting(true);
+      const tx = await submitTile({ x, y, pixels, dataToSign, signature });
+      setTxHash(tx.hash);
+      await tx.wait(2);
+      setFinishedSubmitting(true);
+      setTimeout(async () => {
+        refresh();
+        closeModal();
+        setTimeout(() => {
+          refresh();
+        }, 3000);
+      }, 3000);
+    } catch (err) {
+      setSigning(false);
+    }
+  };
+  const onCancelPublish = async () => {
+    setConfirming(false);
+  };
+
+  if (isConfirming)
+    return (
+      <div className="modal">
+        {isFinishedSubmitting ? (
+          <div className="message">Done!</div>
+        ) : isSubmitting ? (
+          <>
+            <div className="message">Submitting...</div>
+            {txHash && (
+              <div className="message">
+                <a
+                  target="_blank"
+                  href={`https://mumbai.polygonscan.com/tx/${txHash}`}
+                >
+                  View on PolygonScan ↗
+                </a>
+              </div>
+            )}
+          </>
+        ) : isSigning ? (
+          <div className="message">Sign the message in your wallet...</div>
+        ) : (
+          <>
+            <svg
+              width="100"
+              height="100"
+              dangerouslySetInnerHTML={{ __html: getSVGFromPixels(pixels) }}
+              className="preview"
+            />
+            <div className="message">Are you sure?</div>
+            <div className="message">Pixels are permanent.</div>
+            <div className="buttons">
+              <Button onClick={onCancelPublish}>Cancel</Button>
+              <ButtonSuccess onClick={onConfirmPublish}>Publish</ButtonSuccess>
+            </div>
+          </>
+        )}
+        <style jsx>{`
+          .modal {
+            background-color: #222;
+            width: 90vw;
+            max-width: 600px;
+            height: 90vh;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            padding: 20px;
+          }
+          .buttons {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+          }
+          .preview {
+            width: 45%;
+            height: auto;
+          }
+          a {
+            color: inherit;
+          }
+        `}</style>
+      </div>
+    );
 
   return (
     <div className="editor">
@@ -365,7 +469,7 @@ const Editor = ({
           <Button onClick={handleClear}>reset</Button>
           <div className="canvas-footer-right">
             <Button onClick={closeModal}>cancel</Button>
-            <ButtonSuccess onClick={handleSave}>publish</ButtonSuccess>
+            <ButtonSuccess onClick={onPublishClick}>publish</ButtonSuccess>
           </div>
         </div>
       )}
