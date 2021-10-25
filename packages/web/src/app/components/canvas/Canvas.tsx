@@ -14,6 +14,7 @@ import {
   TransformWrapper
 } from 'react-zoom-pan-pinch';
 import TileModal from '../modals/TileModal';
+import DiscordMessagesModal from '../modals/DiscordMessagesModal';
 
 Modal.setAppElement('#__next');
 
@@ -198,7 +199,7 @@ const Canvas = () => {
               <div className="discord">
                 <div className="discord-title">Discord</div>
                 <div className="discord-body">
-                  <div className="junk">hey hey heyhey discord time!</div>
+                  <DiscordMessagesModal />
                 </div>
 
                 <a
