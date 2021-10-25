@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import CoinDropModal from '@app/components/modals/CoinDropModal';
 import Head from 'next/head';
+import { useWallet } from '@gimmixorg/use-wallet';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 const listen = (
   target: EventTarget,
@@ -12,8 +14,25 @@ const listen = (
 };
 
 const UseCoinButton = () => {
+  const { account, connect } = useWallet();
   const [isCoinModalOpen, setIsCoinModalOpen] = useState(false);
-  const openCoinModal = () => setIsCoinModalOpen(true);
+
+  const openCoinModal = () => {
+    if (!account)
+      connect({
+        cacheProvider: true,
+        providerOptions: {
+          walletconnect: {
+            package: WalletConnectProvider,
+            options: {
+              infuraId: process.env.NEXT_PUBLIC_INFURA_API_KEY as string
+            }
+          }
+        },
+        theme: 'dark'
+      });
+    setIsCoinModalOpen(true);
+  };
   const closeCoinModal = () => setIsCoinModalOpen(false);
 
   // Allow dragging files into window/document to open modal so you don't need to click the coin button first. This is somewhat brittle in that the conditionals and `useEffect` dependencies need to ~stay where they're at for this to work properly. This also doesn't check for the right drop (i.e. a single PNG image file) but I thought it felt better to show the drop modal and later error that the wrong files were dropped rather than giving no feedback to the user.

@@ -27,10 +27,10 @@ const ConnectWalletButton = () => {
 
   // try an initial connect, we might be cached
   useEffect(() => {
-    if (web3Modal?.cachedProvider) {
+    if (!account && web3Modal?.cachedProvider) {
       connectWallet();
     }
-  }, [connectWallet]);
+  }, [web3Modal?.cachedProvider, account]);
 
   return (
     <div className="account-container">
