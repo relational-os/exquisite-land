@@ -6,7 +6,6 @@ import { useFetchCanvas } from '@app/features/Graph';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
-import TransactionHistoryModal from '../modals/TransactionHistoryModal';
 import useOpenNeighborsForWallet from '@app/features/useOpenNeighborsForWallet';
 import {
   ReactZoomPanPinchRef,
@@ -92,6 +91,8 @@ const Canvas = () => {
     setSelectedX(undefined);
     setSelectedY(undefined);
   };
+
+  const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
 
   useEffect(() => {
     if (
@@ -189,25 +190,14 @@ const Canvas = () => {
               )}
             </div>
             <div className="right">
-              <div className="activity">
-                <div className="activity-title">Your Activity</div>
-                <div className="activity-body">
-                  <TransactionHistoryModal />
-                </div>
-              </div>
-
               <div className="discord">
-                <div className="discord-title">Discord</div>
-                <div className="discord-body">
-                  <DiscordMessagesModal />
-                </div>
-
-                <a
+                <div className="discord-title">Community</div>
+                <button
                   className="discord-button"
-                  href="https://discord.gg/pma4YtD6xW"
+                  onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
                 >
-                  enter the Exquisite Land Discord
-                </a>
+                  view the chatter
+                </button>
               </div>
             </div>
           </div>
@@ -223,6 +213,13 @@ const Canvas = () => {
       <div className="controls">
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
+      </div>
+      <div className="discord-feed">
+        FEED -{' '}
+        <button onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}>
+          close
+        </button>
+        <DiscordMessagesModal />
       </div>
       <Modal
         isOpen={isEditorModalOpen}
@@ -259,6 +256,17 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
+        .discord-feed {
+          position: fixed;
+          top: 10vh;
+          right: 1vw;
+          height: 70vh;
+          width: 50vh;
+          background: rgba(20, 20, 20, 0.95);
+          display: ${isDiscordFeedOpen ? 'block' : 'none'};
+          overflow-y: auto;
+        }
+
         .canvas-header,
         .canvas-body,
         .canvas-footer {
@@ -317,18 +325,8 @@ const Canvas = () => {
           color: #666;
         }
 
-        .discord .discord-body {
-          flex: 1 1 auto;
-          border: 2px solid #000;
-          overflow: auto;
-        }
-
-        .discord .discord-body .junk {
-          height: 100rem;
-          background: brown;
-        }
-
-        .discord a.discord-button {
+        .discord .discord-button {
+          font-size: 2rem;
           text-align: center;
           background: purple;
           color: #fff;
