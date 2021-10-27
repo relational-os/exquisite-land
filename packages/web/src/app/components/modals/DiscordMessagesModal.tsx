@@ -20,7 +20,12 @@ const DiscordMessagesModal = () => {
               <img
                 height="64px"
                 width="64px"
-                src={`https://cdn.discordapp.com/avatars/${m.author.id}/${m.author.avatar}.png`}
+                className="avatar"
+                src={
+                  m.author.avatar
+                    ? `https://cdn.discordapp.com/avatars/${m.author.id}/${m.author.avatar}.png`
+                    : 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D' // empty inline png
+                }
               />
               <div>{dayjs(m.timestamp).format('MMM d, h:mma')}</div>
             </div>
@@ -37,6 +42,9 @@ const DiscordMessagesModal = () => {
           display: flex;
           align-items: center;
           padding-bottom: 1rem;
+        }
+        .avatar {
+          background-color: gold;
         }
       `}</style>
     </div>

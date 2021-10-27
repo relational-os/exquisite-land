@@ -1605,10 +1605,10 @@
   "resolved" "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.2.tgz"
   "version" "1.1.2"
 
-"@gimmixorg/use-wallet@^0.0.26":
-  "integrity" "sha512-HUt9s1x4Z4wgAOyKIKIWHmpSef7laxnc4gTy3sHr66n2YkwaSoet27rfrM70fsz5g0Ug6x3tqo/GQl4uaVxyqg=="
-  "resolved" "https://registry.npmjs.org/@gimmixorg/use-wallet/-/use-wallet-0.0.26.tgz"
-  "version" "0.0.26"
+"@gimmixorg/use-wallet@^0.0.28":
+  "integrity" "sha512-2wUpz98dpDm4Lbp4JAb9MIa4fV/xU3MmxMKlfVdnBSMfVS9mbLrx2jnoGM2QgCmrnfO0EEUDOmfwUs2IrrW5Fw=="
+  "resolved" "https://registry.npmjs.org/@gimmixorg/use-wallet/-/use-wallet-0.0.28.tgz"
+  "version" "0.0.28"
   dependencies:
     "@ethersproject/providers" "5.4.1"
     "web3modal" "^1.9.3"
