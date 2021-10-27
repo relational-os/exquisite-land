@@ -150,29 +150,9 @@ const Canvas = () => {
             cursor: 'grab'
           }}
         >
-          <div className="canvas-header">
-            ████████╗███████╗██████╗░██████╗░░█████╗░  ███╗░░░███╗░█████╗░░██████╗██╗░░░██╗
-            ╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗  ████╗░████║██╔══██╗██╔════╝██║░░░██║
-            ░░░██║░░░█████╗░░██████╔╝██████╔╝███████║  ██╔████╔██║███████║╚█████╗░██║░░░██║
-            ░░░██║░░░██╔══╝░░██╔══██╗██╔══██╗██╔══██║  ██║╚██╔╝██║██╔══██║░╚═══██╗██║░░░██║
-            ░░░██║░░░███████╗██║░░██║██║░░██║██║░░██║  ██║░╚═╝░██║██║░░██║██████╔╝╚██████╔╝
-            ░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝  ╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═════╝░░╚═════╝░
-          </div>
+          <div className="canvas-header jaunt">Land 01: Terra Masu</div>
           <div className="canvas-body">
-            <div className="left">
-              <div>
-                <a href="">About</a>
-              </div>
-              <div>
-                <a href="">FAQ</a>
-              </div>
-              <div>
-                <a href="">Discord</a>
-              </div>
-              <div>
-                <a href="">Tweeter</a>
-              </div>
-            </div>
+            <div className="left"></div>
             <div className="surface">
               {rows.map((y) =>
                 columns.map((x) => (
@@ -200,12 +180,6 @@ const Canvas = () => {
                 </button>
               </div>
             </div>
-          </div>
-
-          <div className="canvas-footer">
-            <a href="https://relational.fyi" target="_blank">
-              A Relational Game
-            </a>
           </div>
         </TransformComponent>
       </TransformWrapper>
@@ -275,8 +249,11 @@ const Canvas = () => {
 
         .canvas-header {
           color: #666;
-          width: 800px;
+          text-shadow: 0 -4px #000;
+          width: 1000px;
           margin: 10rem auto 0;
+          text-align: center;
+          font-size: 104px;
         }
 
         .canvas-body {
@@ -341,6 +318,7 @@ const Canvas = () => {
           grid-template-rows: repeat(${rows.length}, ${tileSize}px);
           box-shadow: 0 10px 64px 2px rgba(0, 0, 0, 0.3);
           background: #333;
+          padding: 1rem;
         }
 
         .canvas-footer {

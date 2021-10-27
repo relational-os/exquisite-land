@@ -29,6 +29,17 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
       `}</style>
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        @font-face {
+          font-family: jaunt;
+          src: url(‘/fonts/jaunt-webfont.eot’);
+          src: url(‘/fonts/jaunt-webfont.eot?#iefix’)
+              format(‘embedded-opentype’),
+            url(‘/fonts/jaunt-webfont.woff’) format(‘woff’),
+            url(‘/fonts/jaunt-webfont.ttf’) format(‘truetype’),
+            url(‘/fonts/jaunt-webfont.svg#jauntmedium’) format(‘svg’);
+          font-weight: normal;
+          font-style: normal;
+        }
 
         * {
           box-sizing: border-box;
@@ -40,7 +51,10 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
           margin: 0;
           padding: 0;
           height: 100%;
-          background: #222;
+          background: #272424;
+        }
+        .jaunt {
+          font-family: 'jaunt', monospace;
         }
         #__next {
           min-height: 100%;
