@@ -14,7 +14,7 @@ const DiscordMessagesModal = () => {
     <div className="discord-messages-modal">
       {messages.map((m) => {
         return (
-          <div className="message">
+          <div className="message" key={m.id}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div>{m.author.username}</div>
               <img

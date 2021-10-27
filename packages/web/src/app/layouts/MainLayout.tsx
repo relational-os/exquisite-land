@@ -31,12 +31,12 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         @font-face {
           font-family: jaunt;
-          src: url(‘/fonts/jaunt-webfont.eot’);
-          src: url(‘/fonts/jaunt-webfont.eot?#iefix’)
-              format(‘embedded-opentype’),
-            url(‘/fonts/jaunt-webfont.woff’) format(‘woff’),
-            url(‘/fonts/jaunt-webfont.ttf’) format(‘truetype’),
-            url(‘/fonts/jaunt-webfont.svg#jauntmedium’) format(‘svg’);
+          src: url('/fonts/jaunt-webfont.eot');
+          src: url('/fonts/jaunt-webfont.eot?#iefix')
+              format('embedded-opentype'),
+            url('/fonts/jaunt-webfont.woff') format('woff'),
+            url('/fonts/jaunt-webfont.ttf') format('truetype'),
+            url('/fonts/jaunt-webfont.svg#jauntmedium') format('svg');
           font-weight: normal;
           font-style: normal;
         }
