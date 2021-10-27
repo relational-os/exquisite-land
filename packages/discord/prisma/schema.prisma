@@ -21,3 +21,8 @@ model User {
   lastChecked          DateTime @default(now())
   joined               DateTime @default(now())
 }
+
+model Tile {
+  id                  String @unique
+  discordSent         Boolean
+}
