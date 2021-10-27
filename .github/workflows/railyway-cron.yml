@@ -1,0 +1,13 @@
+name: 'Hit Railway refresh endpoint'
+on:
+  schedule:
+    - cron: '* * * * *'
+
+jobs:
+  curl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: curl
+        uses: wei/curl@v1
+        with:
+          args: -X GET https://jonbo.ngrok.io/
