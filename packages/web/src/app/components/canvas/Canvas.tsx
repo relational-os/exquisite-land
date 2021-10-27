@@ -13,7 +13,6 @@ import {
   TransformWrapper
 } from 'react-zoom-pan-pinch';
 import TileModal from '../modals/TileModal';
-import DiscordMessagesModal from '../modals/DiscordMessagesModal';
 
 Modal.setAppElement('#__next');
 
@@ -169,17 +168,7 @@ const Canvas = () => {
                 ))
               )}
             </div>
-            <div className="right">
-              <div className="discord">
-                <div className="discord-title">Community</div>
-                <button
-                  className="discord-button"
-                  onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
-                >
-                  view the chatter
-                </button>
-              </div>
-            </div>
+            <div className="right"></div>
           </div>
         </TransformComponent>
       </TransformWrapper>
@@ -188,13 +177,7 @@ const Canvas = () => {
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
       </div>
-      <div className="discord-feed">
-        FEED -{' '}
-        <button onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}>
-          close
-        </button>
-        <DiscordMessagesModal />
-      </div>
+
       <Modal
         isOpen={isEditorModalOpen}
         onRequestClose={closeEditorModal}
@@ -230,17 +213,6 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
-        .discord-feed {
-          position: fixed;
-          top: 10vh;
-          right: 1vw;
-          height: 70vh;
-          width: 50vh;
-          background: rgba(20, 20, 20, 0.95);
-          display: ${isDiscordFeedOpen ? 'block' : 'none'};
-          overflow-y: auto;
-        }
-
         .canvas-header,
         .canvas-body,
         .canvas-footer {
@@ -269,45 +241,6 @@ const Canvas = () => {
           min-width: 40rem;
           flex-direction: column;
           max-height: ${columns.length * tileSize}px;
-        }
-
-        .activity {
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 2rem;
-          flex: 1 1 auto;
-          max-height: calc(${(columns.length * tileSize) / 3}px - 2rem);
-        }
-
-        .activity .activity-title {
-          padding-bottom: 1rem;
-          color: #666;
-        }
-
-        .activity .activity-body {
-          flex: 1 1 auto;
-          border: 2px solid #000;
-          overflow: auto;
-        }
-
-        .discord {
-          display: flex;
-          flex-direction: column;
-          flex: 2 1 auto;
-          max-height: ${((columns.length * tileSize) / 3) * 2}px;
-        }
-
-        .discord .discord-title {
-          padding-bottom: 1rem;
-          color: #666;
-        }
-
-        .discord .discord-button {
-          font-size: 2rem;
-          text-align: center;
-          background: purple;
-          color: #fff;
-          padding: 1rem;
         }
 
         .surface {

@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import ConnectWalletButton from './ConnectWalletButton';
 import OpenTransactionHistoryButton from './OpenTransactionHistoryButton';
 import UseCoinButton from './UseCoinButton';
+import DiscordMessagesModal from './modals/DiscordMessagesModal';
 
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
+
   return (
     <div className="header">
       <div className="logo jaunt" onClick={() => setMenuOpen(!isMenuOpen)}>
@@ -13,6 +16,12 @@ const Header = () => {
 
       <div className="spacer" />
 
+      <button
+        className="discord-button"
+        onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
+      >
+        💬
+      </button>
       <OpenTransactionHistoryButton />
       <UseCoinButton />
       <ConnectWalletButton />
@@ -47,6 +56,14 @@ const Header = () => {
             A Relational Game
           </a>
         </div>
+      </div>
+
+      <div className="discord-feed">
+        FEED -{' '}
+        <button onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}>
+          close
+        </button>
+        <DiscordMessagesModal />
       </div>
 
       <style jsx>{`
@@ -93,6 +110,36 @@ const Header = () => {
         .menu-logo {
           padding: 1rem 0;
           color: #d0b094;
+        }
+
+         {
+          /* move to component */
+        }
+        button.discord-button {
+          display: block;
+          padding: 8px 14px;
+          border: 0;
+          background: #444;
+          font-size: 24px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: rgba(0, 0, 0, 1);
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
+        }
+        .discord-feed {
+          position: fixed;
+          top: 10vh;
+          right: 1vw;
+          height: 70vh;
+          width: 50vh;
+          background: rgba(20, 20, 20, 0.95);
+          display: ${isDiscordFeedOpen ? 'block' : 'none'};
+          overflow-y: auto;
         }
       `}</style>
     </div>

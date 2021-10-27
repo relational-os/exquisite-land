@@ -63,17 +63,16 @@ const ConnectWalletButton = () => {
           will-change: transform;
           transition: transform 0.2s ease-in-out;
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
-          min-width: 170px;
         }
         .connect-wallet-button:hover {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
         .account {
           font-size: 24px;
+          padding: 8px 1rem;
           color: white;
           display: flex;
           justify-content: center;
-          min-width: 170px;
         }
         .wrong-network {
           font-size: 24px;
