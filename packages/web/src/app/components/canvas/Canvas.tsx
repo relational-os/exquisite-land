@@ -214,8 +214,7 @@ const Canvas = () => {
       </Modal>
       <style jsx>{`
         .canvas-header,
-        .canvas-body,
-        .canvas-footer {
+        .canvas-body {
           display: flex;
         }
 
@@ -223,13 +222,13 @@ const Canvas = () => {
           color: #666;
           text-shadow: 0 -4px #000;
           width: 1000px;
-          margin: 10rem auto 0;
+          margin: 12rem auto 0;
           text-align: center;
           font-size: 104px;
         }
 
         .canvas-body {
-          margin: 5rem 15rem 2rem 15rem;
+          margin: 5rem 15rem 15rem 15rem;
           padding: 0 1rem;
           gap: 2rem;
           font-size: 3rem;
