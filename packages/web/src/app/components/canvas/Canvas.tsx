@@ -91,7 +91,7 @@ const Canvas = () => {
     setSelectedY(undefined);
   };
 
-  const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
+  // const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
 
   useEffect(() => {
     if (
