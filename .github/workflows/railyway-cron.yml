@@ -5,9 +5,8 @@ on:
 
 jobs:
   curl:
+    name: Trigger Railway /refresh
     runs-on: ubuntu-latest
     steps:
       - name: curl
-        uses: wei/curl@v1
-        with:
-          args: -X GET https://jonbo.ngrok.io/
+        run: curl -X GET https://jonbo.ngrok.io/
