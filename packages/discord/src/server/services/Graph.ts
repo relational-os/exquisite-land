@@ -20,3 +20,18 @@ export const getTilesInWallet = async (address: string) => {
   });
   return player?.tiles || [];
 };
+
+export const getAllTiles = async () => {
+  const query = gql`
+    {
+      tiles(first: 500) {
+        id
+        svg
+        x
+        y
+      }
+    }
+  `;
+  const data = await request(GRAPH_URL, query);
+  return data;
+};

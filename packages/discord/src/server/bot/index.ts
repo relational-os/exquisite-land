@@ -31,7 +31,8 @@ const client = new Discord.Client({
 //   polygon: getJsonRpcProvider('polygon-mainnet')
 // };
 
-client.on('messageCreate', async message => {
+client.on('messageCreate', async (message) => {
+  console.log('messageCreate: message', message);
   if (!message.content.startsWith('!init')) return;
   await message.channel.send({
     embeds: [
@@ -53,7 +54,7 @@ client.on('messageCreate', async message => {
   });
 });
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isButton()) return;
   if (interaction.customId === 'link-wallet') {
     const user = await prisma.user.upsert({
@@ -73,7 +74,30 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
+console.log(
+  'process.env.DISCORD_CLIENT_TOKEN',
+  process.env.DISCORD_CLIENT_TOKEN
+);
 client.login(process.env.DISCORD_CLIENT_TOKEN);
 client.on('ready', () => {
   console.log('ready!');
 });
+
+function sendMessage(content: string) {
+  // fails if client.on(ready) hasn't fired yet
+
+  const CHANNEL_ID = '888518144346427392';
+
+  // let ch = client.channels.cache.get(CHANNEL_ID);
+
+  const channel = client.channels.cache.get(CHANNEL_ID);
+  if (channel) {
+    console.log({ channel });
+    if (channel.type == 'GUILD_TEXT') {
+      // @ts-ignore
+      return channel.send(content);
+    }
+  }
+}
+
+export { sendMessage };
