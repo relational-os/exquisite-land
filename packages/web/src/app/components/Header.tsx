@@ -94,7 +94,7 @@ const Header = () => {
           width: 25vw;
           height: 90vh;
           padding: 0 1rem;
-          background: #161414ed;
+          background: #2a5cffec;
           display: ${isMenuOpen ? 'block' : 'none'};
           backdrop-filter: blur(4px);
           border-radius: 4px;

@@ -141,7 +141,7 @@ const CanvasTile = ({
             ? '#c066ea'
             : tile?.status == 'UNLOCKED'
             ? `radial-gradient(circle, #333 1px, rgba(40, 40, 40, 0) 1px)`
-            : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
+            : 'radial-gradient(circle, #111 1px, rgba(0, 0, 0, 0) 1px)'};
 
           background-size: ${isInvitable
             ? '100% 100%'
