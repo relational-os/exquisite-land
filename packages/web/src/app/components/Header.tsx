@@ -29,7 +29,10 @@ const Header = () => {
       <div className="menu">
         <div className="menu-items">
           <div className="menu-header">
-            <button className="close" onClick={() => setMenuOpen(!isMenuOpen)}>
+            <button
+              className="close jaunt"
+              onClick={() => setMenuOpen(!isMenuOpen)}
+            >
               X
             </button>
           </div>
@@ -59,9 +62,11 @@ const Header = () => {
       </div>
 
       <div className="discord-feed">
-        FEED -{' '}
-        <button onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}>
-          close
+        <button
+          className="close jaunt"
+          onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
+        >
+          X
         </button>
         <DiscordMessagesModal />
       </div>
@@ -89,15 +94,31 @@ const Header = () => {
         }
         .menu {
           position: fixed;
-          top: 3rem;
+          top: 0.5rem;
           left: 0.5rem;
-          width: 25vw;
-          height: 90vh;
+          width: calc(100vw - 1rem);
+          height: calc(100vh - 1rem);
           padding: 0 1rem;
           background: #2a5cffec;
           display: ${isMenuOpen ? 'block' : 'none'};
           backdrop-filter: blur(4px);
           border-radius: 4px;
+          text-align: center;
+        }
+
+        .menu-items button.close {
+          position: fixed;
+          top: 0.75rem;
+          left: 0.5rem;
+          background: transparent;
+          outline: none;
+          border: none;
+          font-size: 32px;
+          color: #fff;
+          cursor: pointer;
+        }
+        .menu-items button.close:hover {
+          box-shadow: none;
         }
 
         .menu-items {
@@ -133,13 +154,29 @@ const Header = () => {
         }
         .discord-feed {
           position: fixed;
-          top: 10vh;
-          right: 1vw;
-          height: 70vh;
-          width: 50vh;
-          background: rgba(20, 20, 20, 0.95);
+          top: 0.5rem;
+          right: 0.5rem;
+          width: 30vw;
+          height: calc(100vh - 1rem);
+          background: #3f4481fb;
           display: ${isDiscordFeedOpen ? 'block' : 'none'};
           overflow-y: auto;
+          border-radius: 4px;
+        }
+
+        .discord-feed button.close {
+          position: fixed;
+          top: 1.2rem;
+          right: 1rem;
+          background: transparent;
+          outline: none;
+          border: none;
+          font-size: 32px;
+          color: #fff;
+          cursor: pointer;
+        }
+        .discord-feed button.close:hover {
+          box-shadow: none;
         }
       `}</style>
     </div>
