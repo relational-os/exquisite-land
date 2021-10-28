@@ -174,8 +174,16 @@ const Canvas = () => {
       </TransformWrapper>
 
       <div className="controls">
+        <button className="hide-controls-button">hide</button>
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
+      </div>
+
+      <div className="scrub-controls">
+        <button className="play jaunt">&#x3e;</button>
+        <div className="scrub-bar"></div>
+        <div className="scrub-handle"></div>
+        <div className="now">NOW</div>
       </div>
 
       <Modal
@@ -278,8 +286,59 @@ const Canvas = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
-
         .controls button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
+        }
+        .controls .hide-controls-button {
+          position: fixed;
+          left: 30px;
+          bottom: 30px;
+        }
+
+        .scrub-controls {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 1rem;
+          position: fixed;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          width: 30vw;
+          margin: 0 auto 30px;
+        }
+        .scrub-controls .scrub-bar {
+          width: 100%;
+          height: 4px;
+          background: #444;
+        }
+        .scrub-controls .scrub-handle {
+          position: absolute;
+          top: 4px;
+          left: 100px;
+          width: 8px;
+          height: 30px;
+          background: #eee;
+          cursor: move;
+        }
+        .scrub-controls .now {
+          color: #fff;
+          font-size: 1.1rem;
+        }
+        .scrub-controls button {
+          display: block;
+          padding: 8px 12px;
+          border: 0;
+          background: #eee;
+          font-size: 18px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: rgba(0, 0, 0, 1);
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
+        .scrub-controls button:hover {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
       `}</style>
