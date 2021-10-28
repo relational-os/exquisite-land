@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-// import 'hardhat/console.sol';
+import 'hardhat/console.sol';
 
 contract GenericRenderer {
   // prettier-ignore
@@ -10,8 +10,8 @@ contract GenericRenderer {
   uint8 constant NUM_PIXELS_PER_BYTE = 2; // TODO implement data compression
 
   uint16 constant MAX_COLORS = 16;
-  uint8 constant MAX_ROWS = 32;
-  uint8 constant MAX_COLS = 32;
+  uint8 constant MAX_ROWS = 56;
+  uint8 constant MAX_COLS = 56;
 
   string constant SVG_OPENER =
     '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 -0.5 ';
@@ -23,6 +23,66 @@ contract GenericRenderer {
 
   function isEmptyString(bytes memory s) internal pure returns (bool) {
     return (s.length == 0);
+  }
+
+  function getPaths(
+    bytes calldata data,
+    uint16 numColors,
+    uint16 numRows,
+    uint16 numCols
+  ) internal view returns (bytes[256] memory, uint8[16] memory) {
+    uint256 startGas = gasleft();
+    uint8 c;
+    bytes[256] memory paths;
+
+    // bytes[] memory paths = new bytes[](numColors);
+    // prettier-ignore
+    uint8[16] memory multiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    for (uint16 h = 0; h < numRows; h++) {
+      for (uint16 m = 0; m < numCols; m) {
+        uint16 index = (h * numCols) + m;
+
+        /* == START: Get RLE length ==*/
+        c = 1;
+
+        while ((index + c) % numCols != 0) {
+          if (data[index] == data[index + c]) c++;
+          else break;
+        }
+        /* == END: Get RLE length ==*/
+
+        uint8 ci = uint8(data[index]);
+
+        // Optimize gas by not creating long strings
+        ci = uint8(ci + (numColors * multiplier[ci]));
+        if (paths[ci].length > 700) {
+          if (multiplier[ci % numColors] < 16) {
+            multiplier[ci % numColors]++;
+          }
+          ci = uint8(
+            uint8(data[index]) + numColors * multiplier[ci % numColors]
+          );
+        }
+
+        paths[ci] = abi.encodePacked(
+          paths[ci],
+          'M',
+          lookup[m],
+          ' ',
+          lookup[h],
+          'h',
+          lookup[c]
+        );
+
+        m += c;
+      }
+    }
+
+    console.log('Gas Used while creating paths', startGas - gasleft());
+    console.log('Gas Left after creating paths', gasleft());
+
+    return (paths, multiplier);
   }
 
   function renderSVG(
@@ -44,49 +104,14 @@ contract GenericRenderer {
 
     uint8 numColors = uint8(palette.length);
 
-    // uint256 startGas = gasleft();
+    uint256 startGas = gasleft();
 
-    bytes[256] memory paths;
-    // prettier-ignore
-    // uint8[16] memory multiplier = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-    for (uint16 h = 0; h < numRows; h++) {
-      for (uint16 m = 0; m < numCols; m) {
-        uint16 index = (h * numCols) + m;
-
-        /* == START: Get RLE length ==*/
-        uint8 c = 1;
-
-        while ((index + c) % numCols != 0) {
-          if (data[index] == data[index + c]) c++;
-          else break;
-        }
-        /* == END: Get RLE length ==*/
-
-        uint8 ci = uint8(data[index]);
-
-        // Optimize gas by not creating long strings
-        // ci = uint8(ci + (numColors * multiplier[ci]));
-        // if (paths[ci].length > 500) {
-        //   if (multiplier[ci % numColors] < 8) {
-        //     multiplier[ci % numColors]++;
-        //   }
-        //   ci = uint8(ci + numColors * multiplier[ci % numColors]);
-        // }
-
-        paths[ci] = abi.encodePacked(
-          paths[ci],
-          'M',
-          lookup[m],
-          ' ',
-          lookup[h],
-          'h',
-          lookup[c]
-        );
-
-        m += c;
-      }
-    }
+    (bytes[256] memory paths, uint8[16] memory multiplier) = getPaths(
+      data,
+      numColors,
+      numRows,
+      numCols
+    );
 
     string memory output = string(
       abi.encodePacked(
@@ -99,8 +124,8 @@ contract GenericRenderer {
     );
 
     for (uint16 i = 0; i < numColors; i++) {
-      for (uint8 mul = 0; mul < 1; mul++) {
-        // for (uint8 mul = 0; mul < 16; mul++) {
+      // for (uint8 mul = 0; mul < 1; mul++) {
+      for (uint8 mul = 0; mul <= multiplier[i]; mul++) {
         // TODO for gas savings it might be worth inlining the function call
         if (isEmptyString(paths[i + (numColors * mul)])) break;
         output = string(
@@ -119,8 +144,8 @@ contract GenericRenderer {
     output = string(abi.encodePacked(output, SVG_CLOSER));
 
     // console.log('String len', paths[0].length);
-    // console.log('Gas Used', startGas - gasleft());
-    // console.log('Gas Left', gasleft());
+    console.log('Gas Used', startGas - gasleft());
+    console.log('Gas Left', gasleft());
 
     return output;
   }
