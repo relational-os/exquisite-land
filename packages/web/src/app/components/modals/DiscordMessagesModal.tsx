@@ -45,16 +45,19 @@ const DiscordMessagesModal = () => {
         }
         .message {
           display: flex;
-          margin-bottom: 1rem;
+          margin-bottom: 1.5rem;
           flex-direction: row;
           gap: 1rem;
         }
 
         .avatar {
           align-self: flex-start;
-          background-color: gold;
+
           border-radius: 50%;
           image-rendering: pixelated;
+          background: url('/graphics/icon-discord.svg') center center no-repeat;
+          background-size: 18px;
+          background-color: #7189da;
         }
 
         .message .message-header {

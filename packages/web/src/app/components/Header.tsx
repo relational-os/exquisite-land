@@ -20,7 +20,7 @@ const Header = () => {
         className="discord-button"
         onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
       >
-        💬
+        <img src="/graphics/icon-discord.svg" className="discord-icon" />
       </button>
       <OpenTransactionHistoryButton />
       <UseCoinButton />
@@ -48,7 +48,9 @@ const Header = () => {
             <a href="">FAQ</a>
           </div>
           <div>
-            <a href="">Discord</a>
+            <a href="https://discord.gg/pma4YtD6xW" target="_blank">
+              <img src="/graphics/icon-discord.svg" /> Discord
+            </a>
           </div>
           <div>
             <a href="">Tweeter</a>
@@ -69,6 +71,13 @@ const Header = () => {
           X
         </button>
         <DiscordMessagesModal />
+        <a
+          href="https://discord.gg/pma4YtD6xW"
+          className="join"
+          target="_blank"
+        >
+          <img src="/graphics/icon-discord.svg" /> Join the Discord
+        </a>
       </div>
 
       <style jsx>{`
@@ -92,6 +101,10 @@ const Header = () => {
         .spacer {
           flex: 1 1 auto;
         }
+        .discord-icon {
+          width: 24px;
+        }
+
         .menu {
           position: fixed;
           top: 0.5rem;
@@ -140,7 +153,7 @@ const Header = () => {
           display: block;
           padding: 8px 14px;
           border: 0;
-          background: #444;
+          background: #7189da;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;
@@ -177,6 +190,29 @@ const Header = () => {
         }
         .discord-feed button.close:hover {
           box-shadow: none;
+        }
+
+        .discord-feed a.join {
+          position: sticky;
+          bottom: 0;
+          left: 0;
+          display: block;
+          width: 100%;
+          padding: 10px 0;
+          background: #c066ea;
+          font-size: 1.2rem;
+          font-family: inherit;
+          color: #fff;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+          text-align: center;
+          text-decoration: none;
+        }
+
+        .discord-feed a.join img {
+          width: 24px;
         }
       `}</style>
     </div>
