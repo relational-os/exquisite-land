@@ -1,18 +1,22 @@
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 const DiscordMessagesModal = () => {
-  const [messages, setMessages] = useState<any[]>([]);
-
+  const { data: messages } = useSWR(
+    '/api/discord/terra-masu/messages',
+    fetcher,
+    { refreshInterval: 5 * 1000 }
+  );
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    fetch('/api/discord/terra-masu/messages')
-      .then((res) => res.json())
-      .then((d) => setMessages(d));
-  }, []);
-
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
   return (
     <div className="discord-messages-modal">
-      {messages.map((m) => {
+      {messages?.map((m: any) => {
         return (
           <div className="message" key={m.id}>
             <img
@@ -31,12 +35,12 @@ const DiscordMessagesModal = () => {
                 {m.author.username}{' '}
                 <span>{dayjs(m.timestamp).format('MMM d, h:mma')}</span>
               </div>
-
               <div className="message-content">{m.content}</div>
             </div>
           </div>
         );
       })}
+      <div ref={ref} />
       <style jsx>{`
         .discord-messages-modal {
           padding: 1rem;
