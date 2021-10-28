@@ -39,23 +39,87 @@ const Header = () => {
           <div className="menu-logo jaunt">
             Exquisite
             <br />
-            Land
+            &nbsp;&nbsp;&nbsp;Land
+          </div>
+          <div className="spacer"></div>
+          <div>
+            <a href="">&#x3e; What is this land?</a>
           </div>
           <div>
-            <a href="">About</a>
+            <a href="">&#x3e; Frequently Asked</a>
           </div>
-          <div>
-            <a href="">FAQ</a>
-          </div>
+        </div>
+
+        <div className="spacer"></div>
+
+        <ul className="land-carousel">
+          <li className="active">
+            <div>LAND 01</div>
+            <div className="jaunt">TERRA MASU</div>
+          </li>
+          <li>
+            <div>LAND 02</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 03</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 04</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 05</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 06</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 07</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 08</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 09</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 10</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 11</div>
+            <div></div>
+          </li>
+          <li>
+            <div>LAND 12</div>
+            <div></div>
+          </li>
+        </ul>
+
+        <div className="spacer"></div>
+
+        <div className="menu-items social">
+          <div className="spacer"></div>
           <div>
             <a href="https://discord.gg/pma4YtD6xW" target="_blank">
               <img src="/graphics/icon-discord.svg" /> Discord
             </a>
           </div>
           <div>
-            <a href="">Tweeter</a>
+            <a href="https://twitter.com/exquisiteland" target="_blank">
+              <img src="/graphics/icon-twitter.svg" /> Twitter
+            </a>
           </div>
+          <div className="spacer"></div>
         </div>
+
         <div className="menu-footer">
           <a href="https://relational.fyi" target="_blank">
             A Relational Game
@@ -113,10 +177,13 @@ const Header = () => {
           height: calc(100vh - 1rem);
           padding: 0 1rem;
           background: #2a5cffec;
-          display: ${isMenuOpen ? 'block' : 'none'};
+          display: ${isMenuOpen ? 'flex' : 'none'};
           backdrop-filter: blur(4px);
           border-radius: 4px;
           text-align: center;
+          flex-direction: column;
+          justify-content: space-between;
+          overflow-y: auto;
         }
 
         .menu-items button.close {
@@ -134,16 +201,78 @@ const Header = () => {
           box-shadow: none;
         }
 
+        .menu .spacer {
+          flex-grow: 1;
+        }
+        .menu-logo {
+          font-size: 64px;
+          padding: 1rem 0;
+          color: #9fe9f3;
+        }
+
         .menu-items {
-          font-size: 1.5rem;
+          font-size: 2rem;
+          display: flex;
+          flex-direction: column;
+        }
+        .menu-items.social {
+          font-size: 1rem;
+          flex-direction: row;
+          justify-content: space-around;
+          gap: 1.5rem;
+          line-height: 1.5rem;
+          vertical-align: middle;
         }
         .menu-items a {
           color: #fff;
+          text-decoration: none;
+        }
+        .menu a img {
+          max-width: 24px;
         }
 
-        .menu-logo {
+        .menu-items div {
           padding: 1rem 0;
-          color: #d0b094;
+        }
+
+        .menu-footer {
+          padding: 0 0 1rem;
+        }
+        .menu-footer a {
+          color: #152455;
+          text-decoration: none;
+        }
+
+        .land-carousel {
+          display: flex;
+          flex-direction: row;
+          list-style: none;
+          width: 100%;
+          min-height: 120px;
+          margin: 0;
+          padding: 0;
+          gap: 1.25rem;
+          overflow-y: visible;
+          overflow-x: auto;
+        }
+        .land-carousel li {
+          color: #ffffff67;
+          min-width: 180px;
+          height: 120px;
+          border: 2px dashed #ffffff67;
+          display: flex;
+          flex-direction: column;
+        }
+        .land-carousel li.active {
+          color: #fff;
+          border: 2px solid #fff;
+        }
+        .land-carousel li div:first-of-type {
+          padding: 0.75rem 0;
+        }
+        .land-carousel li div:last-of-type {
+          font-size: 2rem;
+          padding: 0 0.5rem;
         }
 
          {
