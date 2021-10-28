@@ -221,6 +221,21 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
+        button.close {
+          position: fixed;
+          top: 1.2rem;
+          right: 1rem;
+          background: transparent;
+          outline: none;
+          border: none;
+          font-size: 32px;
+          color: #fff;
+          cursor: pointer;
+        }
+        button.close:hover {
+          box-shadow: none;
+        }
+
         .canvas-header,
         .canvas-body {
           display: flex;
@@ -348,8 +363,10 @@ const Canvas = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.9)',
-    zIndex: 1112
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',
@@ -360,14 +377,18 @@ const modalStyles = {
     transform: 'translate(-50%, -50%)',
     background: 'transparent',
     border: 0,
-    padding: 0
+    padding: 0,
+    borderRadius: 0,
+    cursor: 'default'
   }
 };
 
 const editModalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)',
-    zIndex: 1112
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',
@@ -378,7 +399,9 @@ const editModalStyles = {
     transform: 'translate(-50%, -50%)',
     background: 'transparent',
     border: 0,
-    padding: 0
+    padding: 0,
+    borderRadius: 0,
+    cursor: 'default'
   }
 };
 
