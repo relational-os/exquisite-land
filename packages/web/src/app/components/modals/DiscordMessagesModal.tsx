@@ -1,19 +1,27 @@
 import dayjs from 'dayjs';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-const DiscordMessagesModal = () => {
+const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
+  const [initialized, setInitialized] = useState(false);
+
   const { data: messages } = useSWR(
-    '/api/discord/terra-masu/messages',
+    !initialized || isOpen ? '/api/discord/terra-masu/messages' : null,
     fetcher,
-    { refreshInterval: 5 * 1000 }
+    { refreshInterval: 3 * 1000 }
   );
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [messages, isOpen]);
   return (
     <div className="discord-messages-modal">
       {messages?.map((m: any) => {
@@ -40,7 +48,7 @@ const DiscordMessagesModal = () => {
           </div>
         );
       })}
-      <div ref={ref} />
+      <div ref={ref} className="bottom" />
       <style jsx>{`
         .discord-messages-modal {
           padding: 1rem;
@@ -54,6 +62,9 @@ const DiscordMessagesModal = () => {
           gap: 1rem;
         }
 
+        .bottom {
+          flex: 1 1 auto;
+        }
         .avatar {
           align-self: flex-start;
 

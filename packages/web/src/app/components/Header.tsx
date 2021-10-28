@@ -134,7 +134,7 @@ const Header = () => {
         >
           X
         </button>
-        <DiscordMessagesModal />
+        <DiscordMessagesModal isOpen={isDiscordFeedOpen} />
         <a
           href="https://discord.gg/pma4YtD6xW"
           className="join"
