@@ -16,6 +16,7 @@ const Header = () => {
 
       <div className="spacer" />
 
+      <OpenTransactionHistoryButton />
       <button
         className="discord-button"
         onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
@@ -26,7 +27,7 @@ const Header = () => {
           className="textballoon-icon"
         />
       </button>
-      <OpenTransactionHistoryButton />
+
       <UseCoinButton />
       <ConnectWalletButton />
 
@@ -157,7 +158,7 @@ const Header = () => {
           display: flex;
           padding: 10px 15px;
           align-items: center;
-          gap: 10px;
+          gap: 1rem;
           z-index: 111;
         }
         .logo {

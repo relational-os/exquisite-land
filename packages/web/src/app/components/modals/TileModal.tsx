@@ -15,16 +15,21 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
   return (
     <div className="tile-modal">
       {tile.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/image`}
-          width="100"
-          height="100"
-          className="tile-image"
-        />
+        <>
+          <div className="tile-modal-header">
+            [{x},{y}]
+          </div>
+          <img
+            src={`/api/tiles/terramasu/${x}/${y}/image`}
+            width="100"
+            height="100"
+            className="tile-image"
+          />
+        </>
       )}
       <div className="meta">
         <div className="owner">
-          Owned by <ENSName address={tile.owner.id} />
+          by <ENSName address={tile.owner.id} />
         </div>
         <Button style={{ margin: '.5rem' }}>TODO: txn hash</Button>
         <Button>
@@ -41,6 +46,12 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
       <style jsx>{`
         .tile-modal {
           width: min(90vw, 500px);
+        }
+        .tile-modal-header {
+          padding-bottom: 0.75rem;
+          text-align: center;
+          font-size: 1.5rem;
+          color: #fff;
         }
         .tile-image {
           width: 100%;
