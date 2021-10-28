@@ -3,10 +3,12 @@ import ConnectWalletButton from './ConnectWalletButton';
 import OpenTransactionHistoryButton from './OpenTransactionHistoryButton';
 import UseCoinButton from './UseCoinButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
+import TransactionHistoryModal from './modals/TransactionHistoryModal';
 
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
+  const [isActivityFeedOpen, setActivityFeedOpen] = useState(false);
 
   return (
     <div className="header">
@@ -16,7 +18,12 @@ const Header = () => {
 
       <div className="spacer" />
 
-      <OpenTransactionHistoryButton />
+      <button
+        className="activity-button"
+        onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
+      >
+        log
+      </button>
       <button
         className="discord-button"
         onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
@@ -130,6 +137,16 @@ const Header = () => {
             A Relational Game
           </a>
         </div>
+      </div>
+
+      <div className="activity-feed">
+        <button
+          className="close jaunt"
+          onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
+        >
+          X
+        </button>
+        <TransactionHistoryModal isOpen={isActivityFeedOpen} />
       </div>
 
       <div className="discord-feed">
@@ -318,7 +335,7 @@ const Header = () => {
           border-radius: 4px;
         }
 
-        .discord-feed button.close {
+        button.close {
           position: fixed;
           top: 1.2rem;
           right: 1rem;
@@ -329,7 +346,7 @@ const Header = () => {
           color: #fff;
           cursor: pointer;
         }
-        .discord-feed button.close:hover {
+        button.close:hover {
           box-shadow: none;
         }
 
@@ -354,6 +371,31 @@ const Header = () => {
 
         .discord-feed a.join img {
           width: 24px;
+        }
+
+        .activity-feed {
+          position: fixed;
+          top: 0.5rem;
+          right: 0.5rem;
+          width: 30vw;
+          height: calc(100vh - 1rem);
+          background: #3f4481fb;
+          display: ${isActivityFeedOpen ? 'block' : 'none'};
+          overflow-y: auto;
+          border-radius: 4px;
+        }
+        button.activity-button {
+          display: block;
+          padding: 8px 14px;
+          border: 0;
+          background: #7189da;
+          font-size: 24px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: rgba(0, 0, 0, 1);
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
       `}</style>
     </div>
