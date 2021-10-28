@@ -149,7 +149,7 @@ const Canvas = () => {
             cursor: 'grab'
           }}
         >
-          <div className="canvas-header jaunt">Land 01: Terra Masu</div>
+          <div className="canvas-header jaunt">Land 01: TERRA MASU</div>
           <div className="canvas-body">
             <div className="left"></div>
             <div className="surface">

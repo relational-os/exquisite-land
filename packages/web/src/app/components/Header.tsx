@@ -21,6 +21,10 @@ const Header = () => {
         onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
       >
         <img src="/graphics/icon-discord.svg" className="discord-icon" />
+        <img
+          src="/graphics/icon-textballoon.svg"
+          className="textballoon-icon"
+        />
       </button>
       <OpenTransactionHistoryButton />
       <UseCoinButton />
@@ -167,6 +171,13 @@ const Header = () => {
         }
         .discord-icon {
           width: 24px;
+          margin-left: -3px;
+        }
+        .textballoon-icon {
+          position: absolute;
+          top: -3px;
+          right: -7px;
+          width: 20px;
         }
 
         .menu {
@@ -248,8 +259,8 @@ const Header = () => {
           flex-direction: row;
           list-style: none;
           width: 100%;
-          min-height: 120px;
-          margin: 0;
+          min-height: 140px;
+          margin: 2rem 0 0 0;
           padding: 0;
           gap: 1.25rem;
           overflow-y: visible;
