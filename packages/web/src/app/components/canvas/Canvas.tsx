@@ -385,7 +385,7 @@ const modalStyles = {
 
 const editModalStyles = {
   overlay: {
-    backgroundColor: '#282424f6',
+    backgroundColor: '#201e1ef6',
     zIndex: 1112,
     backdropFilter: 'blur(4px)',
     cursor: 'pointer'

@@ -69,7 +69,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   return (
     <div className="invite-neighbor-modal">
       <div className="message">
-        invite a neighbor to [{x}, {y}]
+        Invite a neighbor to [{x},{y}]
       </div>
 
       {isCoinGenerated ? (
@@ -92,7 +92,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
             className="download-button"
             target="_blank"
           >
-            download coin
+            Download Coin
           </a>
         </>
       ) : isGeneratingCoin ? (
@@ -111,10 +111,10 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           <div className="coin-blank">
             <p>neighbor</p>
             <h3>
-              [{x}, {y}]
+              [{x},{y}]
             </h3>
           </div>
-          <button onClick={inviteNeighborClicked}>generate coin</button>
+          <button onClick={inviteNeighborClicked}>Generate Coin</button>
         </>
       )}
       <style jsx>{`
@@ -159,7 +159,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           margin: 0 auto;
           padding: 8px 14px;
           border: 0;
-          background: #ffda00;
+          background: #f5cb53;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;

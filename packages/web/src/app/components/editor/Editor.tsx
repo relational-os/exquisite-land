@@ -204,17 +204,22 @@ const Editor = ({
               dangerouslySetInnerHTML={{ __html: getSVGFromPixels(pixels) }}
               className="preview"
             />
-            <div className="message">Are you sure?</div>
             <div className="message">Pixels are permanent.</div>
+            <div className="message">Are you sure?</div>
+
             <div className="buttons">
               <Button onClick={onCancelPublish}>Cancel</Button>
-              <ButtonSuccess onClick={onConfirmPublish}>Publish</ButtonSuccess>
+              <ButtonSuccess onClick={onConfirmPublish}>
+                &nbsp;&nbsp;
+                <img src="/graphics/icon-mint.svg" className="mint" /> Mint
+                &nbsp;&nbsp;
+              </ButtonSuccess>
             </div>
           </>
         )}
         <style jsx>{`
           .modal {
-            background-color: #222;
+            background-color: #201e1e;
             width: 90vw;
             max-width: 600px;
             height: 90vh;
@@ -231,7 +236,11 @@ const Editor = ({
           .buttons {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 1rem;
+          }
+          .buttons .mint {
+            width: 16px;
+            margin-bottom: -2px;
           }
           .preview {
             width: 45%;
@@ -466,10 +475,10 @@ const Editor = ({
 
       {!hideControls && (
         <div className="canvas-footer">
-          <Button onClick={handleClear}>reset</Button>
+          <Button onClick={handleClear}>Clear</Button>
           <div className="canvas-footer-right">
-            <Button onClick={closeModal}>cancel</Button>
-            <ButtonSuccess onClick={onPublishClick}>publish</ButtonSuccess>
+            <Button onClick={closeModal}>Cancel</Button>
+            <ButtonSuccess onClick={onPublishClick}>Mint</ButtonSuccess>
           </div>
         </div>
       )}
@@ -558,7 +567,7 @@ const Editor = ({
             'peek-north peek-north peek-north'
             'peek-west canvas peek-east'
             'peek-south peek-south peek-south';
-          background: #222;
+          background: #333;
         }
         .peek-north {
           grid-area: peek-north;
@@ -578,7 +587,7 @@ const Editor = ({
 
         .preview-minimap {
           margin-left: 1rem;
-          border: 4px solid #222;
+          border: 4px solid #201e1e;
         }
         .preview-minimap > div {
           display: flex;
@@ -595,7 +604,7 @@ const Editor = ({
         .tool-container {
           margin-right: 1rem;
           padding: 0.7rem;
-          background: #222;
+          background: #201e1e;
           border-radius: ;
         }
 
@@ -614,7 +623,7 @@ const Editor = ({
           cursor: pointer;
         }
         .toolbar button:hover:not([disabled]) {
-          background: #111;
+          background: #1b1919;
           opacity: 0.9;
         }
         .toolbar button[disabled] {
@@ -623,7 +632,7 @@ const Editor = ({
         }
         .toolbar button.active {
           opacity: 1;
-          background: #111;
+          background: #1b1919;
         }
 
         .brush,

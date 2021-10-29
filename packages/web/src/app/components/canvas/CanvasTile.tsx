@@ -236,7 +236,7 @@ const CanvasTile = ({
         .invitable button {
           padding: 6px 14px;
           border: 0;
-          background: #ffe131;
+          background: #f5cb53;
           font-size: 16px;
           font-family: inherit;
           cursor: pointer;

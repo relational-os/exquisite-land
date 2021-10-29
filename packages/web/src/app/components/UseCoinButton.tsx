@@ -117,7 +117,7 @@ const UseCoinButton = () => {
           display: block;
           padding: 8px 14px;
           border: 0;
-          background: #ffb804;
+          background: #f5cb53;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;
