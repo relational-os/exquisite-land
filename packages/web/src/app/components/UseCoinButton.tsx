@@ -113,13 +113,11 @@ const UseCoinButton = () => {
         <CoinDropModal />
       </Modal>
       <style jsx>{`
-        .use-coin-button {
-        }
         button.invite-button {
           display: block;
           padding: 8px 14px;
           border: 0;
-          background: #ffe131;
+          background: #ffb804;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;
@@ -127,6 +125,7 @@ const UseCoinButton = () => {
           transition: transform 0.2s ease-in-out;
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+          cursor: pointer;
         }
         button.invite-button:hover {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);

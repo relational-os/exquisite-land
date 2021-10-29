@@ -19,6 +19,7 @@ const Button = React.forwardRef(function Button(
           transition: transform 0.2s ease-in-out;
           color: #000;
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+          cursor: pointer;
         }
 
         .button:hover {
