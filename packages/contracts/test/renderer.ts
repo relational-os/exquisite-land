@@ -85,49 +85,23 @@ describe('Renderer', () => {
   });
 
   /* ~~~~~~~~~~~~~~ TEST 2 COLORS: 16x16 -> 32x32 ~~~~~~~~~~~~~~ */
-  // for (let v = 4; v <= 32; v += 4) {
-  //   describe(`${v}x${v} - 2 Colors`, function () {
-  //     it(`Should render ${v}x${v} with 2 Colors`, async function () {
-  //       const WIDTH = v;
-  //       const HEIGHT = v;
-  //       const NUM_COLORS = 2;
-
-  //       const done = await renderCubeHelix(renderer, HEIGHT, WIDTH, NUM_COLORS);
-  //     });
-  //   });
-  // }
-
-  // /* ~~~~~~~~~~~~~~ TEST 16 COLORS: 16x16 -> 32x32 ~~~~~~~~~~~~~~ */
-  // for (let v = 4; v <= 32; v += 4) {
-  //   describe(`${v}x${v} - 16 Colors`, function () {
-  //     it(`Should render ${v}x${v} with 16 Colors`, async function () {
-  //       const WIDTH = v;
-  //       const HEIGHT = v;
-  //       const NUM_COLORS = 16;
-
-  //       const done = await renderCubeHelix(renderer, HEIGHT, WIDTH, NUM_COLORS);
-  //     });
-  //   });
-  // }
-
-  /* ~~~~~~~~~~~~~~ TEST 16 COLORS: 4x16 -> 16x16 ~~~~~~~~~~~~~~ */
-  for (let v = 4; v <= 16; v += 4) {
-    describe(`${v}x${16} - 16 Colors`, function () {
-      it(`Should render ${v}x${16} with 16 Colors`, async function () {
+  for (let v = 16; v <= 56; v += 4) {
+    describe(`${v}x${v} - 2 Colors`, function () {
+      it(`Should render ${v}x${v} with 2 Colors`, async function () {
         const WIDTH = v;
-        const HEIGHT = 16;
-        const NUM_COLORS = 16;
+        const HEIGHT = v;
+        const NUM_COLORS = 2;
 
         const done = await renderCubeHelix(renderer, HEIGHT, WIDTH, NUM_COLORS);
       });
     });
   }
 
-  /* ~~~~~~~~~~~~~~ TEST 16 COLORS: 16x4 -> 16x16 ~~~~~~~~~~~~~~ */
-  for (let v = 4; v <= 16; v += 4) {
-    describe(`${16}x${v} - 16 Colors`, function () {
-      it(`Should render ${16}x${v} with 16 Colors`, async function () {
-        const WIDTH = 16;
+  // /* ~~~~~~~~~~~~~~ TEST 16 COLORS: 16x16 -> 32x32 ~~~~~~~~~~~~~~ */
+  for (let v = 16; v <= 56; v += 4) {
+    describe(`${v}x${v} - 16 Colors`, function () {
+      it(`Should render ${v}x${v} with 16 Colors`, async function () {
+        const WIDTH = v;
         const HEIGHT = v;
         const NUM_COLORS = 16;
 
@@ -135,4 +109,43 @@ describe('Renderer', () => {
       });
     });
   }
+
+  //   /* ~~~~~~~~~~~~~~ TEST 2 -> 16 COLORS: 56x56 ~~~~~~~~~~~~~~ */
+  for (let v = 2; v <= 16; v += 1) {
+    describe(`56x56 - ${v} Colors`, function () {
+      it(`Should render 56x56 with ${v} Colors`, async function () {
+        const WIDTH = 56;
+        const HEIGHT = 56;
+        const NUM_COLORS = v;
+
+        const done = await renderCubeHelix(renderer, HEIGHT, WIDTH, NUM_COLORS);
+      });
+    });
+  }
+
+  //   /* ~~~~~~~~~~~~~~ TEST 16 COLORS: 4x16 -> 16x16 ~~~~~~~~~~~~~~ */
+  //   for (let v = 4; v <= 16; v += 4) {
+  //     describe(`${v}x${16} - 16 Colors`, function () {
+  //       it(`Should render ${v}x${16} with 16 Colors`, async function () {
+  //         const WIDTH = v;
+  //         const HEIGHT = 16;
+  //         const NUM_COLORS = 16;
+
+  //         const done = await renderCubeHelix(renderer, HEIGHT, WIDTH, NUM_COLORS);
+  //       });
+  //     });
+  //   }
+
+  //   /* ~~~~~~~~~~~~~~ TEST 16 COLORS: 16x4 -> 16x16 ~~~~~~~~~~~~~~ */
+  //   for (let v = 4; v <= 16; v += 4) {
+  //     describe(`${16}x${v} - 16 Colors`, function () {
+  //       it(`Should render ${16}x${v} with 16 Colors`, async function () {
+  //         const WIDTH = 16;
+  //         const HEIGHT = v;
+  //         const NUM_COLORS = 16;
+
+  //         const done = await renderCubeHelix(renderer, HEIGHT, WIDTH, NUM_COLORS);
+  //       });
+  //     });
+  //   }
 });
