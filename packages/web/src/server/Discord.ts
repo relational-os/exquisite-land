@@ -1,12 +1,8 @@
 export type DiscordMessage = {
-  text: string;
-  user: {
-    ethAddress: string;
-    discordAvatarURL: string;
-    discordUsername: string;
-  };
-  channel: string;
-  createdAt: Date;
+  id: string;
+  content: string;
+  author: { id: string; avatar: string; username: string };
+  timestamp: Date;
 };
 export type DiscordMessages = DiscordMessage[];
 
@@ -22,12 +18,7 @@ export const getMessagesForChannelName = async (channelName: string) => {
 export const getMessagesForChannel = async (channelID: string) => {
   console.log(`Fetching messages for channel ${channelID}`);
   console.log(process.env.DISCORD_CLIENT_TOKEN);
-  const messages: {
-    id: string;
-    content: string;
-    author: { id: string; avatar: string; username: string };
-    timestamp: Date;
-  }[] = await fetch(
+  const messages: DiscordMessages = await fetch(
     `https://discord.com/api/v8/channels/${channelID}/messages`,
     {
       headers: {
@@ -35,7 +26,7 @@ export const getMessagesForChannel = async (channelID: string) => {
       }
     }
   ).then((res) => res.json());
-
+  messages.reverse();
   return messages;
 };
 

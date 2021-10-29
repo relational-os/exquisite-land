@@ -8,24 +8,28 @@ import { getSVGFromPixels } from '@app/features/TileUtils';
 const TransactionHistoryModal = () => {
   const transactions = useTransactionsStore((state) => state.transactions);
   return (
-    <div className="transaction-history-modal">
+    <div className="activity">
+      <div className="controls">
+        <button onClick={() => useTransactionsStore.getState().clearAll()}>
+          Clear all
+        </button>
+      </div>
       {transactions.map((transaction) => (
         <TransactionHistoryItem
           key={transaction.hash}
           transaction={transaction}
         />
       ))}
-      <div className="controls">
-        <button onClick={() => useTransactionsStore.getState().clearAll()}>
-          Clear all
-        </button>
-      </div>
+
       <style jsx>{`
-        .transaction-history-modal {
+        .activity {
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          padding: 1rem;
+          font-size: 1.25rem;
+          color: #fff;
         }
         .controls {
           padding: 10px;
@@ -66,12 +70,6 @@ const TransactionHistoryItem = ({
       )}
       <style jsx>{`
         .transaction-item {
-          padding: 10px;
-          border-bottom: 1px dashed #333;
-          background-color: #222;
-          color: white;
-          min-width: 400px;
-          max-width: 100%;
           margin: 0 10px;
           display: flex;
           flex-direction: row;

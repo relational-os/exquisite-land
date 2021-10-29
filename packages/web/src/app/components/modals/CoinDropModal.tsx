@@ -213,7 +213,10 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)'
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',

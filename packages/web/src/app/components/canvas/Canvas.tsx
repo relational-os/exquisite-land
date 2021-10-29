@@ -149,7 +149,7 @@ const Canvas = () => {
             cursor: 'grab'
           }}
         >
-          <div className="canvas-header jaunt">Land 01: Terra Masu</div>
+          <div className="canvas-header jaunt">Land 01: TERRA MASU</div>
           <div className="canvas-body">
             <div className="left"></div>
             <div className="surface">
@@ -174,8 +174,16 @@ const Canvas = () => {
       </TransformWrapper>
 
       <div className="controls">
+        <button className="hide-controls-button">hide</button>
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
+      </div>
+
+      <div className="scrub-controls">
+        <button className="play jaunt">&#x3e;</button>
+        <div className="scrub-bar"></div>
+        <div className="scrub-handle"></div>
+        <div className="now">NOW</div>
       </div>
 
       <Modal
@@ -213,6 +221,21 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
+        button.close {
+          position: fixed;
+          top: 1.2rem;
+          right: 1rem;
+          background: transparent;
+          outline: none;
+          border: none;
+          font-size: 32px;
+          color: #fff;
+          cursor: pointer;
+        }
+        button.close:hover {
+          box-shadow: none;
+        }
+
         .canvas-header,
         .canvas-body {
           display: flex;
@@ -278,8 +301,59 @@ const Canvas = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
-
         .controls button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
+        }
+        .controls .hide-controls-button {
+          position: fixed;
+          left: 30px;
+          bottom: 30px;
+        }
+
+        .scrub-controls {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 1rem;
+          position: fixed;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          width: 30vw;
+          margin: 0 auto 30px;
+        }
+        .scrub-controls .scrub-bar {
+          width: 100%;
+          height: 4px;
+          background: #444;
+        }
+        .scrub-controls .scrub-handle {
+          position: absolute;
+          top: 4px;
+          left: 100px;
+          width: 8px;
+          height: 30px;
+          background: #eee;
+          cursor: move;
+        }
+        .scrub-controls .now {
+          color: #fff;
+          font-size: 1.1rem;
+        }
+        .scrub-controls button {
+          display: block;
+          padding: 8px 12px;
+          border: 0;
+          background: #eee;
+          font-size: 18px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: rgba(0, 0, 0, 1);
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
+        .scrub-controls button:hover {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
       `}</style>
@@ -289,8 +363,10 @@ const Canvas = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.9)',
-    zIndex: 1112
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',
@@ -301,14 +377,18 @@ const modalStyles = {
     transform: 'translate(-50%, -50%)',
     background: 'transparent',
     border: 0,
-    padding: 0
+    padding: 0,
+    borderRadius: 0,
+    cursor: 'default'
   }
 };
 
 const editModalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)',
-    zIndex: 1112
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',
@@ -319,7 +399,9 @@ const editModalStyles = {
     transform: 'translate(-50%, -50%)',
     background: 'transparent',
     border: 0,
-    padding: 0
+    padding: 0,
+    borderRadius: 0,
+    cursor: 'default'
   }
 };
 
