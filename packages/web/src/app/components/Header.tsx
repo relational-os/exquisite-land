@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ConnectWalletButton from './ConnectWalletButton';
-import OpenTransactionHistoryButton from './OpenTransactionHistoryButton';
 import UseCoinButton from './UseCoinButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
@@ -146,7 +145,7 @@ const Header = () => {
         >
           X
         </button>
-        <TransactionHistoryModal isOpen={isActivityFeedOpen} />
+        <TransactionHistoryModal />
       </div>
 
       <div className="discord-feed">
