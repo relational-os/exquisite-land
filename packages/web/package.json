@@ -1,6 +1,6 @@
 {
   "name": "@exquisiteland/web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,7 +12,7 @@
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/wallet": "^5.4.0",
-    "@exquisiteland/contracts": "^0.2.0",
+    "@exquisiteland/contracts": "^0.3.0",
     "@gimmixorg/use-wallet": "^0.0.28",
     "@prisma/client": "^3.3.0",
     "@svgr/webpack": "^5.5.0",
