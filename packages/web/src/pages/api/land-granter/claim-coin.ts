@@ -24,7 +24,7 @@ const api: NextApiHandler = async (req, res) => {
     `Granting land tile ${tokenId} to ${recipient} with coinCreator ${coinCreator}`
   );
   const tx = await grantLandTile(tokenId, recipient, coinCreator);
-  console.log('tx hash', tx.hash);
+  console.log('tx hash', tx.hash, tx.gasPrice, tx.nonce);
   const reciept = await tx.wait(1);
   return res.json({ tx: reciept.transactionHash });
 };

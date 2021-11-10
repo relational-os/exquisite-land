@@ -21,6 +21,7 @@ import PALETTES from '@constants/Palettes';
 import prisma from 'lib/prisma';
 import getContract from '@app/features/getContract';
 import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { utils } from 'ethers';
 
 const colorLUT = new Map<
   string,
@@ -119,7 +120,7 @@ export const checkTokenIdIsOwnedByLandGranter = async (
   }
 };
 
-export const grantLandTile = (
+export const grantLandTile = async (
   tokenId: number,
   recipient: string,
   coinCreator: string
@@ -132,7 +133,13 @@ export const grantLandTile = (
     LAND_GRANTER_CONTRACT_ADDRESS,
     wallet
   );
-  return contract.grant(tokenId, recipient, coinCreator);
+
+  const nonce = await wallet.getTransactionCount();
+
+  return contract.grant(tokenId, recipient, coinCreator, {
+    gasPrice: utils.parseUnits('70', 'gwei'),
+    nonce: nonce
+  });
 };
 
 export const encodePencil = async (x: number, y: number, addr: string) => {
