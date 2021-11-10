@@ -21,7 +21,6 @@ import PALETTES from '@constants/Palettes';
 import prisma from 'lib/prisma';
 import getContract from '@app/features/getContract';
 import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
-import { utils } from 'ethers';
 
 const colorLUT = new Map<
   string,

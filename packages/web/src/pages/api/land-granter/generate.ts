@@ -69,6 +69,7 @@ const api: NextApiHandler = async (req, res) => {
   console.log('finsihed upserting');
 
   res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Content-Disposition', `inline; filename="[${x},${y}].png"`);
   return res.send(coinImage);
 };
 
