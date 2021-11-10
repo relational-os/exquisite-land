@@ -9,4 +9,8 @@ const getJsonRpcProvider = (network: string): providers.Provider =>
         `https://${network}.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
       );
 
+export const ethJsonRpcProvider = new providers.JsonRpcProvider(
+  `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`
+);
+
 export default getJsonRpcProvider;
