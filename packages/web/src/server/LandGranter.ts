@@ -135,10 +135,11 @@ export const grantLandTile = async (
   );
 
   const nonce = await wallet.getTransactionCount();
+  // const gasPrice = utils.parseUnits('70', 'gwei');
 
   return contract.grant(tokenId, recipient, coinCreator, {
-    gasPrice: utils.parseUnits('70', 'gwei'),
-    nonce: nonce
+    // gasPrice,
+    nonce
   });
 };
 
