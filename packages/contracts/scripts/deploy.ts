@@ -34,7 +34,7 @@ async function start() {
     await fs.readFileSync(addressesPath).toString()
   );
 
-  hre.changeNetwork('mumbai');
+  hre.changeNetwork('matic');
 
   if (!addressBook.base64) {
     console.log('Deploying base64...');
@@ -44,7 +44,6 @@ async function start() {
     console.log('base64 deployed at ', deployTx.address);
     addressBook.base64 = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
-
     console.log('Verifying contract...');
     await hre.run('verify:verify', {
       address: addressBook.base64,
@@ -111,11 +110,6 @@ async function start() {
       ]
     });
   }
-
-  console.log('Verifying contract...');
-  await exec(
-    `npx hardhat verify --network matic ${addressBook.contract} ${addressBook.forwarder} ${addressBook.renderer} ${addressBook.base64}`
-  );
 
   if (!addressBook.landGranter) {
     console.log('Deploying Land Granter contract...');

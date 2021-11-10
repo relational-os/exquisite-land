@@ -319,21 +319,16 @@ contract TerraMasu is
     string memory description;
 
     if (_tileFilled[uint32(tokenId)]) {
-      output = getTileSVG(uint32(tokenId));
+      output = '"data:image/svg+xml;base64,';
+      output = string(
+        abi.encodePacked(output, getTileSVG(uint32(tokenId)), '"')
+      );
       description = string(
         abi.encodePacked('"Terra Masu Tile [', LOOKUP[x], ',', LOOKUP[y], ']"')
       );
     } else {
-      output = string(
-        abi.encodePacked(
-          DEFAULT_COIN_OPENER,
-          LOOKUP[x],
-          ',',
-          LOOKUP[y],
-          DEFAULT_COIN_CLOSER
-        )
-      );
       description = '"A blank Terra Masu Tile"';
+      output = 'ipfs://QmTWDxdiwJuP1ZcCMcvXyimwwFQ8GFHhVUmJCgRkzDxxmL';
     }
 
     string memory json = _b64.encode(
@@ -346,9 +341,9 @@ contract TerraMasu is
             LOOKUP[y],
             ']", "description": ',
             description,
-            ', "image": "data:image/svg+xml;base64,',
+            ', "image": ',
             _b64.encode(bytes(output)),
-            '"}'
+            '}'
           )
         )
       )

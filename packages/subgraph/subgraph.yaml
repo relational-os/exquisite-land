@@ -6,7 +6,7 @@ dataSources:
     name: ExquisiteLand
     network: matic
     source:
-      address: '0x08fA97719C6b9d3514443410B3019c1b54263B25'
+      address: '0x6AfCD3cA90DA246e81c5067E185ddf2E152bd998'
       startBlock: 21217212
       abi: ExquisiteLand
     mapping:
