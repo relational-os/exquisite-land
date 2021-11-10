@@ -20,7 +20,11 @@ const api: NextApiHandler = async (req, res) => {
   if (!isGrantable)
     return res.status(400).json({ error: 'Coin has already been claimed.' });
 
+  console.log(
+    `Granting land tile ${tokenId} to ${recipient} with coinCreator ${coinCreator}`
+  );
   const tx = await grantLandTile(tokenId, recipient, coinCreator);
+  console.log('tx hash', tx.hash);
   const reciept = await tx.wait(1);
   return res.json({ tx: reciept.transactionHash });
 };
