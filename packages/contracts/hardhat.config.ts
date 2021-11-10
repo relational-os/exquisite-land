@@ -26,6 +26,10 @@ export default {
     mumbai: {
       chainId: 80001,
       url: require('dotenv').config({ path: '.env.80001' }).parsed.RPC_ENDPOINT
+    },
+    matic: {
+      chainId: 137,
+      url: require('dotenv').config({ path: '.env.137' }).parsed.RPC_ENDPOINT
     }
   },
   etherscan: {

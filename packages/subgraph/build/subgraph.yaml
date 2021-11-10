@@ -4,14 +4,14 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: ExquisiteLand
-    network: mumbai
+    network: matic
     source:
-      address: "0x4fE97d7D721281C77411937e4305aF0DFBE4c107"
-      startBlock: 19776528
+      address: "0x08fA97719C6b9d3514443410B3019c1b54263B25"
+      startBlock: 21217212
       abi: ExquisiteLand
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Tile

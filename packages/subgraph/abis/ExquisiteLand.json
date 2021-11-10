@@ -5,6 +5,16 @@
         "internalType": "address",
         "name": "trustedForwarderAddress_",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "rendererAddress_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "b64Address_",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -669,32 +679,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "tokenId",
-        "type": "uint32"
-      }
-    ],
-    "name": "targetTileIsBlank",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "toggleAllowEditing",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

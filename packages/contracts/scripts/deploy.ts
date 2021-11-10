@@ -40,7 +40,7 @@ async function start() {
     addressBook.base64 = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
     console.log('Verifying contract...');
-    await exec(`npx hardhat verify --network mumbai ${addressBook.base64}`);
+    await exec(`npx hardhat verify --network matic ${addressBook.base64}`);
   }
 
   if (!addressBook.forwarder) {
@@ -52,7 +52,7 @@ async function start() {
     addressBook.forwarder = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
     console.log('Verifying contract...');
-    await exec(`npx hardhat verify --network mumbai ${addressBook.forwarder}`);
+    await exec(`npx hardhat verify --network matic ${addressBook.forwarder}`);
   }
 
   if (!addressBook.renderer) {
@@ -64,7 +64,7 @@ async function start() {
     addressBook.renderer = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
     console.log('Verifying contract...');
-    await exec(`npx hardhat verify --network mumbai ${addressBook.renderer}`);
+    await exec(`npx hardhat verify --network matic ${addressBook.renderer}`);
   }
 
   if (!addressBook.contract) {
@@ -76,14 +76,20 @@ async function start() {
     );
     console.log('Deploy TX: ', deployTx.deployTransaction.hash);
     await deployTx.deployed();
+    await deployTx.deployTransaction.wait(2);
     console.log('Contract deployed at ', deployTx.address);
     addressBook.contract = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
     console.log('Verifying contract...');
     await exec(
-      `npx hardhat verify --network mumbai ${addressBook.contract} ${addressBook.forwarder} ${addressBook.renderer} ${addressBook.base64}`
+      `npx hardhat verify --network matic ${addressBook.contract} ${addressBook.forwarder} ${addressBook.renderer} ${addressBook.base64}`
     );
   }
+
+  console.log('Verifying contract...');
+  await exec(
+    `npx hardhat verify --network matic ${addressBook.contract} ${addressBook.forwarder} ${addressBook.renderer} ${addressBook.base64}`
+  );
 
   if (!addressBook.landGranter) {
     console.log('Deploying Land Granter contract...');
@@ -92,12 +98,13 @@ async function start() {
     );
     console.log('Land Granter Deploy TX: ', deployTx.deployTransaction.hash);
     await deployTx.deployed();
+    await deployTx.deployTransaction.wait(2);
     console.log('Land Granter Contract deployed at ', deployTx.address);
     addressBook.landGranter = deployTx.address;
     await fs.writeFile(addressesPath, JSON.stringify(addressBook, null, 2));
     console.log('Verifying contract...');
     await exec(
-      `npx hardhat verify --network mumbai ${addressBook.landGranter} ${addressBook.contract}`
+      `npx hardhat verify --network matic ${addressBook.landGranter} ${addressBook.contract}`
     );
     const contract = TerraMasu__factory.connect(addressBook.contract, wallet);
     console.log('Setting LandGranter address in ExquisiteLand...');

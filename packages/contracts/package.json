@@ -12,7 +12,8 @@
     "deploy-local": "ts-node scripts/deploy.ts --chainId 1337 && cp -R addresses dist",
     "deploy-test": "ts-node scripts/test.ts",
     "deploy-mumbai": "ts-node scripts/deploy.ts --chainId 80001 && cp -R addresses dist",
-    "deploy-mumbai-dev": "ts-node scripts/deploy.ts --chainId 80001 --dev && cp -R addresses dist"
+    "deploy-mumbai-dev": "ts-node scripts/deploy.ts --chainId 80001 --dev && cp -R addresses dist",
+    "deploy": "ts-node scripts/deploy.ts --chainId 137 && cp -R addresses dist"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",

@@ -516,29 +516,6 @@ export class ExquisiteLand extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  targetTileIsBlank(tokenId: BigInt): boolean {
-    let result = super.call(
-      "targetTileIsBlank",
-      "targetTileIsBlank(uint32):(bool)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_targetTileIsBlank(tokenId: BigInt): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "targetTileIsBlank",
-      "targetTileIsBlank(uint32):(bool)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
   tokenURI(tokenId: BigInt): string {
     let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
@@ -601,6 +578,14 @@ export class ConstructorCall__Inputs {
 
   get trustedForwarderAddress_(): Address {
     return this._call.inputValues[0].value.toAddress();
+  }
+
+  get rendererAddress_(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get b64Address_(): Address {
+    return this._call.inputValues[2].value.toAddress();
   }
 }
 
@@ -1054,32 +1039,6 @@ export class SetRendererCall__Outputs {
   _call: SetRendererCall;
 
   constructor(call: SetRendererCall) {
-    this._call = call;
-  }
-}
-
-export class ToggleAllowEditingCall extends ethereum.Call {
-  get inputs(): ToggleAllowEditingCall__Inputs {
-    return new ToggleAllowEditingCall__Inputs(this);
-  }
-
-  get outputs(): ToggleAllowEditingCall__Outputs {
-    return new ToggleAllowEditingCall__Outputs(this);
-  }
-}
-
-export class ToggleAllowEditingCall__Inputs {
-  _call: ToggleAllowEditingCall;
-
-  constructor(call: ToggleAllowEditingCall) {
-    this._call = call;
-  }
-}
-
-export class ToggleAllowEditingCall__Outputs {
-  _call: ToggleAllowEditingCall;
-
-  constructor(call: ToggleAllowEditingCall) {
     this._call = call;
   }
 }

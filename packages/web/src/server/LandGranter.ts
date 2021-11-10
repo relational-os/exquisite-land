@@ -1,6 +1,5 @@
 import { ContractTransaction } from '@ethersproject/contracts';
 import { LandGranter__factory } from '@sdk/factories/LandGranter__factory';
-import { ExquisiteLand__factory } from '@sdk/factories/ExquisiteLand__factory';
 import sharp from 'sharp';
 
 let basePath = process.cwd();
@@ -20,6 +19,7 @@ import {
   EXQUISITE_LAND_CONTRACT_ADDRESS,
   LAND_GRANTER_CONTRACT_ADDRESS
 } from '@app/features/AddressBook';
+import { TerraMasu__factory } from '@sdk/factories/TerraMasu__factory';
 
 export const getTokenIDForCoin = (coinB64: string): number | null => {
   try {
@@ -36,7 +36,7 @@ export const checkTokenIdIsOwnedByLandGranter = async (
   tokenId: number
 ): Promise<boolean> => {
   try {
-    const contract = ExquisiteLand__factory.connect(
+    const contract = TerraMasu__factory.connect(
       EXQUISITE_LAND_CONTRACT_ADDRESS,
       getJsonRpcProvider()
     );
