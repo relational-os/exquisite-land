@@ -26,6 +26,7 @@ import './utils/TrustedForwarderRecipient.sol';
 import './interfaces/IRender.sol';
 import './interfaces/IBase64.sol';
 import './interfaces/IExquisiteLand.sol';
+import './interfaces/IFont.sol';
 
 contract TerraMasu is
   IExquisiteLand,
@@ -38,7 +39,7 @@ contract TerraMasu is
   IBase64 private _b64;
 
   // * Constants * //
-  uint8 constant MAX_SEEDS_PER_CANVAS = 4;
+  uint8 constant MAX_SEEDS_PER_CANVAS = 5;
   uint8 constant MAX_CANVAS_WIDTH = 16;
   uint8 constant MAX_CANVAS_HEIGHT = 16;
   uint8 constant MAX_TILE_WIDTH = 32;
