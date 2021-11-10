@@ -58,7 +58,7 @@ const TransactionHistoryItem = ({
           </a>
         </div>
         <div className="date">
-          {dayjs(transaction.date).format('MMM d, h:mma')}
+          {dayjs(transaction.date).format('MMM D, h:mma')}
         </div>
       </div>
       {transaction.pixels && (

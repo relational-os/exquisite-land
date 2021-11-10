@@ -41,7 +41,7 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
             <div className="body">
               <div className="message-header">
                 {m.author.username}{' '}
-                <span>{dayjs(m.timestamp).format('MMM d, h:mma')}</span>
+                <span>{dayjs(m.timestamp).format('MMM D, h:mma')}</span>
               </div>
               <div className="message-content">{m.content}</div>
             </div>
