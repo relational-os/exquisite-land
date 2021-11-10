@@ -17,11 +17,11 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface LandGranterInterface extends ethers.utils.Interface {
   functions: {
-    "grant(uint256,address)": FunctionFragment;
+    "grant(uint256,address,address)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -30,7 +30,7 @@ interface LandGranterInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "grant",
-    values: [BigNumberish, string]
+    values: [BigNumberish, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
@@ -63,7 +63,7 @@ interface LandGranterInterface extends ethers.utils.Interface {
 
   events: {
     "InviteCoinCreated(uint256)": EventFragment;
-    "InviteCoinUsed(uint256,address)": EventFragment;
+    "InviteCoinUsed(uint256,address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
@@ -71,6 +71,22 @@ interface LandGranterInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "InviteCoinUsed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type InviteCoinCreatedEvent = TypedEvent<
+  [BigNumber] & { tokenId: BigNumber }
+>;
+
+export type InviteCoinUsedEvent = TypedEvent<
+  [BigNumber, string, string] & {
+    tokenId: BigNumber;
+    recipient: string;
+    coinCreator: string;
+  }
+>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string] & { previousOwner: string; newOwner: string }
+>;
 
 export class LandGranter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -119,6 +135,7 @@ export class LandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -145,6 +162,7 @@ export class LandGranter extends BaseContract {
   grant(
     tokenId: BigNumberish,
     recipient: string,
+    coinCreator: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -171,6 +189,7 @@ export class LandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -193,16 +212,38 @@ export class LandGranter extends BaseContract {
   };
 
   filters: {
+    "InviteCoinCreated(uint256)"(
+      tokenId?: null
+    ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
+
     InviteCoinCreated(
       tokenId?: null
     ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
 
+    "InviteCoinUsed(uint256,address,address)"(
+      tokenId?: null,
+      recipient?: null,
+      coinCreator?: null
+    ): TypedEventFilter<
+      [BigNumber, string, string],
+      { tokenId: BigNumber; recipient: string; coinCreator: string }
+    >;
+
     InviteCoinUsed(
       tokenId?: null,
-      recipient?: null
+      recipient?: null,
+      coinCreator?: null
     ): TypedEventFilter<
-      [BigNumber, string],
-      { tokenId: BigNumber; recipient: string }
+      [BigNumber, string, string],
+      { tokenId: BigNumber; recipient: string; coinCreator: string }
+    >;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
     >;
 
     OwnershipTransferred(
@@ -218,6 +259,7 @@ export class LandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -245,6 +287,7 @@ export class LandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

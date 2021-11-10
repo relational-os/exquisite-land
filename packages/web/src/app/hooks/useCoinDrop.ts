@@ -5,11 +5,13 @@ export const useCoinDrop = (
   setProcessing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const [tokenId, setTokenId] = useState<number | null>(null);
+  const [coinCreator, setCoinCreator] = useState<string | null>(null);
   const [dropError, setDropError] = useState<string | null>(null);
 
   const reset = () => {
     setTokenId(null);
     setDropError(null);
+    setCoinCreator(null);
   };
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -20,13 +22,16 @@ export const useCoinDrop = (
       const coinB64 = (reader.result as string).replace(/^data:.+;base64,/, '');
 
       setProcessing(true);
-      const { tokenId, error } = await fetch('/api/land-granter/check-coin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ coinB64 })
-      }).then((r) => r.json());
+      const { tokenId, coinCreator, error } = await fetch(
+        '/api/land-granter/check-coin',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ coinB64 })
+        }
+      ).then((r) => r.json());
       setProcessing(false);
 
       if (error) {
@@ -35,8 +40,9 @@ export const useCoinDrop = (
         return;
       }
 
-      if (tokenId != null) {
+      if (tokenId != null && coinCreator != null) {
         setTokenId(tokenId);
+        setCoinCreator(coinCreator);
         return;
       }
 
@@ -50,13 +56,14 @@ export const useCoinDrop = (
     onDrop,
     accept: 'image/png',
     multiple: false,
-    noClick: true,
+    // noClick: true,
     preventDropOnDocument: false
   });
 
   return {
     ...dropzone,
     tokenId: tokenId,
+    coinCreator: coinCreator,
     dropError,
     reset
   };

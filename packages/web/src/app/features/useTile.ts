@@ -31,6 +31,7 @@ export const getTile = async (tokenId: number): Promise<GraphTile | null> => {
   const data = await request(GRAPH_URL, query, { tokenId: `${tokenId}` });
   return data?.tile || null;
 };
+
 const useTile = (tokenId: number, swrOptions?: Partial<SWRConfiguration>) => {
   const { data, error, mutate } = useSWR<GraphTile | null>(
     [tokenId, 'useTile'],

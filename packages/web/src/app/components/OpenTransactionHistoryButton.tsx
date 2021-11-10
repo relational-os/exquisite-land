@@ -17,7 +17,7 @@ const OpenTransactionHistoryButton = () => {
 
   return (
     <>
-      <button onClick={openModal}>transactions</button>
+      <button onClick={openModal}>log</button>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
@@ -30,7 +30,7 @@ const OpenTransactionHistoryButton = () => {
           display: block;
           padding: 8px 14px;
           border: 0;
-          background: #ffe131;
+          background: #444;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;

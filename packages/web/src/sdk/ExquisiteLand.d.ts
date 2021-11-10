@@ -17,265 +17,78 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface ExquisiteLandInterface extends ethers.utils.Interface {
   functions: {
-    "approve(address,uint256)": FunctionFragment;
-    "balanceOf(address)": FunctionFragment;
-    "createSeed(uint32,uint32)": FunctionFragment;
-    "createTile(uint32,uint32,bytes)": FunctionFragment;
-    "generateTokenID(uint32,uint32)": FunctionFragment;
-    "getApproved(uint256)": FunctionFragment;
-    "getCoordinates(uint32)": FunctionFragment;
-    "getTileSVG(uint32)": FunctionFragment;
-    "inviteIsValid(uint32,uint32,uint32,uint32)": FunctionFragment;
-    "inviteNeighbor(uint32,uint32,uint32,address)": FunctionFragment;
-    "isApprovedForAll(address,address)": FunctionFragment;
-    "isTrustedForwarder(address)": FunctionFragment;
-    "name()": FunctionFragment;
+    "MAX_CANVASES()": FunctionFragment;
+    "credits()": FunctionFragment;
+    "lands(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "ownerOf(uint256)": FunctionFragment;
-    "recirculateTile(uint32,uint32)": FunctionFragment;
+    "registerCredits(address)": FunctionFragment;
+    "registerLand(uint256,address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "resetTile(uint32,uint32)": FunctionFragment;
-    "safeTransferFrom(address,address,uint256)": FunctionFragment;
-    "setApprovalForAll(address,bool)": FunctionFragment;
-    "setForwarder(address)": FunctionFragment;
-    "setLandGranter(address)": FunctionFragment;
-    "setRenderer(address)": FunctionFragment;
-    "supportsInterface(bytes4)": FunctionFragment;
-    "symbol()": FunctionFragment;
-    "targetTileIsBlank(uint32)": FunctionFragment;
-    "toggleAllowEditing()": FunctionFragment;
-    "tokenURI(uint256)": FunctionFragment;
-    "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "versionRecipient()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "approve",
-    values: [string, BigNumberish]
+    functionFragment: "MAX_CANVASES",
+    values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "createSeed",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createTile",
-    values: [BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "generateTokenID",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getApproved",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getCoordinates",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTileSVG",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "inviteIsValid",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "inviteNeighbor",
-    values: [BigNumberish, BigNumberish, BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isApprovedForAll",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isTrustedForwarder",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "credits", values?: undefined): string;
+  encodeFunctionData(functionFragment: "lands", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "ownerOf",
-    values: [BigNumberish]
+    functionFragment: "registerCredits",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "recirculateTile",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "registerLand",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "resetTile",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "safeTransferFrom",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setApprovalForAll",
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setForwarder",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setLandGranter",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "setRenderer", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "supportsInterface",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "targetTileIsBlank",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "toggleAllowEditing",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferFrom",
-    values: [string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "versionRecipient",
-    values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createSeed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "createTile", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "generateTokenID",
+    functionFragment: "MAX_CANVASES",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getCoordinates",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getTileSVG", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "inviteIsValid",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "inviteNeighbor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isTrustedForwarder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "credits", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "lands", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "recirculateTile",
+    functionFragment: "registerCredits",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "registerLand",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "resetTile", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "safeTransferFrom",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setApprovalForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setForwarder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setLandGranter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setRenderer",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "supportsInterface",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "targetTileIsBlank",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "toggleAllowEditing",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferFrom",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "versionRecipient",
     data: BytesLike
   ): Result;
 
   events: {
-    "Approval(address,address,uint256)": EventFragment;
-    "ApprovalForAll(address,address,bool)": EventFragment;
-    "NeighborInvited(uint32,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "SeedCreated(uint32,address)": EventFragment;
-    "TileCreated(uint32,address)": EventFragment;
-    "TileReset(uint32)": EventFragment;
-    "Transfer(address,address,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NeighborInvited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SeedCreated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TileCreated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TileReset"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string] & { previousOwner: string; newOwner: string }
+>;
 
 export class ExquisiteLand extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -321,87 +134,22 @@ export class ExquisiteLand extends BaseContract {
   interface: ExquisiteLandInterface;
 
   functions: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    MAX_CANVASES(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    credits(overrides?: CallOverrides): Promise<[string]>;
 
-    createSeed(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    createTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      pixels: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    generateTokenID(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getCoordinates(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number, number]>;
-
-    getTileSVG(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    inviteIsValid(
-      senderX: BigNumberish,
-      senderY: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    inviteNeighbor(
-      tokenId: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    isTrustedForwarder(
-      forwarder: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    name(overrides?: CallOverrides): Promise<[string]>;
+    lands(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    registerCredits(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
-    recirculateTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    registerLand(
+      landId: BigNumberish,
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -409,230 +157,32 @@ export class ExquisiteLand extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    resetTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "safeTransferFrom(address,address,uint256)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "safeTransferFrom(address,address,uint256,bytes)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setForwarder(
-      trustedForwarder_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setLandGranter(
-      granter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setRenderer(
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    targetTileIsBlank(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    toggleAllowEditing(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    versionRecipient(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  approve(
-    to: string,
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  MAX_CANVASES(overrides?: CallOverrides): Promise<BigNumber>;
 
-  balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+  credits(overrides?: CallOverrides): Promise<string>;
 
-  createSeed(
-    x: BigNumberish,
-    y: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  createTile(
-    x: BigNumberish,
-    y: BigNumberish,
-    pixels: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  generateTokenID(
-    x: BigNumberish,
-    y: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  getApproved(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getCoordinates(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<[number, number]>;
-
-  getTileSVG(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  inviteIsValid(
-    senderX: BigNumberish,
-    senderY: BigNumberish,
-    inviteX: BigNumberish,
-    inviteY: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  inviteNeighbor(
-    tokenId: BigNumberish,
-    inviteX: BigNumberish,
-    inviteY: BigNumberish,
-    recipient: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  isApprovedForAll(
-    owner: string,
-    operator: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isTrustedForwarder(
-    forwarder: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  name(overrides?: CallOverrides): Promise<string>;
+  lands(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  recirculateTile(
-    x: BigNumberish,
-    y: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  resetTile(
-    x: BigNumberish,
-    y: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "safeTransferFrom(address,address,uint256)"(
-    from: string,
-    to: string,
-    tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "safeTransferFrom(address,address,uint256,bytes)"(
-    from: string,
-    to: string,
-    tokenId: BigNumberish,
-    _data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setApprovalForAll(
-    operator: string,
-    approved: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setForwarder(
-    trustedForwarder_: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setLandGranter(
-    granter: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setRenderer(
+  registerCredits(
     addr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  supportsInterface(
-    interfaceId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  targetTileIsBlank(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  toggleAllowEditing(
+  registerLand(
+    landId: BigNumberish,
+    addr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  transferFrom(
-    from: string,
-    to: string,
-    tokenId: BigNumberish,
+  renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -641,184 +191,38 @@ export class ExquisiteLand extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  versionRecipient(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    MAX_CANVASES(overrides?: CallOverrides): Promise<BigNumber>;
 
-    balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+    credits(overrides?: CallOverrides): Promise<string>;
 
-    createSeed(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    createTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      pixels: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    generateTokenID(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getCoordinates(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number, number]>;
-
-    getTileSVG(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    inviteIsValid(
-      senderX: BigNumberish,
-      senderY: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    inviteNeighbor(
-      tokenId: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      recipient: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isTrustedForwarder(
-      forwarder: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    name(overrides?: CallOverrides): Promise<string>;
+    lands(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    registerCredits(addr: string, overrides?: CallOverrides): Promise<void>;
 
-    recirculateTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    registerLand(
+      landId: BigNumberish,
+      addr: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    resetTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "safeTransferFrom(address,address,uint256)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "safeTransferFrom(address,address,uint256,bytes)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setForwarder(
-      trustedForwarder_: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setLandGranter(granter: string, overrides?: CallOverrides): Promise<void>;
-
-    setRenderer(addr: string, overrides?: CallOverrides): Promise<void>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
-
-    targetTileIsBlank(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    toggleAllowEditing(overrides?: CallOverrides): Promise<void>;
-
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     transferOwnership(
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    versionRecipient(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    Approval(
-      owner?: string | null,
-      approved?: string | null,
-      tokenId?: BigNumberish | null
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): TypedEventFilter<
-      [string, string, BigNumber],
-      { owner: string; approved: string; tokenId: BigNumber }
-    >;
-
-    ApprovalForAll(
-      owner?: string | null,
-      operator?: string | null,
-      approved?: null
-    ): TypedEventFilter<
-      [string, string, boolean],
-      { owner: string; operator: string; approved: boolean }
-    >;
-
-    NeighborInvited(
-      tokenId?: null,
-      recipient?: null
-    ): TypedEventFilter<
-      [number, string],
-      { tokenId: number; recipient: string }
+      [string, string],
+      { previousOwner: string; newOwner: string }
     >;
 
     OwnershipTransferred(
@@ -828,114 +232,25 @@ export class ExquisiteLand extends BaseContract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
-
-    SeedCreated(
-      tokenId?: null,
-      recipient?: null
-    ): TypedEventFilter<
-      [number, string],
-      { tokenId: number; recipient: string }
-    >;
-
-    TileCreated(
-      tokenId?: null,
-      sender?: null
-    ): TypedEventFilter<[number, string], { tokenId: number; sender: string }>;
-
-    TileReset(tokenId?: null): TypedEventFilter<[number], { tokenId: number }>;
-
-    Transfer(
-      from?: string | null,
-      to?: string | null,
-      tokenId?: BigNumberish | null
-    ): TypedEventFilter<
-      [string, string, BigNumber],
-      { from: string; to: string; tokenId: BigNumber }
-    >;
   };
 
   estimateGas: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    MAX_CANVASES(overrides?: CallOverrides): Promise<BigNumber>;
 
-    balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+    credits(overrides?: CallOverrides): Promise<BigNumber>;
 
-    createSeed(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    createTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      pixels: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    generateTokenID(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getCoordinates(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTileSVG(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    inviteIsValid(
-      senderX: BigNumberish,
-      senderY: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    inviteNeighbor(
-      tokenId: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isTrustedForwarder(
-      forwarder: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<BigNumber>;
+    lands(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
+    registerCredits(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    recirculateTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    registerLand(
+      landId: BigNumberish,
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -943,169 +258,32 @@ export class ExquisiteLand extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    resetTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "safeTransferFrom(address,address,uint256)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "safeTransferFrom(address,address,uint256,bytes)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setForwarder(
-      trustedForwarder_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setLandGranter(
-      granter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setRenderer(
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    targetTileIsBlank(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    toggleAllowEditing(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    versionRecipient(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    approve(
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    MAX_CANVASES(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    balanceOf(
-      owner: string,
+    credits(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    lands(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    createSeed(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    createTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      pixels: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    generateTokenID(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getApproved(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getCoordinates(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTileSVG(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    inviteIsValid(
-      senderX: BigNumberish,
-      senderY: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    inviteNeighbor(
-      tokenId: BigNumberish,
-      inviteX: BigNumberish,
-      inviteY: BigNumberish,
-      recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    isApprovedForAll(
-      owner: string,
-      operator: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isTrustedForwarder(
-      forwarder: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    ownerOf(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
+    registerCredits(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    recirculateTile(
-      x: BigNumberish,
-      y: BigNumberish,
+    registerLand(
+      landId: BigNumberish,
+      addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1113,81 +291,9 @@ export class ExquisiteLand extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    resetTile(
-      x: BigNumberish,
-      y: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "safeTransferFrom(address,address,uint256)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "safeTransferFrom(address,address,uint256,bytes)"(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      _data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setApprovalForAll(
-      operator: string,
-      approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setForwarder(
-      trustedForwarder_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setLandGranter(
-      granter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRenderer(
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    supportsInterface(
-      interfaceId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    targetTileIsBlank(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    toggleAllowEditing(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferFrom(
-      from: string,
-      to: string,
-      tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    versionRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

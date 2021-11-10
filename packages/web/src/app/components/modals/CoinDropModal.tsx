@@ -12,8 +12,14 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const [processing, setProcessing] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
 
-  const { tokenId, dropError, reset, getRootProps, getInputProps } =
-    useCoinDrop(setProcessing);
+  const {
+    tokenId,
+    coinCreator,
+    dropError,
+    reset,
+    getRootProps,
+    getInputProps
+  } = useCoinDrop(setProcessing);
 
   const claimCoin = async () => {
     if (tokenId == undefined) return;
@@ -21,7 +27,12 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     setProcessing(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
-      body: JSON.stringify({ tokenId, recipient: account }),
+      // TODO: body should also accept any coin creator (or fetch from db)
+      body: JSON.stringify({
+        tokenId,
+        recipient: account,
+        coinCreator
+      }),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -47,41 +58,51 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       {tokenId == null && dropError == null ? (
         <>
           <div className="message" {...getRootProps()}>
-            <img className="empty" src="/graphics/coinbox-empty.png" />
             <input {...getInputProps()} />
             {processing ? (
-              <div className="text">Processing Coin...</div>
+              <>
+                <img
+                  className="empty-withcoin"
+                  src="/graphics/coinbox-empty-withcoin.png"
+                />
+                <div className="text">Processing coin...</div>
+              </>
             ) : (
-              <div className="text">Drop your coin here!</div>
+              <>
+                <img className="empty" src="/graphics/coinbox-empty.png" />
+                <div className="text">Drop your coin here!</div>
+
+                <div className="arrows">
+                  <img className="arrow-l" src="/graphics/coinbox-arrow.png" />
+                  <img className="arrow-r" src="/graphics/coinbox-arrow.png" />
+                </div>
+              </>
             )}
-          </div>
-          <div className="arrows">
-            <img className="arrow-l" src="/graphics/coinbox-arrow.png" />
-            <img className="arrow-r" src="/graphics/coinbox-arrow.png" />
           </div>
         </>
       ) : claimed ? (
         <div className="claimed">
           Success!
           <div className="info">
-            The tile at [{getCoordinates(tokenId!)[0]},{' '}
-            {getCoordinates(tokenId!)[1]}] is now yours! Click continue to ...
+            Tile [{getCoordinates(tokenId!)[0]}, {getCoordinates(tokenId!)[1]}]
+            is now yours! Click continue to ...
           </div>
         </div>
       ) : tokenId != undefined ? (
         <div className="valid-token">
           <div className="message">
-            <div className="coords">
-              [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
+            <div className="coords text">
+              Tile [{getCoordinates(tokenId)[0]},{getCoordinates(tokenId)[1]}]
+              is available!
             </div>
             <img src="/graphics/coinbox-valid.png" />
-            {processing ? (
-              <div className="text">Redeeming Coin...</div>
-            ) : (
-              <div className="text">Your coin is valid!</div>
-            )}
+            {processing ? <div className="text">Redeeming coin...</div> : ''}
           </div>
-          {!processing && <Button onClick={claimCoin}>Redeem</Button>}
+          {!processing && (
+            <button className="redeem" onClick={claimCoin}>
+              Redeem
+            </button>
+          )}
         </div>
       ) : (
         <div className="error">
@@ -141,14 +162,13 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           animation: point-r 1s ease-in-out infinite;
         }
 
-        .message .text {
-          font-size: 24px;
-          color: #5d86b0;
-        }
-
         .message .coords {
           margin-bottom: 0.5rem;
           font-size: 42px;
+          color: #5d86b0;
+        }
+        .message .text {
+          font-size: 24px;
           color: #5d86b0;
         }
 
@@ -161,6 +181,25 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           gap: 10px;
           font-size: 32px;
           color: white;
+        }
+
+        button.redeem {
+          display: block;
+          width: 70%;
+          margin: 0 auto;
+          padding: 8px 14px;
+          border: 0;
+          background: #ffb800;
+          font-size: 24px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: #292524;
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
+        button.redeem:hover {
+          box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
 
         @keyframes point-l {
@@ -193,7 +232,10 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)'
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',

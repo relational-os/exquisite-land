@@ -17,16 +17,16 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface ILandGranterInterface extends ethers.utils.Interface {
   functions: {
-    "grant(uint256,address)": FunctionFragment;
+    "grant(uint256,address,address)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "grant",
-    values: [BigNumberish, string]
+    values: [BigNumberish, string, string]
   ): string;
 
   decodeFunctionResult(functionFragment: "grant", data: BytesLike): Result;
@@ -81,6 +81,7 @@ export class ILandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -88,6 +89,7 @@ export class ILandGranter extends BaseContract {
   grant(
     tokenId: BigNumberish,
     recipient: string,
+    coinCreator: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -95,6 +97,7 @@ export class ILandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -105,6 +108,7 @@ export class ILandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -113,6 +117,7 @@ export class ILandGranter extends BaseContract {
     grant(
       tokenId: BigNumberish,
       recipient: string,
+      coinCreator: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

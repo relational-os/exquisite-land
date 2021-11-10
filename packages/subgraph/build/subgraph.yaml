@@ -6,7 +6,7 @@ dataSources:
     name: ExquisiteLand
     network: mumbai
     source:
-      address: "0x4fE97d7D721281C77411937e4305aF0DFBE4c107"
+      address: "0xCe97C16b958D8Be8a929fEC57eF23Faab0c918d4"
       startBlock: 19776528
       abi: ExquisiteLand
     mapping:

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import CoinDropModal from '@app/components/modals/CoinDropModal';
 import Head from 'next/head';
+import { useWallet } from '@gimmixorg/use-wallet';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 const listen = (
   target: EventTarget,
@@ -12,8 +14,25 @@ const listen = (
 };
 
 const UseCoinButton = () => {
+  const { account, connect } = useWallet();
   const [isCoinModalOpen, setIsCoinModalOpen] = useState(false);
-  const openCoinModal = () => setIsCoinModalOpen(true);
+
+  const openCoinModal = () => {
+    if (!account)
+      connect({
+        cacheProvider: true,
+        providerOptions: {
+          walletconnect: {
+            package: WalletConnectProvider,
+            options: {
+              infuraId: process.env.NEXT_PUBLIC_INFURA_API_KEY as string
+            }
+          }
+        },
+        theme: 'dark'
+      });
+    setIsCoinModalOpen(true);
+  };
   const closeCoinModal = () => setIsCoinModalOpen(false);
 
   // Allow dragging files into window/document to open modal so you don't need to click the coin button first. This is somewhat brittle in that the conditionals and `useEffect` dependencies need to ~stay where they're at for this to work properly. This also doesn't check for the right drop (i.e. a single PNG image file) but I thought it felt better to show the drop modal and later error that the wrong files were dropped rather than giving no feedback to the user.
@@ -94,13 +113,11 @@ const UseCoinButton = () => {
         <CoinDropModal />
       </Modal>
       <style jsx>{`
-        .use-coin-button {
-        }
         button.invite-button {
           display: block;
           padding: 8px 14px;
           border: 0;
-          background: #ffe131;
+          background: #f5cb53;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;
@@ -108,6 +125,7 @@ const UseCoinButton = () => {
           transition: transform 0.2s ease-in-out;
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+          cursor: pointer;
         }
         button.invite-button:hover {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
@@ -119,12 +137,14 @@ const UseCoinButton = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)',
+    backgroundColor: '#282424f6',
     backgroundImage: 'url(/graphics/coinbox-background.png)',
-    backgroundPosition: 'center center',
+    backgroundPosition: '58%',
     backgroundSize: '75%',
     backgroundRepeat: 'no-repeat',
-    zIndex: 1112
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',

@@ -7,10 +7,9 @@ import {
   useOpenNeighborStore,
   OpenNeighborStatus
 } from '@app/features/useOpenNeighborsForWallet';
-import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
-import { getSVGFromPixels } from '@app/features/TileUtils';
 
 const CanvasTile = ({
   x,
@@ -33,6 +32,7 @@ const CanvasTile = ({
 
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
+  const [pendingSvg, setPendingSvg] = useState<string | null>(null);
 
   useEffect(() => {
     if (tilesOwned?.find((t) => t.x == x && t.y == y)) {
@@ -48,7 +48,8 @@ const CanvasTile = ({
   );
 
   const onClick = () => {
-    if (isOwned && tile?.status == 'UNLOCKED' && openEditor) openEditor();
+    if (pendingSvg && openTileModal) openTileModal();
+    else if (isOwned && tile?.status == 'UNLOCKED' && openEditor) openEditor();
     else if (isInvitable && openGenerateInvite) openGenerateInvite();
     else if (tile?.status == 'LOCKED' && openTileModal) openTileModal();
   };
@@ -56,9 +57,26 @@ const CanvasTile = ({
   const isPending = useTransactionsStore((state) =>
     state.transactions.find(
       (t) => t.x == x && t.y == y && t.type == 'create-tile'
+      // &&
+      // t.status != 'confirmed'
     )
   );
-  const pendingSvg = isPending ? getSVGFromPixels(isPending.pixels!) : null;
+
+  useEffect(() => {
+    if (isPending) {
+      fetch('/api/utils/pixels/png', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pixels: isPending.pixels! })
+      })
+        .then((r) => r.blob())
+        .then((r) => setPendingSvg(URL.createObjectURL(r)));
+    } else {
+      setPendingSvg(null);
+    }
+  }, [isPending]);
 
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
@@ -71,7 +89,12 @@ const CanvasTile = ({
         />
       )}
       {!tile?.svg && pendingSvg && (
-        <svg dangerouslySetInnerHTML={{ __html: pendingSvg }} />
+        <img
+          src={pendingSvg}
+          width="100"
+          height="100"
+          className="tile-image"
+        ></img>
       )}
       <div className="meta">
         <div className="coords">
@@ -86,7 +109,7 @@ const CanvasTile = ({
               ) : (
                 <ENSName
                   address={tile.owner.id}
-                  provider={ethJsonRpcProvider}
+                  provider={getEthJsonRpcProvider}
                 />
               )}
             </div>
@@ -118,7 +141,7 @@ const CanvasTile = ({
             ? '#c066ea'
             : tile?.status == 'UNLOCKED'
             ? `radial-gradient(circle, #333 1px, rgba(40, 40, 40, 0) 1px)`
-            : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
+            : 'radial-gradient(circle, #111 1px, rgba(0, 0, 0, 0) 1px)'};
 
           background-size: ${isInvitable
             ? '100% 100%'
@@ -213,7 +236,7 @@ const CanvasTile = ({
         .invitable button {
           padding: 6px 14px;
           border: 0;
-          background: #ffe131;
+          background: #f5cb53;
           font-size: 16px;
           font-family: inherit;
           cursor: pointer;

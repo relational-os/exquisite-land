@@ -2,8 +2,10 @@
 pragma solidity ^0.8.9;
 
 interface IRender {
-  function renderSVG(bytes memory data, string[16] memory palette)
-    external
-    pure
-    returns (string memory);
+  function renderSVG(
+    bytes calldata data,
+    string[] calldata palette,
+    uint16 numRows,
+    uint16 numCols
+  ) external view returns (string memory);
 }

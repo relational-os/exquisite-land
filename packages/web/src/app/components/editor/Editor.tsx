@@ -7,6 +7,8 @@ import EditorPreview from './EditorPreview';
 import TileSVG from '../canvas/TileSVG';
 import update from 'immutability-helper';
 import { useDebouncedCallback } from 'use-debounce';
+import { generateTokenID, getSVGFromPixels } from '@app/features/TileUtils';
+import useTile from '@app/features/useTile';
 
 interface EditorProps {
   x: number;
@@ -32,9 +34,9 @@ const Editor = ({
   hideMinimap
 }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
+  const { refresh } = useTile(generateTokenID(x, y));
   const [pixels, setPixels] = useState<Pixels>(EMPTY);
   const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
-
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
     setPixelsHistory([newPixels, ...pixelsHistory]);
   }, 500);
@@ -43,7 +45,8 @@ const Editor = ({
     palette,
     activeColor,
     setActiveColor,
-    setTile,
+    submitTile,
+    signToSubmitTile,
     activeTool,
     prevTool,
     setActiveTool,
@@ -91,11 +94,6 @@ const Editor = ({
     setPixels(EMPTY);
   };
 
-  const handleSave = async () => {
-    setTile({ x, y, pixels });
-    closeModal();
-  };
-
   const paintPixels = (rawX: number, rawY: number) => {
     const elem = document.elementFromPoint(rawX, rawY);
     if (!elem) return;
@@ -140,6 +138,121 @@ const Editor = ({
     paintPixels(e.clientX, e.clientY);
   };
 
+  // * PUBLISHING FLOW * //
+  const [isConfirming, setConfirming] = useState(false);
+  const [isSigning, setSigning] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
+  const [txHash, setTxHash] = useState<string>();
+  const [isFinishedSubmitting, setFinishedSubmitting] = useState(false);
+  const onPublishClick = async () => {
+    setConfirming(true);
+  };
+  const onConfirmPublish = async () => {
+    setSigning(true);
+    try {
+      const { dataToSign, signature } = await signToSubmitTile({
+        x,
+        y,
+        pixels
+      });
+      setSubmitting(true);
+      const tx = await submitTile({ x, y, pixels, dataToSign, signature });
+      setTxHash(tx.hash);
+      await tx.wait(2);
+      setFinishedSubmitting(true);
+      setTimeout(async () => {
+        refresh();
+        closeModal();
+        setTimeout(() => {
+          refresh();
+        }, 3000);
+      }, 3000);
+    } catch (err) {
+      setSigning(false);
+    }
+  };
+  const onCancelPublish = async () => {
+    setConfirming(false);
+  };
+
+  if (isConfirming)
+    return (
+      <div className="modal">
+        {isFinishedSubmitting ? (
+          <div className="message">Done!</div>
+        ) : isSubmitting ? (
+          <>
+            <div className="message">Submitting...</div>
+            {txHash && (
+              <div className="message">
+                <a
+                  target="_blank"
+                  href={`https://mumbai.polygonscan.com/tx/${txHash}`}
+                >
+                  View on PolygonScan ↗
+                </a>
+              </div>
+            )}
+          </>
+        ) : isSigning ? (
+          <div className="message">Sign the message in your wallet...</div>
+        ) : (
+          <>
+            <svg
+              width="100"
+              height="100"
+              dangerouslySetInnerHTML={{ __html: getSVGFromPixels(pixels) }}
+              className="preview"
+            />
+            <div className="message">Pixels are permanent.</div>
+            <div className="message">Are you sure?</div>
+
+            <div className="buttons">
+              <Button onClick={onCancelPublish}>Cancel</Button>
+              <ButtonSuccess onClick={onConfirmPublish}>
+                &nbsp;&nbsp;
+                <img src="/graphics/icon-mint.svg" className="mint" /> Mint
+                &nbsp;&nbsp;
+              </ButtonSuccess>
+            </div>
+          </>
+        )}
+        <style jsx>{`
+          .modal {
+            background-color: #201e1e;
+            width: 90vw;
+            max-width: 600px;
+            height: 90vh;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            padding: 20px;
+          }
+          .buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+          }
+          .buttons .mint {
+            width: 16px;
+            margin-bottom: -2px;
+          }
+          .preview {
+            width: 45%;
+            height: auto;
+          }
+          a {
+            color: inherit;
+          }
+        `}</style>
+      </div>
+    );
+
   return (
     <div className="editor">
       <div className="canvas-peek">
@@ -150,6 +263,8 @@ const Editor = ({
             setDrawing(true);
           }}
           onPointerUp={() => setDrawing(false)}
+          onMouseLeave={() => setDrawing(false)}
+          onPointerLeave={() => setDrawing(false)}
         >
           {columns.map((y) => {
             return rows.map((x) => {
@@ -180,7 +295,7 @@ const Editor = ({
               <TileSVG
                 x={x - 1}
                 y={y - 1}
-                viewbox={'30 30 32 32'}
+                viewbox={'30 29.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -190,7 +305,7 @@ const Editor = ({
               <TileSVG
                 x={x}
                 y={y - 1}
-                viewbox={'0 30 32 32'}
+                viewbox={'0 29.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 32}px`
@@ -199,7 +314,7 @@ const Editor = ({
               <TileSVG
                 x={x + 1}
                 y={y - 1}
-                viewbox={'0 30 32 32'}
+                viewbox={'0 29.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -212,7 +327,7 @@ const Editor = ({
               <TileSVG
                 x={x - 1}
                 y={y + 1}
-                viewbox={'30 0 32 32'}
+                viewbox={'30 -0.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -222,7 +337,7 @@ const Editor = ({
               <TileSVG
                 x={x}
                 y={y + 1}
-                viewbox={'0 0 32 32'}
+                viewbox={'0 -0.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 32}px`
@@ -231,7 +346,7 @@ const Editor = ({
               <TileSVG
                 x={x + 1}
                 y={y + 1}
-                viewbox={'0 0 32 32'}
+                viewbox={'0 -0.5 32 32'}
                 style={{
                   height: `${PIXEL_SIZE * 2}px`,
                   width: `${PIXEL_SIZE * 2}px`
@@ -244,7 +359,7 @@ const Editor = ({
               <TileSVG
                 x={x - 1}
                 y={y}
-                viewbox={'30 0 32 32'}
+                viewbox={'30 -0.5 32 32'}
                 svgHeight={`${PIXEL_SIZE * 32}px`}
               ></TileSVG>
             </div>
@@ -252,7 +367,7 @@ const Editor = ({
               <TileSVG
                 x={x + 1}
                 y={y}
-                viewbox={'0 0 32 32'}
+                viewbox={'0 -0.5 32 32'}
                 svgHeight={`${PIXEL_SIZE * 32}px`}
               ></TileSVG>
             </div>
@@ -360,10 +475,10 @@ const Editor = ({
 
       {!hideControls && (
         <div className="canvas-footer">
-          <Button onClick={handleClear}>reset</Button>
+          <Button onClick={handleClear}>Clear</Button>
           <div className="canvas-footer-right">
-            <Button onClick={closeModal}>cancel</Button>
-            <ButtonSuccess onClick={handleSave}>publish</ButtonSuccess>
+            <Button onClick={closeModal}>Cancel</Button>
+            <ButtonSuccess onClick={onPublishClick}>Mint</ButtonSuccess>
           </div>
         </div>
       )}
@@ -452,7 +567,7 @@ const Editor = ({
             'peek-north peek-north peek-north'
             'peek-west canvas peek-east'
             'peek-south peek-south peek-south';
-          background: #222;
+          background: #333;
         }
         .peek-north {
           grid-area: peek-north;
@@ -472,7 +587,7 @@ const Editor = ({
 
         .preview-minimap {
           margin-left: 1rem;
-          border: 4px solid #222;
+          border: 4px solid #201e1e;
         }
         .preview-minimap > div {
           display: flex;
@@ -489,7 +604,7 @@ const Editor = ({
         .tool-container {
           margin-right: 1rem;
           padding: 0.7rem;
-          background: #222;
+          background: #201e1e;
           border-radius: ;
         }
 
@@ -508,7 +623,7 @@ const Editor = ({
           cursor: pointer;
         }
         .toolbar button:hover:not([disabled]) {
-          background: #111;
+          background: #1b1919;
           opacity: 0.9;
         }
         .toolbar button[disabled] {
@@ -517,7 +632,7 @@ const Editor = ({
         }
         .toolbar button.active {
           opacity: 1;
-          background: #111;
+          background: #1b1919;
         }
 
         .brush,
@@ -525,6 +640,10 @@ const Editor = ({
         .eyedropper,
         .undo {
           fill: #fff;
+        }
+
+        .undo:disabled:hover {
+          cursor: pointer;
         }
 
         .color-palette {
