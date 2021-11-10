@@ -7,3 +7,5 @@ typechain
 dist
 
 test/svg
+
+.env.137
