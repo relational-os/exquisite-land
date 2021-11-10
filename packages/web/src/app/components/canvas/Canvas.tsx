@@ -91,6 +91,8 @@ const Canvas = () => {
     setSelectedY(undefined);
   };
 
+  // const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
+
   useEffect(() => {
     if (
       router.query.x != null ||
@@ -110,6 +112,7 @@ const Canvas = () => {
     }
   }, [wrapperRef, router.query]);
 
+  const [isPanning, setPanning] = useState(false);
   return (
     <>
       <TransformWrapper
@@ -127,46 +130,62 @@ const Canvas = () => {
         alignmentAnimation={{
           animationType: 'easeInOutCubic'
         }}
+        onPanningStart={() => {
+          setTimeout(() => {
+            setPanning(true);
+          }, 150);
+        }}
         onPanningStop={(_, event) => {
-          console.log(event);
+          setTimeout(() => {
+            setPanning(false);
+          }, 150);
           // router.replace({ query: { ...router.query, x: getClientX(event), y: getClientX } });
         }}
       >
         <TransformComponent
           wrapperStyle={{
             maxWidth: '100%',
-            maxHeight: '100vh'
+            maxHeight: '100vh',
+            cursor: 'grab'
           }}
         >
-          <div className="canvas-title">
-            ████████╗███████╗██████╗░██████╗░░█████╗░  ███╗░░░███╗░█████╗░░██████╗██╗░░░██╗
-            ╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗  ████╗░████║██╔══██╗██╔════╝██║░░░██║
-            ░░░██║░░░█████╗░░██████╔╝██████╔╝███████║  ██╔████╔██║███████║╚█████╗░██║░░░██║
-            ░░░██║░░░██╔══╝░░██╔══██╗██╔══██╗██╔══██║  ██║╚██╔╝██║██╔══██║░╚═══██╗██║░░░██║
-            ░░░██║░░░███████╗██║░░██║██║░░██║██║░░██║  ██║░╚═╝░██║██║░░██║██████╔╝╚██████╔╝
-            ░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝  ╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═════╝░░╚═════╝░
-          </div>
-          <div className="surface">
-            {rows.map((y) =>
-              columns.map((x) => (
-                <CanvasTile
-                  key={`${x},${y}`}
-                  x={x}
-                  y={y}
-                  openEditor={() => openEditor(x, y)}
-                  openGenerateInvite={() => openGenerateInvite(x, y)}
-                  openTileModal={() => openTileModal(x, y)}
-                />
-              ))
-            )}
+          <div className="canvas-header jaunt">Land 01: TERRA MASU</div>
+          <div className="canvas-body">
+            <div className="left"></div>
+            <div className="surface">
+              {rows.map((y) =>
+                columns.map((x) => (
+                  <CanvasTile
+                    key={`${x},${y}`}
+                    x={x}
+                    y={y}
+                    openEditor={() => !isPanning && openEditor(x, y)}
+                    openGenerateInvite={() =>
+                      !isPanning && openGenerateInvite(x, y)
+                    }
+                    openTileModal={() => !isPanning && openTileModal(x, y)}
+                  />
+                ))
+              )}
+            </div>
+            <div className="right"></div>
           </div>
         </TransformComponent>
       </TransformWrapper>
 
       <div className="controls">
+        <button className="hide-controls-button">hide</button>
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
       </div>
+
+      <div className="scrub-controls">
+        <button className="play jaunt">&#x3e;</button>
+        <div className="scrub-bar"></div>
+        <div className="scrub-handle"></div>
+        <div className="now">NOW</div>
+      </div>
+
       <Modal
         isOpen={isEditorModalOpen}
         onRequestClose={closeEditorModal}
@@ -202,14 +221,51 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
-        .canvas-title {
-          color: #000;
-          width: 800px;
-          margin: 10rem auto 0;
+        button.close {
+          position: fixed;
+          top: 1.2rem;
+          right: 1rem;
+          background: transparent;
+          outline: none;
+          border: none;
+          font-size: 32px;
+          color: #fff;
+          cursor: pointer;
         }
+        button.close:hover {
+          box-shadow: none;
+        }
+
+        .canvas-header,
+        .canvas-body {
+          display: flex;
+        }
+
+        .canvas-header {
+          color: #666;
+          text-shadow: 0 -4px #000;
+          width: 1000px;
+          margin: 12rem auto 0;
+          text-align: center;
+          font-size: 104px;
+        }
+
+        .canvas-body {
+          margin: 5rem 15rem 15rem 15rem;
+          padding: 0 1rem;
+          gap: 2rem;
+          font-size: 3rem;
+        }
+
+        .left,
+        .right {
+          display: flex;
+          min-width: 40rem;
+          flex-direction: column;
+          max-height: ${columns.length * tileSize}px;
+        }
+
         .surface {
-          margin: 5rem 15rem 15rem;
-          padding: 1rem;
           width: 100%;
           height: 100%;
           display: grid;
@@ -217,7 +273,15 @@ const Canvas = () => {
           grid-template-rows: repeat(${rows.length}, ${tileSize}px);
           box-shadow: 0 10px 64px 2px rgba(0, 0, 0, 0.3);
           background: #333;
+          padding: 1rem;
         }
+
+        .canvas-footer {
+          color: #666;
+          font-size: 2rem;
+          padding: 2rem;
+        }
+
         .controls {
           position: fixed;
           bottom: 0;
@@ -237,8 +301,59 @@ const Canvas = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
-
         .controls button:hover {
+          box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
+        }
+        .controls .hide-controls-button {
+          position: fixed;
+          left: 30px;
+          bottom: 30px;
+        }
+
+        .scrub-controls {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 1rem;
+          position: fixed;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          width: 30vw;
+          margin: 0 auto 30px;
+        }
+        .scrub-controls .scrub-bar {
+          width: 100%;
+          height: 4px;
+          background: #444;
+        }
+        .scrub-controls .scrub-handle {
+          position: absolute;
+          top: 4px;
+          left: 100px;
+          width: 8px;
+          height: 30px;
+          background: #eee;
+          cursor: move;
+        }
+        .scrub-controls .now {
+          color: #fff;
+          font-size: 1.1rem;
+        }
+        .scrub-controls button {
+          display: block;
+          padding: 8px 12px;
+          border: 0;
+          background: #eee;
+          font-size: 18px;
+          font-family: inherit;
+          cursor: pointer;
+          will-change: transform;
+          transition: transform 0.2s ease-in-out;
+          color: rgba(0, 0, 0, 1);
+          border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+        }
+        .scrub-controls button:hover {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
       `}</style>
@@ -248,8 +363,10 @@ const Canvas = () => {
 
 const modalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.9)',
-    zIndex: 1112
+    backgroundColor: '#282424f6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',
@@ -260,14 +377,18 @@ const modalStyles = {
     transform: 'translate(-50%, -50%)',
     background: 'transparent',
     border: 0,
-    padding: 0
+    padding: 0,
+    borderRadius: 0,
+    cursor: 'default'
   }
 };
 
 const editModalStyles = {
   overlay: {
-    backgroundColor: 'rgba(51, 51, 51, 0.95)',
-    zIndex: 1112
+    backgroundColor: '#201e1ef6',
+    zIndex: 1112,
+    backdropFilter: 'blur(4px)',
+    cursor: 'pointer'
   },
   content: {
     top: '50%',
@@ -278,7 +399,9 @@ const editModalStyles = {
     transform: 'translate(-50%, -50%)',
     background: 'transparent',
     border: 0,
-    padding: 0
+    padding: 0,
+    borderRadius: 0,
+    cursor: 'default'
   }
 };
 

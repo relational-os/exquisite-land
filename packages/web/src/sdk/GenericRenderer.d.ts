@@ -16,36 +16,16 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface RenderInterface extends ethers.utils.Interface {
+interface GenericRendererInterface extends ethers.utils.Interface {
   functions: {
-    "renderSVG(bytes,string[16])": FunctionFragment;
+    "renderSVG(bytes,string[],uint16,uint16)": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "renderSVG",
-    values: [
-      BytesLike,
-      [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string
-      ]
-    ]
+    values: [BytesLike, string[], BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "renderSVG", data: BytesLike): Result;
@@ -53,7 +33,7 @@ interface RenderInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class Render extends BaseContract {
+export class GenericRenderer extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -94,77 +74,32 @@ export class Render extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: RenderInterface;
+  interface: GenericRendererInterface;
 
   functions: {
     renderSVG(
       data: BytesLike,
-      palette: [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string
-      ],
+      palette: string[],
+      numRows: BigNumberish,
+      numCols: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
   };
 
   renderSVG(
     data: BytesLike,
-    palette: [
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string,
-      string
-    ],
+    palette: string[],
+    numRows: BigNumberish,
+    numCols: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
   callStatic: {
     renderSVG(
       data: BytesLike,
-      palette: [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string
-      ],
+      palette: string[],
+      numRows: BigNumberish,
+      numCols: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -174,24 +109,9 @@ export class Render extends BaseContract {
   estimateGas: {
     renderSVG(
       data: BytesLike,
-      palette: [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string
-      ],
+      palette: string[],
+      numRows: BigNumberish,
+      numCols: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -199,24 +119,9 @@ export class Render extends BaseContract {
   populateTransaction: {
     renderSVG(
       data: BytesLike,
-      palette: [
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string,
-        string
-      ],
+      palette: string[],
+      numRows: BigNumberish,
+      numCols: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

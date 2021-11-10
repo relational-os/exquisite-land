@@ -4,7 +4,7 @@ import {
   inviteNeighbor,
   submitTx
 } from '@app/features/Forwarder';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { generateTokenID } from '@app/features/TileUtils';
 import {
   OpenNeighborStatus,
@@ -49,7 +49,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       y,
       LAND_GRANTER_CONTRACT_ADDRESS,
       account,
-      getJsonRpcProvider()
+      getJsonRpcProvider
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
@@ -69,24 +69,30 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   return (
     <div className="invite-neighbor-modal">
       <div className="message">
-        invite a neighbor to [{x}, {y}]
+        Invite a neighbor to [{x},{y}]
       </div>
 
       {isCoinGenerated ? (
         <>
           <img
-            src={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+            src={`/api/land-granter/generate?tokenId=${generateTokenID(
+              x,
+              y
+            )}&address=${account}`}
             width={250}
             height={250}
             className="coin"
           />
           <a
-            href={`/api/land-granter/generate?tokenId=${generateTokenID(x, y)}`}
+            href={`/api/land-granter/generate?tokenId=${generateTokenID(
+              x,
+              y
+            )}&address=${account}`}
             download={`[${x}, ${y}].png`}
             className="download-button"
             target="_blank"
           >
-            download coin
+            Download Coin
           </a>
         </>
       ) : isGeneratingCoin ? (
@@ -105,10 +111,10 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           <div className="coin-blank">
             <p>neighbor</p>
             <h3>
-              [{x}, {y}]
+              [{x},{y}]
             </h3>
           </div>
-          <button onClick={inviteNeighborClicked}>generate coin</button>
+          <button onClick={inviteNeighborClicked}>Generate Coin</button>
         </>
       )}
       <style jsx>{`
@@ -153,7 +159,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           margin: 0 auto;
           padding: 8px 14px;
           border: 0;
-          background: #ffda00;
+          background: #f5cb53;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;

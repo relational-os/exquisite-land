@@ -19,6 +19,11 @@ const _abi = [
         name: "recipient",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "coinCreator",
+        type: "address",
+      },
     ],
     name: "grant",
     outputs: [],

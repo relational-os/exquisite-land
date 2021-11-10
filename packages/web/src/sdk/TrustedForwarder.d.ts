@@ -17,13 +17,13 @@ import {
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface TrustedForwarderInterface extends ethers.utils.Interface {
   functions: {
-    "execute(tuple,bytes)": FunctionFragment;
+    "execute((address,address,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
     "getNonce(address)": FunctionFragment;
-    "verify(tuple,bytes)": FunctionFragment;
+    "verify((address,address,uint256,uint256,uint256,bytes),bytes)": FunctionFragment;
   };
 
   encodeFunctionData(

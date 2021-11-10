@@ -1,10 +1,12 @@
 import {
   createTile,
   getSignatureForTypedData,
-  submitTx
+  submitTx,
+  TypedData
 } from '@app/features/Forwarder';
-import getJsonRpcProvider from '@app/features/getJsonRpcProvider';
+import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import useStore, { Tool } from '@app/features/State';
+import { getEthPixelData } from '@app/features/TileUtils';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
 import PALETTES from 'src/constants/Palettes';
@@ -15,14 +17,6 @@ interface SetTileProps {
   pixels: Pixels;
   x: number;
   y: number;
-}
-
-function transpose(matrix: any) {
-  return matrix.reduce(
-    (prev: any, next: any) =>
-      next.map((_: any, i: number) => (prev[i] || []).concat(next[i])),
-    []
-  );
 }
 
 const useEditor = () => {
@@ -62,27 +56,33 @@ const useEditor = () => {
     }
   };
 
-  const setTile = async ({ x, y, pixels }: SetTileProps) => {
-    if (!provider || !account) return alert('Not signed in.');
-
-    let transposed = transpose(pixels);
-    let flattened = transposed.flat();
-    let outputPixels = '0x';
-    for (let i = 0; i < flattened.length; i += 2) {
-      let d = `${((flattened[i] << 4) | flattened[i + 1])
-        .toString(16)
-        .padStart(2, '0')}`;
-      outputPixels += d;
-    }
-    console.log(outputPixels);
+  const signToSubmitTile = async ({ x, y, pixels }: SetTileProps) => {
+    if (!provider || !account) throw 'Not signed in.';
+    const outputPixels = getEthPixelData(pixels);
     const dataToSign = await createTile(
       x,
       y,
       outputPixels,
       account,
-      getJsonRpcProvider()
+      getJsonRpcProvider
     );
     const signature = await getSignatureForTypedData(provider, dataToSign);
+    return { dataToSign, signature };
+  };
+
+  const submitTile = async ({
+    x,
+    y,
+    pixels,
+    dataToSign,
+    signature
+  }: {
+    x: number;
+    y: number;
+    pixels: Pixels;
+    dataToSign: TypedData;
+    signature: string;
+  }) => {
     const tx = await submitTx(dataToSign, signature);
     useTransactionsStore.getState().addTransaction({
       title: `Submitting tile at ${x}, ${y}`,
@@ -94,9 +94,7 @@ const useEditor = () => {
       y,
       pixels
     });
-    const receipt = await tx.wait(2);
-    console.log(receipt);
-    console.log(`tile(${x}, ${y}) saved!`);
+    return tx;
   };
 
   return {
@@ -108,7 +106,8 @@ const useEditor = () => {
     setActiveBrushSize,
     setActiveColor,
     setActiveTool,
-    setTile,
+    signToSubmitTile,
+    submitTile,
     getActiveCursor
   };
 };

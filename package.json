@@ -6,5 +6,8 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist -- --legacy-peer-deps"
+  },
+  "dependencies": {
+    "svgson": "^5.2.1"
   }
 }

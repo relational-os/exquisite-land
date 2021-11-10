@@ -3,7 +3,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName, AddressDisplayEnum } from 'react-ens-name';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 const ConnectWalletButton = () => {
   const { connect, account, web3Modal } = useWallet();
@@ -27,10 +27,10 @@ const ConnectWalletButton = () => {
 
   // try an initial connect, we might be cached
   useEffect(() => {
-    if (web3Modal?.cachedProvider) {
+    if (!account && web3Modal?.cachedProvider) {
       connectWallet();
     }
-  }, [connectWallet]);
+  }, [web3Modal?.cachedProvider, account]);
 
   return (
     <div className="account-container">
@@ -40,7 +40,7 @@ const ConnectWalletButton = () => {
             address={account}
             displayType={AddressDisplayEnum.FIRST4_LAST4}
             withEllipses={true}
-            provider={ethJsonRpcProvider}
+            provider={getEthJsonRpcProvider}
           />
         </div>
       ) : (
@@ -63,17 +63,16 @@ const ConnectWalletButton = () => {
           will-change: transform;
           transition: transform 0.2s ease-in-out;
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
-          min-width: 170px;
         }
         .connect-wallet-button:hover {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
         .account {
           font-size: 24px;
+          padding: 8px 1rem;
           color: white;
           display: flex;
           justify-content: center;
-          min-width: 170px;
         }
         .wrong-network {
           font-size: 24px;

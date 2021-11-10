@@ -5,3 +5,5 @@ artifacts
 typechain
 
 dist
+
+test/svg

@@ -10,9 +10,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "_str",
-        type: "string",
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
       },
     ],
     name: "encode",

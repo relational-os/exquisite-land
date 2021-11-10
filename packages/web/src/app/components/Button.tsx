@@ -11,14 +11,15 @@ const Button = React.forwardRef(function Button(
         .button {
           padding: 8px 16px;
           border: 0;
-          background: #222;
+          background: #555;
           font-size: 24px;
           font-family: inherit;
           cursor: pointer;
           will-change: transform;
           transition: transform 0.2s ease-in-out;
-          color: gray;
+          color: #000;
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+          cursor: pointer;
         }
 
         .button:hover {
@@ -38,7 +39,7 @@ export const ButtonSuccess = React.forwardRef(function ButtonSuccess(
       ref={ref}
       {...props}
       style={{
-        color: '#fff',
+        color: '#327345',
         background: '#62c64c'
       }}
     />
