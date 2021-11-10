@@ -13,7 +13,7 @@ contract GenericRenderer {
   uint8 constant MAX_MULTIPLIER = 16;
 
   string constant SVG_OPENER =
-    '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 -0.5 ';
+    '<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" version="1.1" viewBox="0 -0.5 ';
   string constant CLOSE_SVG_OPENER = '">';
   string constant SVG_CLOSER = '</svg>';
   string constant PATH_PREFIX = '<path stroke="';
