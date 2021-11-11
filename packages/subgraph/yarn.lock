@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@exquisiteland/contracts@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@exquisiteland/contracts/-/contracts-0.1.0.tgz#5ea2812e1ff4a98a0d5b993f3b6f4454a72a45e4"
-  integrity sha512-m/CeUwmK0RC5iZDiFj22xBlh7X4/3eNoHbFwJKpwVluPfwZz9LjUI/tCMXkO4yF6RTM41AYvAaE5iXAcZVivVg==
+"@exquisiteland/contracts@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@exquisiteland/contracts/-/contracts-0.3.1.tgz#f40b3bf360eadf2ff7599a00b8e637f9026d0af6"
+  integrity sha512-NP+gLkNtfoE/wlEiUExZ0TyAjBY4CCOup5vGXojjUMqSr9v7Fh8VmPFHaNYoQWPbYCIY6ddG92928MmWAsscxw==
   dependencies:
     "@openzeppelin/contracts" "^4.3.1"
 
