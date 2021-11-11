@@ -41,14 +41,20 @@ const Editor = ({
     `${x},${y}`,
     EMPTY
   );
-  const [pixels, setPixels] = useState<Pixels>(pixelsCache || EMPTY);
+  const [pixels, setPixelsState] = useState<Pixels>(pixelsCache || EMPTY);
   const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([
     pixelsCache || EMPTY
   ]);
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
     setPixelsHistory([newPixels, ...pixelsHistory]);
-    setPixelsCache(newPixels);
   }, 500);
+  // debounce because mutating localStorage during a click-and-drag is a little intense
+  const setPixelsCacheDebounced = useDebouncedCallback(setPixelsCache, 200);
+
+  const setPixels = (newPixels: Pixels) => {
+    setPixelsState(newPixels);
+    setPixelsCacheDebounced(newPixels);
+  };
 
   const {
     palette,
