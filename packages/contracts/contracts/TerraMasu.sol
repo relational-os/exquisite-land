@@ -341,9 +341,9 @@ contract TerraMasu is
             LOOKUP[y],
             ']", "description": ',
             description,
-            ', "image": ',
+            ', "image": "',
             _b64.encode(bytes(output)),
-            '}'
+            '"}'
           )
         )
       )
