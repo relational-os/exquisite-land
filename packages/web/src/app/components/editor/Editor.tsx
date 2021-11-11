@@ -187,7 +187,7 @@ const Editor = ({
               <div className="message">
                 <a
                   target="_blank"
-                  href={`https://mumbai.polygonscan.com/tx/${txHash}`}
+                  href={`https://polygonscan.com/tx/${txHash}`}
                 >
                   View on PolygonScan ↗
                 </a>

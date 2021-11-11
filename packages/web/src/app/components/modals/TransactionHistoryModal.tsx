@@ -50,7 +50,7 @@ const TransactionHistoryItem = ({
         <div className="title">{transaction.title}</div>
         <div className="info">
           <a
-            href={`https://mumbai.polygonscan.com/tx/${transaction.hash}`}
+            href={`https://polygonscan.com/tx/${transaction.hash}`}
             target="_blank"
           >
             {transaction.hash.slice(0, 6)}...{transaction.hash.slice(-4)}:{' '}
