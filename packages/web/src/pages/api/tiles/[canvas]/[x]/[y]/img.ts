@@ -30,7 +30,7 @@ const api: NextApiHandler = async (req, res) => {
     .toBuffer();
 
   res.setHeader('Content-Type', 'image/png');
-  res.setHeader('Cache-Control', 'public, max-age=31536000');
+  res.setHeader('Cache-Control', 'public, s-max-age=31536000');
   return res.send(image);
 };
 

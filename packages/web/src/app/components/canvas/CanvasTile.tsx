@@ -82,7 +82,7 @@ const CanvasTile = ({
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
       {tile?.svg && (
         <img
-          src={`/api/tiles/terramasu/${x}/${y}/image`}
+          src={`/api/tiles/terramasu/${x}/${y}/img`}
           width="100"
           height="100"
           className="tile-image"
