@@ -336,7 +336,7 @@ contract TerraMasu is
       bytes(
         string(
           abi.encodePacked(
-            '{"name": "Exquisite Land Tile [',
+            '{"name": "Terra Masu Tile [',
             LOOKUP[x],
             ',',
             LOOKUP[y],
