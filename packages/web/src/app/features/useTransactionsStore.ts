@@ -1,6 +1,7 @@
 import { Pixels } from '@app/hooks/use-editor';
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
+import { EXQUISITE_LAND_CONTRACT_ADDRESS } from './AddressBook';
 import { getJsonRpcProvider } from './getJsonRpcProvider';
 
 export type LocalTransactionState = {
@@ -63,7 +64,7 @@ const useTransactionsStore = create<TransactionStore>(
       clearAll: () => set({ transactions: [] })
     }),
     {
-      name: 'exquisite-land-transactions'
+      name: `exquisite-land-transactions-${EXQUISITE_LAND_CONTRACT_ADDRESS}`
     }
   )
 );
