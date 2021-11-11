@@ -24,23 +24,23 @@ const Canvas = () => {
   const tileSize = 2 * 64; // TODO: zoom
 
   // Populate any missing query params to center the map on the default x, y, z
-  useEffect(() => {
-    if (
-      router.isReady &&
-      (router.query.x == null ||
-        router.query.y == null ||
-        router.query.z == null)
-    ) {
-      router.replace({
-        query: {
-          ...router.query,
-          x: router.query.x,
-          y: router.query.y,
-          z: router.query.z
-        }
-      });
-    }
-  }, [router.isReady, router.query.x, router.query.y, router.query.z]);
+  // useEffect(() => {
+  //   if (
+  //     router.isReady &&
+  //     (router.query.x == null ||
+  //       router.query.y == null ||
+  //       router.query.z == null)
+  //   ) {
+  //     router.replace({
+  //       query: {
+  //         ...router.query,
+  //         x: router.query.x,
+  //         y: router.query.y,
+  //         z: router.query.z
+  //       }
+  //     });
+  //   }
+  // }, [router.isReady, router.query.x, router.query.y, router.query.z]);
 
   const [selectedX, setSelectedX] = useState<number>();
   const [selectedY, setSelectedY] = useState<number>();
