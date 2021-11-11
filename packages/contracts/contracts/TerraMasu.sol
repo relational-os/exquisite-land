@@ -319,9 +319,10 @@ contract TerraMasu is
     string memory description;
 
     if (_tileFilled[uint32(tokenId)]) {
-      output = '"data:image/svg+xml;base64,';
-      output = string(
-        abi.encodePacked(output, getTileSVG(uint32(tokenId)), '"')
+      output = 'data:image/svg+xml;base64,';
+      output = abi.encodePacked(
+        output,
+        _b64.encode(getTileSVG(uint32(tokenId)))
       );
       description = string(
         abi.encodePacked('"Terra Masu Tile [', LOOKUP[x], ',', LOOKUP[y], ']"')
@@ -342,7 +343,7 @@ contract TerraMasu is
             ']", "description": ',
             description,
             ', "image": "',
-            _b64.encode(bytes(output)),
+            output,
             '"}'
           )
         )
