@@ -54,6 +54,7 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
           padding: 1rem;
           font-size: 1.25rem;
           color: #fff;
+          flex: 1 1 auto;
         }
         .message {
           display: flex;

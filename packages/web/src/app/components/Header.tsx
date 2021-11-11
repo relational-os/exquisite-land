@@ -3,11 +3,15 @@ import ConnectWalletButton from './ConnectWalletButton';
 import UseCoinButton from './UseCoinButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
+import useTransactionsStore from '@app/features/useTransactionsStore';
 
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
   const [isActivityFeedOpen, setActivityFeedOpen] = useState(false);
+  const transactionCount = useTransactionsStore(
+    (state) => state.transactions.length
+  );
 
   return (
     <div className="header">
@@ -17,12 +21,14 @@ const Header = () => {
 
       <div className="spacer" />
 
-      <button
-        className="activity-button"
-        onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
-      >
-        log
-      </button>
+      {transactionCount > 0 && (
+        <button
+          className="activity-button"
+          onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
+        >
+          log
+        </button>
+      )}
       <button
         className="discord-button"
         onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
@@ -329,9 +335,10 @@ const Header = () => {
           width: 30vw;
           height: calc(100vh - 1rem);
           background: #3f4481fb;
-          display: ${isDiscordFeedOpen ? 'block' : 'none'};
+          display: ${isDiscordFeedOpen ? 'flex' : 'none'};
           overflow-y: auto;
           border-radius: 4px;
+          flex-direction: column;
         }
 
         button.close {
