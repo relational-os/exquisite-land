@@ -9,6 +9,7 @@ import update from 'immutability-helper';
 import { useDebouncedCallback } from 'use-debounce';
 import { generateTokenID, getSVGFromPixels } from '@app/features/TileUtils';
 import useTile from '@app/features/useTile';
+import { useLocalStorage } from 'react-use';
 
 interface EditorProps {
   x: number;
@@ -35,10 +36,18 @@ const Editor = ({
 }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
   const { refresh } = useTile(generateTokenID(x, y));
-  const [pixels, setPixels] = useState<Pixels>(EMPTY);
-  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
+  // TODO: add contract address or other ID to localStorage key so cache is cleared per canvas
+  const [pixelsCache, setPixelsCache] = useLocalStorage<Pixels>(
+    `${x},${y}`,
+    EMPTY
+  );
+  const [pixels, setPixels] = useState<Pixels>(pixelsCache || EMPTY);
+  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([
+    pixelsCache || EMPTY
+  ]);
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
     setPixelsHistory([newPixels, ...pixelsHistory]);
+    setPixelsCache(newPixels);
   }, 500);
 
   const {
