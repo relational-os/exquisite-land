@@ -138,13 +138,14 @@ const UseCoinButton = () => {
 const modalStyles = {
   overlay: {
     backgroundColor: '#282424f6',
-    backgroundImage: 'url(/graphics/coinbox-background.png)',
-    backgroundPosition: '58%',
-    backgroundSize: '75%',
-    backgroundRepeat: 'no-repeat',
+
     zIndex: 1112,
     backdropFilter: 'blur(4px)',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    backgroundImage: 'url(/graphics/icon-close.svg)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: '98% 2vh',
+    backgroundSize: '20px'
   },
   content: {
     top: '50%',

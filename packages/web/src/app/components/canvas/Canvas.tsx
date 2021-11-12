@@ -360,6 +360,13 @@ const Canvas = () => {
         .scrub-controls button:hover {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
+
+        .close-button {
+          position: fixed;
+          top: 0.5rem;
+          right: 0.5rem;
+          color: #fff;
+        }
       `}</style>
     </>
   );
@@ -370,7 +377,11 @@ const modalStyles = {
     backgroundColor: '#282424f6',
     zIndex: 1112,
     backdropFilter: 'blur(4px)',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    backgroundImage: 'url(/graphics/icon-close.svg)',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: '98% 2vh',
+    backgroundSize: '20px'
   },
   content: {
     top: '50%',
