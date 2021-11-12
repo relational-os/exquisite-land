@@ -43,8 +43,10 @@ const api: NextApiHandler = async (req, res) => {
       FORWARDER_CONTRACT_ADDRESS,
       wallet
     );
+    const nonce = await wallet.getTransactionCount();
     const tx = await forwarder.execute(data.message, signature, {
-      gasLimit: Math.floor(data.message.gas * 2.5)
+      gasLimit: Math.floor(data.message.gas * 2.5),
+      nonce
     });
     return res.json(tx);
   } else {
