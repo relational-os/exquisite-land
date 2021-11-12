@@ -345,7 +345,7 @@ const Header = () => {
         button.close {
           position: fixed;
           top: 1.2rem;
-          right: 1rem;
+          right: 1.4rem;
           background: transparent;
           outline: none;
           border: none;
@@ -355,6 +355,10 @@ const Header = () => {
         }
         button.close:hover {
           box-shadow: none;
+        }
+
+        .activity-feed button.close {
+          right: 1rem;
         }
 
         .discord-feed a.join {
@@ -414,6 +418,23 @@ const Header = () => {
             left: 10 px;
             height: calc(100% - 20 px);
           }
+        /* ===== Scrollbar CSS ===== */
+        /* Firefox */
+        * {
+          scrollbar-color: #ffffff67 #2247bf;
+        }
+
+        /* Chrome, Edge, and Safari */
+        *::-webkit-scrollbar {
+          height: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+          background: #2247bf;
+        }
+
+        *::-webkit-scrollbar-thumb {
+          background-color: #ffffff67;
         }
       `}</style>
     </div>

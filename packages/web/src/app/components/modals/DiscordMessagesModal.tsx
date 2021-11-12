@@ -75,11 +75,32 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
       })}
       <div ref={ref} className="bottom" />
       <style jsx>{`
+        /* ===== Scrollbar CSS ===== */
+        /* Firefox */
+        * {
+          scrollbar-width: 10px;
+          scrollbar-color: #8f54a0 #40447c;
+        }
+
+        /* Chrome, Edge, and Safari */
+        *::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        *::-webkit-scrollbar-track {
+          background: #353866;
+        }
+
+        *::-webkit-scrollbar-thumb {
+          background-color: #8f54a0;
+        }
+
         .discord-messages-modal {
           padding: 1rem;
           font-size: 1.25rem;
           color: #fff;
           flex: 1 1 auto;
+          overflow-y: auto;
         }
         .message {
           display: flex;
