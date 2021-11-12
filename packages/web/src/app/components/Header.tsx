@@ -26,7 +26,7 @@ const Header = () => {
           className="activity-button"
           onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
         >
-          log
+          <img src="/graphics/icon-activity.svg" alt="activity" />
         </button>
       )}
       <button
@@ -397,7 +397,8 @@ const Header = () => {
         }
         button.activity-button {
           display: block;
-          padding: 8px 14px;
+          height: 44px;
+          padding: 3px 14px 0;
           border: 0;
           background: #7189da;
           font-size: 24px;
