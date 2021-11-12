@@ -105,8 +105,10 @@ const Editor = ({
   };
 
   const handleClear = () => {
-    setPixelsHistory([EMPTY]);
-    setPixels(EMPTY);
+    if (confirm('Are you sure you want to erase your drawing?')) {
+      setPixelsHistory([EMPTY]);
+      setPixels(EMPTY);
+    }
   };
 
   const paintPixels = (rawX: number, rawY: number) => {
