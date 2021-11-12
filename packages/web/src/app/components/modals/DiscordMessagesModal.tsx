@@ -2,8 +2,13 @@ import { DiscordMessage } from '@server/Discord';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
+import Linkify from 'react-linkify';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+// get's discord emoji regex
+const emojiRegex = new RegExp('<:.*?>');
+const mentionRegex = new RegExp('<@!.*?>');
 
 const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
   const [initialized, setInitialized] = useState(false);
@@ -44,7 +49,17 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
                 {m.author.username}{' '}
                 <span>{dayjs(m.timestamp).format('MMM D, h:mma')}</span>
               </div>
-              <div className="message-content">{m.content}</div>
+              <Linkify
+                componentDecorator={(href, text, key) => (
+                  <a href={href} key={key}>
+                    {text}
+                  </a>
+                )}
+              >
+                <div className="message-content">
+                  {m.content.replace(emojiRegex, '').replace(mentionRegex, '')}
+                </div>
+              </Linkify>
               {m.attachments[0] != undefined && (
                 <img
                   src={m.attachments[0].url}
@@ -94,6 +109,15 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
         .message .message-header span {
           font-size: 0.75rem;
           opacity: 0.5;
+          color: #fff;
+        }
+
+        .message-content {
+          overflow-wrap: anywhere;
+          color: white;
+        }
+
+        .message-content a {
           color: #fff;
         }
       `}</style>
