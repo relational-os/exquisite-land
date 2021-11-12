@@ -409,6 +409,16 @@ const Header = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
+        @media (max-width: 768px) {
+          .header {
+            gap: 10px;
+          }
+          .discord-feed {
+            width: calc(100% - 20 px);
+            top: 10 px;
+            left: 10 px;
+            height: calc(100% - 20 px);
+          }
         /* ===== Scrollbar CSS ===== */
         /* Firefox */
         * {
