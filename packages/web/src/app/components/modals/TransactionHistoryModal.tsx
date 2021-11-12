@@ -4,15 +4,16 @@ import useTransactionsStore, {
 import React from 'react';
 import dayjs from 'dayjs';
 import { getSVGFromPixels } from '@app/features/TileUtils';
+import Button from '../Button';
 
 const TransactionHistoryModal = () => {
   const transactions = useTransactionsStore((state) => state.transactions);
   return (
     <div className="activity">
       <div className="controls">
-        <button onClick={() => useTransactionsStore.getState().clearAll()}>
+        <Button onClick={() => useTransactionsStore.getState().clearAll()}>
           Clear all
-        </button>
+        </Button>
       </div>
       {transactions.map((transaction) => (
         <TransactionHistoryItem
