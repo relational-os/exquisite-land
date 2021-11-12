@@ -305,13 +305,17 @@ const Canvas = () => {
           box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.1);
         }
         .controls .hide-controls-button {
+          display: none;
           position: fixed;
           left: 30px;
           bottom: 30px;
         }
 
         .scrub-controls {
-          display: flex;
+           {
+            /* display: flex; */
+          }
+          display: none;
           flex-direction: row;
           align-items: center;
           gap: 1rem;
