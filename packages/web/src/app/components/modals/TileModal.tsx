@@ -26,9 +26,6 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           [{x},{y}] by <ENSName address={tile.owner.id} />
         </a>
         <div className="spacer"></div>
-        <a className="button" href="http://polygonscan.com" target="_blank">
-          <img src="/graphics/icon-polygonscan.svg" /> Polygonscan
-        </a>
         <a
           href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
             x,

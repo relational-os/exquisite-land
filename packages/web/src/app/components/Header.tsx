@@ -333,6 +333,7 @@ const Header = () => {
           top: 0.5rem;
           right: 0.5rem;
           width: 30vw;
+          min-width: 360px;
           height: calc(100vh - 1rem);
           background: #3f4481fb;
           display: ${isDiscordFeedOpen ? 'flex' : 'none'};
