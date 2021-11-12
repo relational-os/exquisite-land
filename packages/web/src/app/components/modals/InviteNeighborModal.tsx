@@ -25,6 +25,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   const { provider, account } = useWallet();
   const [isGeneratingCoin, setGeneratingCoin] = useState(false);
   const [isCoinGenerated, setCoinGenerated] = useState(false);
+  const [awaitingSigniture, setAwaitingSigniture] = useState(false);
 
   useEffect(() => {
     if (tileToInvite?.status == OpenNeighborStatus.COIN_GENERATED) {
@@ -38,11 +39,11 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   const inviteNeighborClicked = async () => {
     if (!provider || !account) return;
     if (isGeneratingCoin) return;
-    setGeneratingCoin(true);
 
     // UNCOMMENT THIS TO SEE REGENERATION FLOW UI
     // if (tileToInvite?.status == OpenNeighborStatus.COIN_GENERATED) return;
 
+    setAwaitingSigniture(true);
     const dataToSign = await inviteNeighbor(
       ownTokenId,
       x,
@@ -51,19 +52,26 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       account,
       getJsonRpcProvider
     );
-    const signature = await getSignatureForTypedData(provider, dataToSign);
-    const tx = await submitTx(dataToSign, signature);
-    useTransactionsStore.getState().addTransaction({
-      title: `Inviting neighbor to ${x}, ${y}`,
-      hash: tx.hash,
-      status: 'pending',
-      date: new Date(),
-      type: 'invite-neighbor'
-    });
-    console.log(tx.hash);
-    const receipt = await tx.wait(2);
-    console.log(receipt);
-    setCoinGenerated(true);
+    let signature = await getSignatureForTypedData(provider, dataToSign).catch(
+      () => {}
+    );
+    setAwaitingSigniture(false);
+
+    if (signature) {
+      setGeneratingCoin(true);
+      const tx = await submitTx(dataToSign, signature);
+      useTransactionsStore.getState().addTransaction({
+        title: `Inviting neighbor to ${x}, ${y}`,
+        hash: tx.hash,
+        status: 'pending',
+        date: new Date(),
+        type: 'invite-neighbor'
+      });
+      console.log(tx.hash);
+      const receipt = await tx.wait(2);
+      console.log(receipt);
+      setCoinGenerated(true);
+    }
   };
 
   return (
@@ -95,15 +103,13 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
             Download Coin
           </a>
         </>
-      ) : isGeneratingCoin ? (
+      ) : isGeneratingCoin || awaitingSigniture ? (
         <>
           <div className="coin-blank">
             <img src="/graphics/coin-spin.gif" className="coin-spin" />
           </div>
           <button disabled>
-            {tileToInvite?.status == OpenNeighborStatus.OPEN
-              ? 'generating...'
-              : 'sign to continue...'}
+            {isGeneratingCoin ? 'generating...' : 'sign to continue...'}
           </button>
         </>
       ) : (
