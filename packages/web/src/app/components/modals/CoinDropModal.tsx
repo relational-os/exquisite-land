@@ -11,6 +11,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const [claimed, setClaimed] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
+  const [longWait, setLongWait] = useState(false);
 
   const {
     tokenId,
@@ -22,8 +23,13 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   } = useCoinDrop(setProcessing);
 
   const claimCoin = async () => {
+    setLongWait(false);
     if (tokenId == undefined) return;
     if (!account) setIsConnectedModalOpen(true);
+
+    setTimeout(() => {
+      setLongWait(true);
+    }, 5000);
     setProcessing(true);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
@@ -47,6 +53,8 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       setClaimed(true);
       if (onClaim) setTimeout(onClaim, 1000);
     }
+
+    // TODO: refresh the graph
   };
 
   useEffect(() => {
@@ -85,7 +93,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           Success!
           <div className="info">
             Tile [{getCoordinates(tokenId!)[0]}, {getCoordinates(tokenId!)[1]}]
-            is now yours! Click continue to ...
+            is now yours! Click to continue...
           </div>
         </div>
       ) : tokenId != undefined ? (
@@ -97,6 +105,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             </div>
             <img src="/graphics/coinbox-valid.png" />
             {processing ? <div className="text">Redeeming coin...</div> : ''}
+            {longWait && <div className="text">This could take a bit...</div>}
           </div>
           {!processing && (
             <button className="redeem" onClick={claimCoin}>

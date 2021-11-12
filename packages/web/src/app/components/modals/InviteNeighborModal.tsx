@@ -26,6 +26,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   const [isGeneratingCoin, setGeneratingCoin] = useState(false);
   const [isCoinGenerated, setCoinGenerated] = useState(false);
   const [awaitingSigniture, setAwaitingSigniture] = useState(false);
+  const [longWait, setLongWait] = useState(false);
 
   useEffect(() => {
     if (tileToInvite?.status == OpenNeighborStatus.COIN_GENERATED) {
@@ -37,6 +38,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   }, [tileToInvite]);
 
   const inviteNeighborClicked = async () => {
+    setLongWait(false);
     if (!provider || !account) return;
     if (isGeneratingCoin) return;
 
@@ -56,6 +58,9 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       () => {}
     );
     setAwaitingSigniture(false);
+    setTimeout(() => {
+      setLongWait(true);
+    }, 5000);
 
     if (signature) {
       setGeneratingCoin(true);
@@ -71,6 +76,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       const receipt = await tx.wait(2);
       console.log(receipt);
       setCoinGenerated(true);
+      setLongWait(false);
     }
   };
 
@@ -112,6 +118,11 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           <button disabled>
             {isGeneratingCoin ? 'generating...' : 'sign to continue...'}
           </button>
+          {longWait && (
+            <div style={{ color: 'rgba(0,0,0,0.5)' }}>
+              this could take a while...
+            </div>
+          )}
         </>
       ) : (
         <>

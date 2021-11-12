@@ -223,7 +223,7 @@ const Header = () => {
         .menu-items button.close {
           position: fixed;
           top: 0.75rem;
-          left: 0.5rem;
+          left: 0.75rem;
           background: transparent;
           outline: none;
           border: none;
