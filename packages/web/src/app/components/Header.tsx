@@ -345,7 +345,7 @@ const Header = () => {
         button.close {
           position: fixed;
           top: 1.2rem;
-          right: 1rem;
+          right: 1.4rem;
           background: transparent;
           outline: none;
           border: none;
@@ -355,6 +355,10 @@ const Header = () => {
         }
         button.close:hover {
           box-shadow: none;
+        }
+
+        .activity-feed button.close {
+          right: 1rem;
         }
 
         .discord-feed a.join {

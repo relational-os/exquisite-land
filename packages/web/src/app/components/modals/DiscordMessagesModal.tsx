@@ -78,13 +78,13 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
         /* ===== Scrollbar CSS ===== */
         /* Firefox */
         * {
-          scrollbar-width: auto;
+          scrollbar-width: 10px;
           scrollbar-color: #8f54a0 #40447c;
         }
 
         /* Chrome, Edge, and Safari */
         *::-webkit-scrollbar {
-          width: 8px;
+          width: 10px;
         }
 
         *::-webkit-scrollbar-track {
