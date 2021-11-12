@@ -408,6 +408,24 @@ const Header = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
+        /* ===== Scrollbar CSS ===== */
+        /* Firefox */
+        * {
+          scrollbar-color: #ffffff67 #2247bf;
+        }
+
+        /* Chrome, Edge, and Safari */
+        *::-webkit-scrollbar {
+          height: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+          background: #2247bf;
+        }
+
+        *::-webkit-scrollbar-thumb {
+          background-color: #ffffff67;
+        }
       `}</style>
     </div>
   );
