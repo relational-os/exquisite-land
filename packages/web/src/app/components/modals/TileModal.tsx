@@ -60,6 +60,7 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           width: 100%;
           height: auto;
           image-rendering: pixelated;
+          background: #222;
         }
         .meta {
           display: flex;
