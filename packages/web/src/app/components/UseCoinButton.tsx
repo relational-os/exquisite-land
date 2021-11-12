@@ -123,7 +123,7 @@ const UseCoinButton = () => {
           cursor: pointer;
           will-change: transform;
           transition: transform 0.2s ease-in-out;
-          color: rgba(0, 0, 0, 1);
+          color: #5d3a16;
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
           cursor: pointer;
         }

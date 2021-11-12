@@ -242,7 +242,7 @@ const CanvasTile = ({
           cursor: pointer;
           will-change: transform;
           transition: transform 0.2s ease-in-out;
-          color: #000;
+          color: #5d3a16;
           border-bottom: 4px solid #843ea5;
         }
 

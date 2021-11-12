@@ -91,6 +91,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
             height={250}
             className="coin"
           />
+          <div className="saveas">"right-click save as" or</div>
           <a
             href={`/api/land-granter/generate?tokenId=${generateTokenID(
               x,
@@ -100,7 +101,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
             className="download-button"
             target="_blank"
           >
-            Download Coin
+            Download coin
           </a>
         </>
       ) : isGeneratingCoin || awaitingSigniture ? (
@@ -120,7 +121,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
               [{x},{y}]
             </h3>
           </div>
-          <button onClick={inviteNeighborClicked}>Generate Coin</button>
+          <button onClick={inviteNeighborClicked}>Generate coin</button>
         </>
       )}
       <style jsx>{`
@@ -159,6 +160,12 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           margin: 44px auto;
         }
 
+        .saveas {
+          font-size: 0.9rem;
+          margin: 0.2rem 0 0.6rem;
+          opacity: 0.5;
+        }
+
         button,
         .download-button {
           display: block;
@@ -172,7 +179,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           will-change: transform;
           transition: transform 0.2s ease-in-out;
           text-decoration: none;
-          color: rgba(0, 0, 0, 1);
+          color: #5d3a16;
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
         button:hover,
