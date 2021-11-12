@@ -120,6 +120,9 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
         .message-content a {
           color: #fff;
         }
+        .message-content + img {
+          margin-top: 0.5rem;
+        }
       `}</style>
     </div>
   );
