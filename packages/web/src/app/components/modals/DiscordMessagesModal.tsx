@@ -1,3 +1,4 @@
+import { DiscordMessage } from '@server/Discord';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
@@ -24,7 +25,7 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
   }, [messages, isOpen]);
   return (
     <div className="discord-messages-modal">
-      {messages?.map((m: any) => {
+      {messages?.map((m: DiscordMessage) => {
         return (
           <div className="message" key={m.id}>
             <img
@@ -44,6 +45,15 @@ const DiscordMessagesModal = ({ isOpen }: { isOpen: boolean }) => {
                 <span>{dayjs(m.timestamp).format('MMM D, h:mma')}</span>
               </div>
               <div className="message-content">{m.content}</div>
+              {m.attachments[0] != undefined && (
+                <img
+                  src={m.attachments[0].url}
+                  style={{
+                    maxWidth: '200px',
+                    maxHeight: '200px'
+                  }}
+                ></img>
+              )}
             </div>
           </div>
         );

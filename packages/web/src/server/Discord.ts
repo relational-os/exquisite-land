@@ -3,6 +3,7 @@ export type DiscordMessage = {
   content: string;
   author: { id: string; avatar: string; username: string };
   timestamp: Date;
+  attachments: { url: string }[];
 };
 export type DiscordMessages = DiscordMessage[];
 
