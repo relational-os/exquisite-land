@@ -672,6 +672,11 @@ const Editor = ({
           height: 8px;
           background: #000;
         }
+        @media (max-width: 768px) {
+          .canvas {
+            width: 100%;
+          }
+        }
       `}</style>
     </div>
   );

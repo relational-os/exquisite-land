@@ -26,7 +26,7 @@ const Header = () => {
           className="activity-button"
           onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
         >
-          log
+          <img src="/graphics/icon-activity.svg" alt="activity" />
         </button>
       )}
       <button
@@ -397,7 +397,8 @@ const Header = () => {
         }
         button.activity-button {
           display: block;
-          padding: 8px 14px;
+          height: 44px;
+          padding: 3px 14px 0;
           border: 0;
           background: #7189da;
           font-size: 24px;
@@ -408,6 +409,16 @@ const Header = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
         }
+        @media (max-width: 768px) {
+          .header {
+            gap: 10px;
+          }
+          .discord-feed {
+            width: calc(100% - 20 px);
+            top: 10 px;
+            left: 10 px;
+            height: calc(100% - 20 px);
+          }
         /* ===== Scrollbar CSS ===== */
         /* Firefox */
         * {

@@ -130,6 +130,15 @@ const UseCoinButton = () => {
         button.invite-button:hover {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
         }
+        @media (max-width: 768px) {
+          .use-coin-button {
+            position: fixed;
+            bottom: 30px;
+          }
+          button.invite-button {
+            font-size: 22px;
+          }
+        }
       `}</style>
     </div>
   );

@@ -78,6 +78,12 @@ const ConnectWalletButton = () => {
           font-size: 24px;
           color: red;
         }
+        @media (max-width: 768px) {
+          .account {
+            font-size: 24px;
+            padding: 8px 8px;
+          }
+        }
       `}</style>
     </div>
   );
