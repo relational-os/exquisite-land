@@ -70,9 +70,7 @@ const TransactionHistoryItem = ({
           {transaction.status == 'confirmed' && (
             <span className="confirmed">* </span>
           )}
-          {transaction.status == 'pending' && (
-            <span className="failed">* </span>
-          )}
+          {transaction.status == 'failed' && <span className="failed">* </span>}
           {transaction.status}:{' '}
           <a
             href={`https://polygonscan.com/tx/${transaction.hash}`}
