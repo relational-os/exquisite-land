@@ -105,7 +105,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             </div>
             <img src="/graphics/coinbox-valid.png" />
             {processing ? <div className="text">Redeeming coin...</div> : ''}
-            {longWait && <div className="text">This could take a bit...</div>}
+            {longWait && <div className="text wait">(this can take a bit)</div>}
           </div>
           {!processing && (
             <button className="redeem" onClick={claimCoin}>
@@ -143,7 +143,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
 
         .message img {
           width: 300px;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.2rem;
           margin-left: 5px;
         }
 
@@ -179,6 +179,10 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         .message .text {
           font-size: 24px;
           color: #5d86b0;
+        }
+        .message .wait {
+          margin-top: 0.25rem;
+          opacity: 0.6;
         }
 
         .claimed,
