@@ -26,7 +26,7 @@ const TransactionHistoryModal = () => {
       <style jsx>{`
         .activity {
           display: flex;
-          flex-direction: column;
+          flex-direction: column-reverse;
           justify-content: center;
           align-items: flex-start;
           padding: 1rem 0;
@@ -48,9 +48,6 @@ const TransactionHistoryItem = ({
 }) => {
   return (
     <div className="transaction-item">
-      {/* <div className="transaction-status">
-        <div></div>
-      </div> */}
       <div className="date">
         {dayjs(transaction.date).format('MMM D, h:mma')}
       </div>
