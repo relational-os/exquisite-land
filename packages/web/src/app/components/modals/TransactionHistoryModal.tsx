@@ -10,11 +10,6 @@ const TransactionHistoryModal = () => {
   const transactions = useTransactionsStore((state) => state.transactions);
   return (
     <div className="activity">
-      <div className="controls">
-        <Button onClick={() => useTransactionsStore.getState().clearAll()}>
-          Clear all
-        </Button>
-      </div>
       {transactions.map((transaction) => (
         <TransactionHistoryItem
           key={transaction.hash}
@@ -22,13 +17,19 @@ const TransactionHistoryModal = () => {
         />
       ))}
 
+      <div className="controls">
+        <Button onClick={() => useTransactionsStore.getState().clearAll()}>
+          Clear all
+        </Button>
+      </div>
+
       <style jsx>{`
         .activity {
           display: flex;
           flex-direction: column;
           justify-content: center;
-          align-items: center;
-          padding: 1rem;
+          align-items: flex-start;
+          padding: 1rem 0;
           font-size: 1.25rem;
           color: #fff;
         }
@@ -47,21 +48,13 @@ const TransactionHistoryItem = ({
 }) => {
   return (
     <div className="transaction-item">
-      <div className="meta">
-        <div className="title">{transaction.title}</div>
-        <div className="info">
-          <a
-            href={`https://polygonscan.com/tx/${transaction.hash}`}
-            target="_blank"
-          >
-            {transaction.hash.slice(0, 6)}...{transaction.hash.slice(-4)}:{' '}
-            {transaction.status}
-          </a>
-        </div>
-        <div className="date">
-          {dayjs(transaction.date).format('MMM D, h:mma')}
-        </div>
+      {/* <div className="transaction-status">
+        <div></div>
+      </div> */}
+      <div className="date">
+        {dayjs(transaction.date).format('MMM D, h:mma')}
       </div>
+      <div className="title">{transaction.title}</div>
       {transaction.pixels && (
         <svg
           dangerouslySetInnerHTML={{
@@ -69,32 +62,86 @@ const TransactionHistoryItem = ({
           }}
         />
       )}
+      <div className="meta">
+        <div className="info">
+          {transaction.status == 'pending' && (
+            <span className="pending">* </span>
+          )}
+          {transaction.status == 'confirmed' && (
+            <span className="confirmed">* </span>
+          )}
+          {transaction.status == 'pending' && (
+            <span className="failed">* </span>
+          )}
+          {transaction.status}:{' '}
+          <a
+            href={`https://polygonscan.com/tx/${transaction.hash}`}
+            target="_blank"
+          >
+            tx
+          </a>
+        </div>
+      </div>
+
       <style jsx>{`
         .transaction-item {
-          margin: 0 10px;
+          width: 100%;
+          margin: 0 0 1rem;
+          padding: 0 1rem 1.5rem;
           display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: flex-start;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         a {
           color: inherit;
         }
 
+        .meta {
+          flex: 1;
+        }
+
         .title {
-          font-size: 18px;
-          margin-bottom: 5px;
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          text-align: center;
         }
         .info {
-          margin-bottom: 5px;
+          margin-top: 5px;
+          text-align: center;
         }
         .date {
-          color: #999;
+          margin-bottom: 5px;
+          font-size: 0.9rem;
+          opacity: 0.5;
+          text-align: center;
         }
+
+        .pending,
+        .confirmed,
+        .failed {
+          vertical-align: middle;
+          font-size: 2rem;
+          margin-right: -3px;
+        }
+
+        .pending {
+          color: #ffc107;
+        }
+        .confirmed {
+          color: #28a745;
+        }
+        .failed {
+          color: #dc3545;
+        }
+
         svg {
-          width: 100px;
-          height: 100px;
+          width: 200px;
+          height: 200px;
           display: block;
+          margin-top: 0.2rem;
+          margin-bottom: 0.25rem;
         }
       `}</style>
     </div>

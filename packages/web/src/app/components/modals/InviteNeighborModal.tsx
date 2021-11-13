@@ -66,7 +66,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       setGeneratingCoin(true);
       const tx = await submitTx(dataToSign, signature);
       useTransactionsStore.getState().addTransaction({
-        title: `Inviting neighbor to ${x}, ${y}`,
+        title: `Generating invite for tile [${x},${y}]`,
         hash: tx.hash,
         status: 'pending',
         date: new Date(),

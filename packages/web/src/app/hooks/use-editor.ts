@@ -85,7 +85,7 @@ const useEditor = () => {
   }) => {
     const tx = await submitTx(dataToSign, signature);
     useTransactionsStore.getState().addTransaction({
-      title: `Submitting tile at ${x}, ${y}`,
+      title: `Minting tile [${x},${y}]`,
       hash: tx.hash,
       status: 'pending',
       date: new Date(),

@@ -23,7 +23,7 @@ const InviteNeighbors = () => {
       LAND_GRANTER_CONTRACT_ADDRESS
     );
     useTransactionsStore.getState().addTransaction({
-      title: `Inviting neighbor to ${x}, ${y}`,
+      title: `Generating invite for tile [${x},${y}]`,
       hash: tx.hash,
       status: 'pending',
       date: new Date(),

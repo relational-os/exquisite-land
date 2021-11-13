@@ -330,7 +330,7 @@ const Header = () => {
           position: fixed;
           top: 0.5rem;
           right: 0.5rem;
-          width: 30vw;
+          width: 35vw;
           min-width: 360px;
           height: calc(100vh - 1rem);
           background: #3f4481fb;
@@ -386,7 +386,8 @@ const Header = () => {
           position: fixed;
           top: 0.5rem;
           right: 0.5rem;
-          width: 30vw;
+          width: 35vw;
+          min-width: 360px;
           height: calc(100vh - 1rem);
           background: #3f4481fb;
           display: ${isActivityFeedOpen ? 'block' : 'none'};
