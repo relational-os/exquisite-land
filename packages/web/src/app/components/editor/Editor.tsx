@@ -9,6 +9,7 @@ import update from 'immutability-helper';
 import { useDebouncedCallback } from 'use-debounce';
 import { generateTokenID, getSVGFromPixels } from '@app/features/TileUtils';
 import useTile from '@app/features/useTile';
+import { useLocalStorage } from 'react-use';
 
 interface EditorProps {
   x: number;
@@ -35,11 +36,25 @@ const Editor = ({
 }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
   const { refresh } = useTile(generateTokenID(x, y));
-  const [pixels, setPixels] = useState<Pixels>(EMPTY);
-  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([EMPTY]);
+  // TODO: add contract address or other ID to localStorage key so cache is cleared per canvas
+  const [pixelsCache, setPixelsCache] = useLocalStorage<Pixels>(
+    `${x},${y}`,
+    EMPTY
+  );
+  const [pixels, setPixelsState] = useState<Pixels>(pixelsCache || EMPTY);
+  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([
+    pixelsCache || EMPTY
+  ]);
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
     setPixelsHistory([newPixels, ...pixelsHistory]);
   }, 500);
+  // debounce because mutating localStorage during a click-and-drag is a little intense
+  const setPixelsCacheDebounced = useDebouncedCallback(setPixelsCache, 200);
+
+  const setPixels = (newPixels: Pixels) => {
+    setPixelsState(newPixels);
+    setPixelsCacheDebounced(newPixels);
+  };
 
   const {
     palette,
@@ -90,8 +105,10 @@ const Editor = ({
   };
 
   const handleClear = () => {
-    setPixelsHistory([EMPTY]);
-    setPixels(EMPTY);
+    if (confirm('Are you sure you want to erase your drawing?')) {
+      setPixelsHistory([EMPTY]);
+      setPixels(EMPTY);
+    }
   };
 
   const paintPixels = (rawX: number, rawY: number) => {
