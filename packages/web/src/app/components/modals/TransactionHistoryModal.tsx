@@ -10,18 +10,17 @@ const TransactionHistoryModal = () => {
   const transactions = useTransactionsStore((state) => state.transactions);
   return (
     <div className="activity">
+      <div className="controls">
+        <Button onClick={() => useTransactionsStore.getState().clearAll()}>
+          Clear all
+        </Button>
+      </div>
       {transactions.map((transaction) => (
         <TransactionHistoryItem
           key={transaction.hash}
           transaction={transaction}
         />
       ))}
-
-      <div className="controls">
-        <Button onClick={() => useTransactionsStore.getState().clearAll()}>
-          Clear all
-        </Button>
-      </div>
 
       <style jsx>{`
         .activity {
