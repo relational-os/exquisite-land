@@ -145,6 +145,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         }
         .message {
           cursor: pointer;
+          white-space: pre-wrap;
         }
 
         .message img {

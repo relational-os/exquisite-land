@@ -31,7 +31,7 @@ const api: NextApiHandler = async (req, res) => {
     return res.json({ tx: reciept.transactionHash });
   } catch (err) {
     console.log(err);
-    return res.status(400).json({ error: 'You cant claim this coin!' });
+    return res.status(400).json({ error: 'You can\'t be your own neighbor.\nInvite a friend!' });
   }
 };
 
