@@ -21,14 +21,6 @@ const Header = () => {
 
       <div className="spacer" />
 
-      {transactionCount > 0 && (
-        <button
-          className="activity-button"
-          onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
-        >
-          <img src="/graphics/icon-activity.svg" alt="activity" />
-        </button>
-      )}
       <button
         className="discord-button"
         onClick={() => setDiscordFeedOpen(!isDiscordFeedOpen)}
@@ -39,6 +31,15 @@ const Header = () => {
           className="textballoon-icon"
         />
       </button>
+
+      {transactionCount > 0 && (
+        <button
+          className="activity-button"
+          onClick={() => setActivityFeedOpen(!isActivityFeedOpen)}
+        >
+          <img src="/graphics/icon-activity.svg" />
+        </button>
+      )}
 
       <UseCoinButton />
       <ConnectWalletButton />
@@ -309,9 +310,6 @@ const Header = () => {
           padding: 0 0.5rem;
         }
 
-         {
-          /* move to component */
-        }
         button.discord-button {
           display: block;
           padding: 8px 14px;

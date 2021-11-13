@@ -88,15 +88,18 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
 
       {isCoinGenerated ? (
         <>
-          <img
-            src={`/api/land-granter/generate?tokenId=${generateTokenID(
-              x,
-              y
-            )}&address=${account}`}
-            width={250}
-            height={250}
-            className="coin"
-          />
+          <div className="download-coin-container">
+            <div className="bg-circle"></div>
+            <img
+              src={`/api/land-granter/generate?tokenId=${generateTokenID(
+                x,
+                y
+              )}&address=${account}`}
+              width={250}
+              height={250}
+              className="coin"
+            />
+          </div>
           <div className="saveas">"right-click save as" or</div>
           <a
             href={`/api/land-granter/generate?tokenId=${generateTokenID(
@@ -120,7 +123,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           </button>
           {longWait && (
             <div style={{ color: 'rgba(0,0,0,0.5)' }}>
-              this could take a while...
+              (hang tight, this can take a bit)
             </div>
           )}
         </>
@@ -171,9 +174,37 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
           margin: 44px auto;
         }
 
+        .download-coin-container {
+          position: relative;
+          min-height: 250px;
+        }
+        .download-coin-container img {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          z-index: 2222;
+          margin: auto;
+        }
+
+        .bg-circle {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          width: 180px;
+          height: 180px;
+          margin: auto;
+          z-index: 1;
+          border-radius: 50%;
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+
         .saveas {
           font-size: 0.9rem;
-          margin: 0.2rem 0 0.6rem;
+          margin: 0 0 0.6rem;
           opacity: 0.5;
         }
 
