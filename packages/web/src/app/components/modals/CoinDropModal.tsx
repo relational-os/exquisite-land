@@ -9,6 +9,7 @@ import { useCoinDrop } from '@app/hooks/useCoinDrop';
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
   const [claimed, setClaimed] = useState(false);
+  const [claimError, setClaimError] = useState<string>();
   const [processing, setProcessing] = useState(false);
   const [isConnectedModalOpen, setIsConnectedModalOpen] = useState(false);
   const [longWait, setLongWait] = useState(false);
@@ -31,6 +32,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       setLongWait(true);
     }, 5000);
     setProcessing(true);
+    setClaimError(undefined);
     const { tx, error } = await fetch('/api/land-granter/claim-coin', {
       method: 'POST',
       // TODO: body should also accept any coin creator (or fetch from db)
@@ -51,7 +53,11 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     setProcessing(false);
     if (tx && !error) {
       setClaimed(true);
+
       if (onClaim) setTimeout(onClaim, 1000);
+    } else if (error) {
+      setClaimed(false);
+      setClaimError(error);
     }
 
     // TODO: refresh the graph
@@ -96,7 +102,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             is now yours! Click to continue...
           </div>
         </div>
-      ) : tokenId != undefined ? (
+      ) : !claimError && tokenId != undefined ? (
         <div className="valid-token">
           <div className="message">
             <div className="coords text">
@@ -118,7 +124,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
           <div className="message">
             <div className="coords">Error!</div>
             <img src="/graphics/coinbox-invalid.png" />
-            <div className="text">{dropError}</div>
+            <div className="text">{dropError || claimError}</div>
           </div>
           <Button onClick={reset}>Try again</Button>
         </div>

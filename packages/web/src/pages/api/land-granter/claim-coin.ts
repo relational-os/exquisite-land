@@ -23,10 +23,16 @@ const api: NextApiHandler = async (req, res) => {
   console.log(
     `Granting land tile ${tokenId} to ${recipient} with coinCreator ${coinCreator}`
   );
-  const tx = await grantLandTile(tokenId, recipient, coinCreator);
-  console.log('tx hash', tx.hash, tx.gasPrice, tx.nonce);
-  const reciept = await tx.wait(1);
-  return res.json({ tx: reciept.transactionHash });
+
+  try {
+    const tx = await grantLandTile(tokenId, recipient, coinCreator);
+    console.log('tx hash', tx.hash, tx.gasPrice, tx.nonce);
+    const reciept = await tx.wait(1);
+    return res.json({ tx: reciept.transactionHash });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'You cant claim this coin!' });
+  }
 };
 
 export default api;
