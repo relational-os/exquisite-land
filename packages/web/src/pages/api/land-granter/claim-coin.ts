@@ -27,11 +27,13 @@ const api: NextApiHandler = async (req, res) => {
   try {
     const tx = await grantLandTile(tokenId, recipient, coinCreator);
     console.log('tx hash', tx.hash, tx.gasPrice, tx.nonce);
-    const reciept = await tx.wait(1);
+    const reciept = await tx.wait(2);
     return res.json({ tx: reciept.transactionHash });
   } catch (err) {
     console.log(err);
-    return res.status(400).json({ error: 'You can\'t be your own neighbor.\nInvite a friend!' });
+    return res
+      .status(400)
+      .json({ error: "You can't be your own neighbor.\nInvite a friend!" });
   }
 };
 

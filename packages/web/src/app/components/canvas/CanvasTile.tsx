@@ -33,6 +33,7 @@ const CanvasTile = ({
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
+  const [isCoinGenerated, setIsCoinGenerated] = useState(false);
 
   useEffect(() => {
     if (tilesOwned?.find((t) => t.x == x && t.y == y)) {
@@ -67,6 +68,12 @@ const CanvasTile = ({
     if (tx && tx.type == 'invite-neighbor') return true;
     return false;
   });
+
+  useEffect(() => {
+    if (coinGenerated || inviteState == OpenNeighborStatus.COIN_GENERATED) {
+      setIsCoinGenerated(true);
+    }
+  }, [coinGenerated, inviteState]);
 
   useEffect(() => {
     if (isPending) {
@@ -124,7 +131,7 @@ const CanvasTile = ({
           {isInvitable && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
-              <button>{coinGenerated ? 'regenerate' : 'invite!'}</button>
+              <button>{isCoinGenerated ? 'regenerate' : 'invite!'}</button>
             </div>
           )}
         </div>
