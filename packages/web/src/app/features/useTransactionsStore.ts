@@ -13,6 +13,7 @@ export type LocalTransactionState = {
   pixels?: Pixels;
   type: 'create-tile' | 'invite-neighbor';
   date: Date;
+  account?: string;
 };
 
 type TransactionStore = {

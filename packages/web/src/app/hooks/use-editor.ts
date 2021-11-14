@@ -92,7 +92,8 @@ const useEditor = () => {
       type: 'create-tile',
       x,
       y,
-      pixels
+      pixels,
+      account
     });
     return tx;
   };

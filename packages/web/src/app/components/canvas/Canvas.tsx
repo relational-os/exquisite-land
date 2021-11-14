@@ -13,6 +13,7 @@ import {
   TransformWrapper
 } from 'react-zoom-pan-pinch';
 import TileModal from '../modals/TileModal';
+import { useUpdate } from 'react-use';
 
 Modal.setAppElement('#__next');
 
@@ -20,6 +21,7 @@ const columns = Array.from(Array(16).keys());
 const rows = Array.from(Array(16).keys());
 
 const Canvas = () => {
+  const update = useUpdate();
   const router = useRouter();
   const tileSize = 2 * 64; // TODO: zoom
 
@@ -197,6 +199,7 @@ const Canvas = () => {
             x={selectedX}
             y={selectedY}
             closeModal={closeEditorModal}
+            refreshCanvas={update}
           ></Editor>
         )}
       </Modal>

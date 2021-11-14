@@ -84,7 +84,8 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
         date: new Date(),
         type: 'invite-neighbor',
         x: x,
-        y: y
+        y: y,
+        account
       });
       console.log(tx.hash);
       const receipt = await tx.wait(2);

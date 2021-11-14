@@ -27,7 +27,10 @@ const InviteNeighbors = () => {
       hash: tx.hash,
       status: 'pending',
       date: new Date(),
-      type: 'invite-neighbor'
+      type: 'invite-neighbor',
+      x,
+      y,
+      account
     });
     await tx.wait(1);
     console.log(tx.hash);

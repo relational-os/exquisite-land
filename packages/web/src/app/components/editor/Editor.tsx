@@ -7,8 +7,7 @@ import EditorPreview from './EditorPreview';
 import TileSVG from '../canvas/TileSVG';
 import update from 'immutability-helper';
 import { useDebouncedCallback } from 'use-debounce';
-import { generateTokenID, getSVGFromPixels } from '@app/features/TileUtils';
-import useTile from '@app/features/useTile';
+import { getSVGFromPixels } from '@app/features/TileUtils';
 import { useLocalStorage } from 'react-use';
 
 interface EditorProps {
@@ -17,6 +16,7 @@ interface EditorProps {
   closeModal: () => void;
   hideControls?: boolean;
   hideMinimap?: boolean;
+  refreshCanvas?: () => void;
 }
 
 const MAX = 32;
@@ -32,10 +32,10 @@ const Editor = ({
   y,
   closeModal,
   hideControls,
-  hideMinimap
+  hideMinimap,
+  refreshCanvas
 }: EditorProps) => {
   const [drawing, setDrawing] = useState(false);
-  const { refresh } = useTile(generateTokenID(x, y));
   // TODO: add contract address or other ID to localStorage key so cache is cleared per canvas
   const [pixelsCache, setPixelsCache] = useLocalStorage<Pixels>(
     `${x},${y}`,
@@ -178,10 +178,9 @@ const Editor = ({
       await tx.wait(2);
       setFinishedSubmitting(true);
       setTimeout(async () => {
-        refresh();
         closeModal();
         setTimeout(() => {
-          refresh();
+          if (refreshCanvas) refreshCanvas();
         }, 3000);
       }, 3000);
     } catch (err) {
