@@ -28,6 +28,18 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
   const [awaitingSigniture, setAwaitingSigniture] = useState(false);
   const [longWait, setLongWait] = useState(false);
 
+  const coinGenerated = useTransactionsStore((state) => {
+    const tx = state.transactions.find((tx) => tx.x == x && tx.y == y);
+    if (tx && tx.type == 'invite-neighbor') return true;
+    return false;
+  });
+
+  useEffect(() => {
+    if (coinGenerated) {
+      setCoinGenerated(true);
+    }
+  });
+
   useEffect(() => {
     if (tileToInvite?.status == OpenNeighborStatus.COIN_GENERATED) {
       setCoinGenerated(true);
@@ -70,7 +82,9 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
         hash: tx.hash,
         status: 'pending',
         date: new Date(),
-        type: 'invite-neighbor'
+        type: 'invite-neighbor',
+        x: x,
+        y: y
       });
       console.log(tx.hash);
       const receipt = await tx.wait(2);

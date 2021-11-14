@@ -62,6 +62,12 @@ const CanvasTile = ({
     )
   );
 
+  const coinGenerated = useTransactionsStore((state) => {
+    const tx = state.transactions.find((tx) => tx.x == x && tx.y == y);
+    if (tx && tx.type == 'invite-neighbor') return true;
+    return false;
+  });
+
   useEffect(() => {
     if (isPending) {
       fetch('/api/utils/pixels/png', {
@@ -118,11 +124,7 @@ const CanvasTile = ({
           {isInvitable && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
-              <button>
-                {inviteState == OpenNeighborStatus.OPEN
-                  ? 'invite!'
-                  : 'regenerate'}
-              </button>
+              <button>{coinGenerated ? 'regenerate' : 'invite!'}</button>
             </div>
           )}
         </div>
