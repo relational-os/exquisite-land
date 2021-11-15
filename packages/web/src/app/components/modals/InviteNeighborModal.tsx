@@ -30,7 +30,8 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
 
   const coinGenerated = useTransactionsStore((state) => {
     const tx = state.transactions.find((tx) => tx.x == x && tx.y == y);
-    if (tx && tx.type == 'invite-neighbor') return true;
+    if (tx && tx.type == 'invite-neighbor' && tx.status == 'confirmed')
+      return true;
     return false;
   });
 
@@ -87,9 +88,9 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
         y: y,
         account
       });
-      console.log(tx.hash);
+      console.log('coin claim tx', tx.hash);
       const receipt = await tx.wait(2);
-      console.log(receipt);
+      console.log('coin claim receipt', receipt);
       setCoinGenerated(true);
       setLongWait(false);
     }
