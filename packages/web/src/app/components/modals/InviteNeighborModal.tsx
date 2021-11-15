@@ -89,6 +89,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
         account
       });
       console.log('coin claim tx', tx.hash);
+      // TODO: check for tx status
       const receipt = await tx.wait(2);
       console.log('coin claim receipt', receipt);
       setCoinGenerated(true);

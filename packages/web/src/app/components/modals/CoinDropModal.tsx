@@ -5,6 +5,7 @@ import Button from '../Button';
 import Modal from 'react-modal';
 import ConnectWalletModal from './ConnectWalletModal';
 import { useCoinDrop } from '@app/hooks/useCoinDrop';
+import useTransactionsStore from '@app/features/useTransactionsStore';
 
 const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
   const { account } = useWallet();
@@ -27,6 +28,8 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     setLongWait(false);
     if (tokenId == undefined) return;
     if (!account) setIsConnectedModalOpen(true);
+
+    const [x, y] = getCoordinates(tokenId);
 
     setTimeout(() => {
       setLongWait(true);
@@ -52,6 +55,18 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     // -> save button in the editor could be disabled until chain has confirmations?
     setProcessing(false);
     if (tx && !error) {
+      console.log('tx', tx);
+      useTransactionsStore.getState().addTransaction({
+        title: `Claimed coin for tile [${x},${y}]`,
+        hash: tx,
+        status: 'pending',
+        date: new Date(),
+        type: 'claim-coin',
+        x: x,
+        y: y,
+        account
+      });
+
       setClaimed(true);
 
       if (onClaim) setTimeout(onClaim, 1000);

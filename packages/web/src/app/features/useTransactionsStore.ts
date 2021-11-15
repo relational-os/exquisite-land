@@ -11,7 +11,7 @@ export type LocalTransactionState = {
   x?: number;
   y?: number;
   pixels?: Pixels;
-  type: 'create-tile' | 'invite-neighbor';
+  type: 'create-tile' | 'invite-neighbor' | 'claim-coin';
   date: Date;
   account?: string;
 };

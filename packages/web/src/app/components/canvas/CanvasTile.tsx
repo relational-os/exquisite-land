@@ -35,12 +35,6 @@ const CanvasTile = ({
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
 
-  useEffect(() => {
-    if (tilesOwned?.find((t) => t.x == x && t.y == y)) {
-      setOwned(true);
-    }
-  }, [JSON.stringify(tilesOwned)]);
-
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
   );
@@ -63,11 +57,28 @@ const CanvasTile = ({
     )
   );
 
+  const ownedTransaction = useTransactionsStore((state) =>
+    state.transactions.find(
+      (t) =>
+        t.x == x &&
+        t.y == y &&
+        t.type == 'claim-coin' &&
+        t.account?.toLowerCase() == account?.toLowerCase()
+    )
+  );
+
   const coinGenerated = useTransactionsStore((state) => {
     const tx = state.transactions.find((tx) => tx.x == x && tx.y == y);
     if (tx && tx.type == 'invite-neighbor') return true;
     return false;
   });
+
+  useEffect(() => {
+    const found = tilesOwned?.find((t) => t.x == x && t.y == y);
+    if (found || (!found && ownedTransaction?.status == 'confirmed')) {
+      setOwned(true);
+    }
+  }, [JSON.stringify(tilesOwned), ownedTransaction]);
 
   useEffect(() => {
     if (coinGenerated || inviteState == OpenNeighborStatus.COIN_GENERATED) {
@@ -116,8 +127,10 @@ const CanvasTile = ({
         <div className="deets">
           {!isInvitable && tile?.owner && (
             <div className="owner">
-              {tile.owner.id.toLowerCase() ==
-              LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase() ? (
+              {ownedTransaction ? (
+                <ENSName address={account} provider={getEthJsonRpcProvider} />
+              ) : tile.owner.id.toLowerCase() ==
+                LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase() ? (
                 'UNCLAIMED'
               ) : (
                 <ENSName
