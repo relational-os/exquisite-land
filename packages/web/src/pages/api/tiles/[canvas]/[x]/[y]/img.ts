@@ -20,12 +20,24 @@ const api: NextApiHandler = async (req, res) => {
     `
   );
 
+  const sizeParam = parseInt(req.query.size as string);
+  let size;
+
+  if (sizeParam) {
+    size = sizeParam;
+  } else {
+    // our defalut size
+    size = 32;
+  }
+
   if (!tile?.svg) {
     return res.status(404).end();
   }
 
-  const image = await sharp(Buffer.from(tile.svg, 'utf-8'))
-    .resize(32, 32)
+  const image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
+    density: size * 10
+  })
+    .resize(size, size)
     .png()
     .toBuffer();
 
