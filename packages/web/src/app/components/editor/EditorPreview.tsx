@@ -68,6 +68,7 @@ const EditorPreview = ({ pixels, x, y, columns, rows }: EditorPreviewProps) => {
         .box-preview {
           width: 3px;
           height: 3px;
+          border-width: 0px;
         }
       `}</style>
     </div>
