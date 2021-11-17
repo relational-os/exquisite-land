@@ -24,11 +24,15 @@ export const getTilesInWallet = async (address: string) => {
 export const getAllTiles = async () => {
   const query = gql`
     {
-      tiles(first: 500) {
+      tiles(first: 500, where: { svg_not: null }) {
         id
         svg
+        status
         x
         y
+        owner {
+          address
+        }
       }
     }
   `;
