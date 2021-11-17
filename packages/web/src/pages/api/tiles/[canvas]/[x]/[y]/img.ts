@@ -21,25 +21,23 @@ const api: NextApiHandler = async (req, res) => {
   );
 
   const sizeParam = parseInt(req.query.size as string);
-  let size;
+  let image;
 
   if (sizeParam) {
-    size = sizeParam;
+    // render with custom size
+    image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
+      density: sizeParam * 10
+    })
+      .resize(sizeParam, sizeParam)
+      .png()
+      .toBuffer();
   } else {
-    // our defalut size
-    size = 32;
+    // render with defalut size
+    image = await sharp(Buffer.from(tile.svg, 'utf-8'))
+      .resize(32, 32)
+      .png()
+      .toBuffer();
   }
-
-  if (!tile?.svg) {
-    return res.status(404).end();
-  }
-
-  const image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
-    density: size * 10
-  })
-    .resize(size, size)
-    .png()
-    .toBuffer();
 
   res.setHeader('Content-Type', 'image/png');
   res.setHeader('Cache-Control', 'public, s-max-age=31536000');
