@@ -23,6 +23,11 @@ model User {
 }
 
 model Tile {
-  id                  String @unique
-  discordSent         Boolean
+  id          String  @unique
+  discordSent Boolean
+  svg         String
+  x           Int
+  y           Int
+  status      String
+  owner       String
 }
