@@ -26,15 +26,17 @@ const api: NextApiHandler = async (req, res) => {
   if (sizeParam) {
     // render with custom size
     image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
-      density: sizeParam * 10
+      density: 1024
     })
       .resize(sizeParam, sizeParam)
       .png()
       .toBuffer();
   } else {
     // render with defalut size
-    image = await sharp(Buffer.from(tile.svg, 'utf-8'))
-      .resize(32, 32)
+    image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
+      density: 1024
+    })
+      .resize(512, 512)
       .png()
       .toBuffer();
   }
