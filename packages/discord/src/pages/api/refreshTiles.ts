@@ -70,7 +70,7 @@ const api: NextApiHandler = async (_req, res) => {
     console.log(
       `Sending tile notification for ${toDeliver.id} with image ${pngUrl}`
     );
-    // let res = sendMessageWithImage(`a tile is minted: ${toDeliver.id}`, pngUrl);
+    let res = sendMessageWithImage(`a tile is minted: ${toDeliver.id}`, pngUrl);
     console.log({ res });
 
     if (res.statusCode === 200) {
