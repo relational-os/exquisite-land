@@ -3,6 +3,7 @@ import prisma from '../helpers/prisma';
 import Discord, {
   Intents,
   MessageActionRow,
+  MessageAttachment,
   MessageButton,
   MessageEmbed
 } from 'discord.js';
@@ -30,6 +31,10 @@ const client = new Discord.Client({
 //   mumbai: getJsonRpcProvider('polygon-mumbai'),
 //   polygon: getJsonRpcProvider('polygon-mainnet')
 // };
+
+const embed = () => new MessageEmbed();
+const attach = (attachment: any, name: any) =>
+  new MessageAttachment(attachment, name);
 
 client.on('messageCreate', async (message) => {
   console.log('messageCreate: message', message);
@@ -74,21 +79,32 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-console.log(
-  'process.env.DISCORD_CLIENT_TOKEN',
-  process.env.DISCORD_CLIENT_TOKEN
-);
 client.login(process.env.DISCORD_CLIENT_TOKEN);
 client.on('ready', () => {
   console.log('ready!');
 });
 
+function sendMessageWithImage(content: string, imageUrl: string) {
+  // channel: terra-masu
+  const channel = client.channels.cache.get('888518144346427392');
+  if (channel) {
+    if (channel.type == 'GUILD_TEXT') {
+      // let testurl =
+      // 'http://localhost:3001/api/tiles/terramasu/7/7/image?scale=500';
+      // @ts-ignore
+      return channel.send({
+        content: content,
+        embed: embed().setImage('attachment://tile.png'),
+        files: [attach(imageUrl, 'tile.png')]
+      });
+    }
+  }
+}
+
 function sendMessage(content: string) {
   // fails if client.on(ready) hasn't fired yet
 
   const CHANNEL_ID = '888518144346427392';
-
-  // let ch = client.channels.cache.get(CHANNEL_ID);
 
   const channel = client.channels.cache.get(CHANNEL_ID);
   if (channel) {
@@ -100,4 +116,4 @@ function sendMessage(content: string) {
   }
 }
 
-export { sendMessage };
+export { sendMessage, sendMessageWithImage };
