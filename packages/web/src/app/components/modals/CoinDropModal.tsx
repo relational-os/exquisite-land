@@ -111,10 +111,12 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         </>
       ) : claimed ? (
         <div className="claimed">
-          Success!
+          Coin redeemed!
           <div className="info">
-            Tile [{getCoordinates(tokenId!)[0]}, {getCoordinates(tokenId!)[1]}]
-            is now yours! Click to continue...
+            Tile [{getCoordinates(tokenId!)[0]},{getCoordinates(tokenId!)[1]}]
+            is now yours
+            <br />
+            <button>Start</button>
           </div>
         </div>
       ) : !claimError && tokenId != undefined ? (
@@ -205,6 +207,29 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
         .message .wait {
           margin-top: 0.25rem;
           opacity: 0.6;
+        }
+        .info {
+          text-align: center;
+        }
+
+        .info button {
+            margin: 2rem auto 0;
+            padding: 8px 42px;
+            border: 0;
+            background: #62c64c;
+            font-size: 24px;
+            font-family: inherit;
+            cursor: pointer;
+            will-change: transform;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            color: #c4ffc7;
+            border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+          }
+
+          .info .button:hover {
+            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
+          }
         }
 
         .claimed,
