@@ -6,7 +6,7 @@ const Button = React.forwardRef(function Button(
 ) {
   return (
     <>
-      <button ref={ref} {...props} className={`button ${props.className}`} />
+      <button ref={ref} type="button" {...props} className={`button ${props.className}`} />
       <style jsx>{`
         .button {
           padding: 8px 16px;

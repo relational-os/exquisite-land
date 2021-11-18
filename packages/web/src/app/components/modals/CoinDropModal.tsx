@@ -7,7 +7,7 @@ import ConnectWalletModal from './ConnectWalletModal';
 import { useCoinDrop } from '@app/hooks/useCoinDrop';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 
-const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
+const CoinDropModal = ({ closeModal }: { closeModal: () => void }) => {
   const { account } = useWallet();
   const [claimed, setClaimed] = useState(false);
   const [claimError, setClaimError] = useState<string>();
@@ -68,8 +68,6 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
       });
 
       setClaimed(true);
-
-      if (onClaim) setTimeout(onClaim, 1000);
     } else if (error) {
       setClaimed(false);
       setClaimError(error);
@@ -116,7 +114,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             Tile [{getCoordinates(tokenId!)[0]},{getCoordinates(tokenId!)[1]}]
             is now yours
             <br />
-            <button>Start</button>
+            <button type="button" onClick={closeModal}>Start</button>
           </div>
         </div>
       ) : !claimError && tokenId != undefined ? (
@@ -131,7 +129,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
             {longWait && <div className="text wait">(this can take a bit)</div>}
           </div>
           {!processing && (
-            <button className="redeem" onClick={claimCoin}>
+            <button type="button" className="redeem" onClick={claimCoin}>
               Redeem
             </button>
           )}
