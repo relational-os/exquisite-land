@@ -95,7 +95,7 @@ const api: NextApiHandler = async (_req, res) => {
       return res.json({ success: false });
     }
   } else {
-    return res.json({ success: false });
+    return res.json({ success: true });
   }
 };
 
