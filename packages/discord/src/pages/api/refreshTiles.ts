@@ -76,6 +76,8 @@ const api: NextApiHandler = async (_req, res) => {
       pngUrl
     );
 
+    console.log({ apiResponse });
+
     // TODO: improve discord API response error handling
     if (apiResponse.id) {
       // @ts-ignore
