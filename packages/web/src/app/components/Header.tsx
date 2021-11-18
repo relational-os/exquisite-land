@@ -174,7 +174,8 @@ const Header = () => {
           className={`join ${!account ? 'join-disabled' : ''}`}
           target="_blank"
         >
-          <img src="/graphics/icon-discord.svg" /> Join the Discord
+          <img src="/graphics/icon-discord.svg" />{' '}
+          {!account ? 'Connect Wallet to join Discord' : 'Join the Discord'}
         </a>
       </div>
 
