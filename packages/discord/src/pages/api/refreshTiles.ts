@@ -94,6 +94,8 @@ const api: NextApiHandler = async (_req, res) => {
       console.log('discord api error', apiResponse);
       return res.json({ success: false });
     }
+  } else {
+    return res.json({ success: false });
   }
 };
 
