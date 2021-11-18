@@ -110,7 +110,7 @@ const UseCoinButton = () => {
         onRequestClose={closeCoinModal}
         style={modalStyles}
       >
-        <CoinDropModal />
+        <CoinDropModal closeModal={closeCoinModal} />
       </Modal>
       <style jsx>{`
         button.invite-button {
