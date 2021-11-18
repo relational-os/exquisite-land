@@ -60,11 +60,13 @@ const Header = () => {
             &nbsp;&nbsp;&nbsp;Land
           </div>
           <div className="spacer"></div>
-          <div>
+          <div style={{ display: 'none' }}>
             <a href="">&#x3e; What is this land?</a>
           </div>
           <div>
-            <a href="">&#x3e; Frequently Asked</a>
+            <a href="" style={{ display: 'none' }}>
+              &#x3e; Frequently Asked
+            </a>
           </div>
         </div>
 

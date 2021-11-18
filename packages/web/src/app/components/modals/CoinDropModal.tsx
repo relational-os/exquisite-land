@@ -57,7 +57,7 @@ const CoinDropModal = ({ onClaim }: { onClaim?: () => void }) => {
     if (tx && !error) {
       console.log('tx', tx);
       useTransactionsStore.getState().addTransaction({
-        title: `Claimed coin for tile [${x},${y}]`,
+        title: `Claimed tile [${x},${y}]`,
         hash: tx,
         status: 'pending',
         date: new Date(),
