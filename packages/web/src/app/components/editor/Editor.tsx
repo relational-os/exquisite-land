@@ -485,6 +485,22 @@ const Editor = ({
               rows={rows}
             ></EditorPreview>
           </div>
+
+          <div className="canvas-instructions">
+            <p>exquisite tips for success:</p>
+            <ol>
+              <li>extend what your neighbors have drawn</li>
+              <li>give new neighbors things to play with</li>
+              <li>
+                if you get stuck,{' '}
+                <a href="https://discord.gg/pma4YtD6xW" target="_blank">
+                  ask the Discord
+                </a>
+                !
+              </li>
+            </ol>
+            <img src="/graphics/graphic-playitforward.svg" />
+          </div>
         </div>
       )}
 
@@ -616,6 +632,42 @@ const Editor = ({
           display: grid;
           grid-template-columns: repeat(32, 1fr);
           background: #fff;
+        }
+
+        .canvas-instructions {
+          position: relative;
+          width: 288px;
+          margin-top: 1.1rem;
+          margin-left: calc(1rem + 4px);
+          border: 1px solid #444;
+          color: #ddd;
+          padding: 0.5rem 0;
+          font-size: 0.9rem;
+          border-radius: 2px;
+        }
+        .canvas-instructions p {
+          color: #ffe131;
+          text-align: center;
+          font-size: 1rem;
+        }
+        .canvas-instructions ol {
+          margin-bottom: 2.5rem;
+        }
+        .canvas-instructions ol li {
+          margin-bottom: 0.5rem;
+        }
+        .canvas-instructions a {
+          color: #ddd;
+          border-bottom: 1px dotted #ddd;
+          text-decoration: none;
+        }
+        .canvas-instructions img {
+          position: absolute;
+          bottom: -73px;
+          left: 0;
+          right: 0;
+          height: 90px;
+          margin: 0 auto;
         }
 
         .tool-container {
