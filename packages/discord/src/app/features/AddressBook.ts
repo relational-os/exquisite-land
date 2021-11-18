@@ -13,3 +13,8 @@ export const EXQUISITE_LAND_CONTRACT_ADDRESS = isProd
 export const LAND_GRANTER_CONTRACT_ADDRESS = isProd
   ? AddressBook.landGranter
   : AddressBookDev.landGranter;
+
+export const DISCORD_CHANNELS = {
+  'terra-masu': '888518144346427392',
+  'bot-testing': '910957967849967619'
+};

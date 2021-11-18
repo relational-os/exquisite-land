@@ -7,6 +7,7 @@ import Discord, {
   MessageButton,
   MessageEmbed
 } from 'discord.js';
+
 const client = new Discord.Client({
   intents: [
     Intents.FLAGS.GUILDS,
@@ -84,13 +85,14 @@ client.on('ready', () => {
   console.log('ready!');
 });
 
-function sendMessageWithImage(content: string, imageUrl: string) {
-  // channel: terra-masu
-  const channel = client.channels.cache.get('888518144346427392');
+function sendMessageWithImage(
+  channelId: string,
+  content: string,
+  imageUrl: string
+) {
+  const channel = client.channels.cache.get(channelId);
   if (channel) {
     if (channel.type == 'GUILD_TEXT') {
-      // let testurl =
-      // 'http://localhost:3001/api/tiles/terramasu/7/7/image?scale=500';
       // @ts-ignore
       return channel.send({
         content: content,
@@ -101,12 +103,8 @@ function sendMessageWithImage(content: string, imageUrl: string) {
   }
 }
 
-function sendMessage(content: string) {
-  // fails if client.on(ready) hasn't fired yet
-
-  const CHANNEL_ID = '888518144346427392';
-
-  const channel = client.channels.cache.get(CHANNEL_ID);
+function sendMessage(channelId: string, content: string) {
+  const channel = client.channels.cache.get(channelId);
   if (channel) {
     console.log({ channel });
     if (channel.type == 'GUILD_TEXT') {
