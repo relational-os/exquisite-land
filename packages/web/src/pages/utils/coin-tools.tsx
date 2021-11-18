@@ -13,7 +13,7 @@ const CoinTools = () => {
         <>
           <CreateSeed />
           <InviteNeighbors />
-          <CoinDrop />
+          <CoinDrop closeModal={() => {}} />
         </>
       ) : (
         'Connect Wallet to start'
