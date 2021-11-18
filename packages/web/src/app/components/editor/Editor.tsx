@@ -226,9 +226,7 @@ const Editor = ({
             <div className="buttons">
               <Button onClick={onCancelPublish}>Cancel</Button>
               <ButtonSuccess onClick={onConfirmPublish}>
-                &nbsp;&nbsp;
                 <img src="/graphics/icon-mint.svg" className="mint" /> Mint
-                &nbsp;&nbsp;
               </ButtonSuccess>
             </div>
           </>
@@ -254,9 +252,10 @@ const Editor = ({
             align-items: center;
             gap: 1rem;
           }
-          .buttons .mint {
+          .mint {
             width: 16px;
-            margin-bottom: -2px;
+            margin-top: 3px;
+            margin-right: 8px;
           }
           .preview {
             width: 45%;
@@ -494,7 +493,9 @@ const Editor = ({
           <Button onClick={handleClear}>Clear</Button>
           <div className="canvas-footer-right">
             <Button onClick={closeModal}>Cancel</Button>
-            <ButtonSuccess onClick={onPublishClick}>Mint</ButtonSuccess>
+            <ButtonSuccess onClick={onPublishClick}>
+              <img src="/graphics/icon-mint.svg" className="mint" /> Mint
+            </ButtonSuccess>
           </div>
         </div>
       )}
@@ -688,6 +689,12 @@ const Editor = ({
           height: 8px;
           background: #000;
         }
+        .mint {
+          width: 16px;
+          margin-top: 3px;
+          margin-right: 6px;
+        }
+
         @media (max-width: 768px) {
           .canvas {
             width: 100%;
