@@ -69,8 +69,8 @@ const ConnectWalletButton = () => {
         }
         .account {
           font-size: 24px;
-          padding: 8px 1rem;
-          color: white;
+          padding: 10px 0.7rem;
+          color: #fff;
           display: flex;
           justify-content: center;
         }

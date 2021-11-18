@@ -183,6 +183,8 @@ const Header = () => {
           align-items: center;
           gap: 1rem;
           z-index: 111;
+          user-select: none;
+          -webkit-touch-callout: none;
         }
         .logo {
           font-size: 32px;
