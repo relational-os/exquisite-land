@@ -124,6 +124,7 @@ const CanvasTile = ({
         <div className="coords">
           [{x},{y}]
         </div>
+        {isOwned && <div className="owned">Your tile!</div>}
         <div className="deets">
           {!isInvitable && tile?.owner && (
             <div className="owner">
@@ -140,7 +141,6 @@ const CanvasTile = ({
               )}
             </div>
           )}
-          {isOwned && <div className="owned">Your tile!</div>}
           {isInvitable && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
@@ -195,12 +195,33 @@ const CanvasTile = ({
           cursor: grab;
 
           ${isOwned &&
-          'background-image: linear-gradient(-45deg, #ffe761, #fb922b); '};
+          'background-image: linear-gradient(-45deg, #ffe761, #fb922b); cursor: pointer; '};
         }
         .tile-image {
           width: 100%;
           height: auto;
           image-rendering: pixelated;
+        }
+
+        .owned {
+          position: absolute;
+          bottom: 2.8rem;
+          left: 1.4rem;
+          padding: 0.2rem 0.5rem;
+          background: #fff;
+        }
+
+        .owned:before {
+          content: '';
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          border-left: 12px solid #fff;
+          border-right: 6px solid transparent;
+          border-top: 6px solid #fff;
+          border-bottom: 12px solid transparent;
+          left: 36px;
+          bottom: -12px;
         }
 
         svg {
