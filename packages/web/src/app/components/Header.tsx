@@ -4,8 +4,10 @@ import UseCoinButton from './UseCoinButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
 import useTransactionsStore from '@app/features/useTransactionsStore';
+import { useWallet } from '@gimmixorg/use-wallet';
 
 const Header = () => {
+  const { account } = useWallet();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
   const [isActivityFeedOpen, setActivityFeedOpen] = useState(false);
@@ -127,11 +129,13 @@ const Header = () => {
 
         <div className="menu-items social">
           <div className="spacer"></div>
-          <div>
-            <a href="https://discord.gg/pma4YtD6xW" target="_blank">
-              <img src="/graphics/icon-discord.svg" /> Discord
-            </a>
-          </div>
+          {account && (
+            <div>
+              <a href="https://discord.gg/pma4YtD6xW" target="_blank">
+                <img src="/graphics/icon-discord.svg" /> Discord
+              </a>
+            </div>
+          )}
           <div>
             <a href="https://twitter.com/exquisiteland" target="_blank">
               <img src="/graphics/icon-twitter.svg" /> Twitter
@@ -167,7 +171,7 @@ const Header = () => {
         <DiscordMessagesModal isOpen={isDiscordFeedOpen} />
         <a
           href="https://discord.gg/pma4YtD6xW"
-          className="join"
+          className={`join ${!account ? 'join-disabled' : ''}`}
           target="_blank"
         >
           <img src="/graphics/icon-discord.svg" /> Join the Discord
@@ -384,6 +388,16 @@ const Header = () => {
 
         .discord-feed a.join img {
           width: 24px;
+        }
+
+        .discord-feed a.join-disabled {
+          background-color: hsl(235, 7%, 50%);
+          pointer-events: none;
+          color: #999
+        }
+
+        .join-disabled img {
+          opacity: 0.5;
         }
 
         .activity-feed {
