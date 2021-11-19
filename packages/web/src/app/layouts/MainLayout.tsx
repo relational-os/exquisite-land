@@ -13,6 +13,19 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         <title>Exquisite Land</title>
 
         <link rel="shortcut icon" href="/favicon.ico" />
+
+        <meta name="og:title" content="Exquisite Land" />
+        <meta name="og:url" content="https://exquisite.land/" />
+        <meta
+          name="og:description"
+          content="Right-click, save-as. And remember to play it forward."
+        />
+        <meta
+          name="og:image"
+          content="https://exquisite.land/graphics/exquisite-land.png"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content="@exquisiteland" />
       </Head>
       <Header />
       <main>{children}</main>
