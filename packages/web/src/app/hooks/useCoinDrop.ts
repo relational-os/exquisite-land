@@ -54,7 +54,7 @@ export const useCoinDrop = (
 
   const dropzone = useDropzone({
     onDrop,
-    accept: 'image/png',
+    accept: 'image/png,image/jpeg',
     multiple: false,
     // noClick: true,
     preventDropOnDocument: false
