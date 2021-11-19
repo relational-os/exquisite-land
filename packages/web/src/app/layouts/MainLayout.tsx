@@ -18,7 +18,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         <meta name="og:url" content="https://exquisite.land/" />
         <meta
           name="og:description"
-          content="Right-click, save-as. And remember to play it forward."
+          content="A collaborative drawing game where we dream a canvas together. Right-click, save as. And remember to play it forward."
         />
         <meta
           name="og:image"
