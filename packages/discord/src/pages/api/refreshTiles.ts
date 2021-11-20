@@ -93,11 +93,7 @@ const api: NextApiHandler = async (_req, res) => {
     console.log(
       `Sending tile notification for ${toDeliver.id} with image ${pngUrl}`
     );
-    let apiResponse = await sendMessageWithImage(
-      channelId,
-      message
-      pngUrl
-    );
+    let apiResponse = await sendMessageWithImage(channelId, message, pngUrl);
 
     // console.log({ apiResponse });
     // let apiResponse = { id: true }; // for debugging
