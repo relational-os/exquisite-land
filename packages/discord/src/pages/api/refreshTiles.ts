@@ -95,7 +95,7 @@ const api: NextApiHandler = async (_req, res) => {
     );
     let apiResponse = await sendMessageWithImage(
       channelId,
-      `a tile is minted: ${toDeliver.id}`,
+      message
       pngUrl
     );
 
