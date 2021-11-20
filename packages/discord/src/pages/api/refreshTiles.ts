@@ -6,6 +6,7 @@ import {
   DISCORD_CHANNELS,
   LAND_GRANTER_CONTRACT_ADDRESS
 } from '@app/features/AddressBook';
+import { getENSName } from '@app/features/useENSorAddress';
 
 const api: NextApiHandler = async (_req, res) => {
   const data = await getAllTiles();
@@ -67,6 +68,21 @@ const api: NextApiHandler = async (_req, res) => {
 
     const pngUrl = `https://exquisite.land/api/tiles/terramasu/${toDeliver.x}/${toDeliver.y}/img?size=500`;
 
+    const resolvedName = await getENSName(toDeliver.owner);
+
+    let message;
+    if (resolvedName) {
+      message = `tile ${toDeliver.id} at [${toDeliver.x}, ${toDeliver.y}] minted by ${resolvedName}`;
+    } else {
+      message = `tile ${toDeliver.id} at [${toDeliver.x}, ${
+        toDeliver.y
+      }] has been minted by ${`${toDeliver.owner.slice(
+        0,
+        8
+      )}...${toDeliver.owner.slice(-6)}`}`;
+    }
+    console.log({ message });
+
     console.log(
       `Sending tile notification for ${toDeliver.id} with image ${pngUrl}`
     );
@@ -76,7 +92,8 @@ const api: NextApiHandler = async (_req, res) => {
       pngUrl
     );
 
-    console.log({ apiResponse });
+    // console.log({ apiResponse });
+    // let apiResponse = { id: true }; // for debugging
 
     // TODO: improve discord API response error handling
     if (apiResponse.id) {
