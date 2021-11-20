@@ -82,14 +82,11 @@ const api: NextApiHandler = async (_req, res) => {
 
     let message;
     if (resolvedName) {
-      message = `the tile at [${toDeliver.x}, ${toDeliver.y}] has been minted by ${resolvedName}`;
+      message = `${resolvedName} minted tile [${toDeliver.x}, ${toDeliver.y}]`;
     } else {
-      message = `the tile at [${toDeliver.x}, ${
+      message = `${toDeliver.owner.slice(-6)} minted tile [${toDeliver.x}, ${
         toDeliver.y
-      }] has been minted by ${`${toDeliver.owner.slice(
-        0,
-        8
-      )}...${toDeliver.owner.slice(-6)}`}`;
+      }]`;
     }
     console.log({ message });
 
