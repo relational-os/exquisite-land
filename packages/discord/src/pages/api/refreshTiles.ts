@@ -11,6 +11,16 @@ import { getENSName } from '@app/features/useENSorAddress';
 const api: NextApiHandler = async (_req, res) => {
   const data = await getAllTiles();
 
+  // @ts-ignore
+  // await prisma.tile.updateMany({
+  //   where: {
+  //     discordSent: false
+  //   },
+  //   data: {
+  //     discordSent: true
+  //   }
+  // });
+
   for (const tile of data?.tiles) {
     // @ts-ignore
     const foundTile = await prisma.tile.findUnique({
@@ -72,9 +82,9 @@ const api: NextApiHandler = async (_req, res) => {
 
     let message;
     if (resolvedName) {
-      message = `tile ${toDeliver.id} at [${toDeliver.x}, ${toDeliver.y}] minted by ${resolvedName}`;
+      message = `the tile at [${toDeliver.x}, ${toDeliver.y}] has been minted by ${resolvedName}`;
     } else {
-      message = `tile ${toDeliver.id} at [${toDeliver.x}, ${
+      message = `the tile at [${toDeliver.x}, ${
         toDeliver.y
       }] has been minted by ${`${toDeliver.owner.slice(
         0,
