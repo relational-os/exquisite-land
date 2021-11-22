@@ -321,7 +321,7 @@ const Editor = ({
               {peek.map(({ offsetX, offsetY }) => (
                 <img
                   key={`${offsetX},${offsetY}`}
-                  src={`/api/tiles/terramasu/${x + offsetX}/${y + offsetY}/img`}
+                  src={`/api/tiles/terramasu/${x + offsetX}/${y + offsetY}/svg`}
                   style={{
                     left: `${100 * offsetX}%`,
                     top: `${100 * offsetY}%`
