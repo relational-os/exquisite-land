@@ -1,5 +1,4 @@
 import { NextApiHandler } from 'next';
-import sharp from 'sharp';
 import { gql, request } from 'graphql-request';
 import { generateTokenID } from '@app/features/TileUtils';
 import { GRAPH_URL } from '@app/features/AddressBook';
