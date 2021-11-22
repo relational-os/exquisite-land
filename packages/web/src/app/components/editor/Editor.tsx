@@ -326,6 +326,9 @@ const Editor = ({
                     left: `${100 * offsetX}%`,
                     top: `${100 * offsetY}%`
                   }}
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none';
+                  }}
                 />
               ))}
             </>
