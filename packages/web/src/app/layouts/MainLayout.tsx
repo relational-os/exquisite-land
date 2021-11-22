@@ -18,7 +18,9 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         <meta name="og:url" content="https://exquisite.land/" />
         <meta
           name="og:description"
-          content="A collaborative drawing game where we dream a canvas together. Right-click, save as. And remember to play it forward."
+          content="Exquisite Land is a collaborative NFT drawing game where we dream a canvas together. Rendered with gas-free on-chain pixels.
+
+          Find a coin. Right-click, save as. And remember to play it forward."
         />
         <meta
           name="og:image"
