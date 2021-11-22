@@ -22,30 +22,9 @@ const api: NextApiHandler = async (req, res) => {
 
   if (!tile) return res.status(404).end();
 
-  const sizeParam = parseInt(req.query.size as string);
-  let image;
-
-  if (sizeParam) {
-    // render with custom size
-    image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
-      density: 1024
-    })
-      .resize(sizeParam, sizeParam)
-      .png()
-      .toBuffer();
-  } else {
-    // render with defalut size
-    image = await sharp(Buffer.from(tile.svg, 'utf-8'), {
-      density: 1024
-    })
-      .resize(512, 512)
-      .png()
-      .toBuffer();
-  }
-
-  res.setHeader('Content-Type', 'image/png');
+  res.setHeader('Content-Type', 'image/svg+xml');
   res.setHeader('Cache-Control', 'public, s-max-age=31536000');
-  return res.send(image);
+  return res.send(tile.svg);
 };
 
 export default api;

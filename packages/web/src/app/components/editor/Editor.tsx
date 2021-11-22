@@ -4,7 +4,6 @@ import useEditor, { Pixels } from '@app/hooks/use-editor';
 import { Tool } from '@app/features/State';
 import Icon from './Icon';
 import EditorPreview from './EditorPreview';
-import TileSVG from '../canvas/TileSVG';
 import update from 'immutability-helper';
 import { useDebouncedCallback } from 'use-debounce';
 import { getSVGFromPixels } from '@app/features/TileUtils';
@@ -20,10 +19,22 @@ interface EditorProps {
 }
 
 const MAX = 32;
-const PIXEL_SIZE = 18;
+const PIXEL_SIZE = 16;
 
 const columns = Array.from(Array(MAX).keys());
 const rows = Array.from(Array(MAX).keys());
+
+type TilePeek = { offsetX: number; offsetY: number };
+const peek: TilePeek[] = [];
+for (let offsetY = -1; offsetY <= 1; offsetY++) {
+  for (let offsetX = -1; offsetX <= 1; offsetX++) {
+    if (offsetX === 0 && offsetY === 0) {
+      // exclude the tile we're drawing
+      continue;
+    }
+    peek.push({ offsetX, offsetY });
+  }
+}
 
 const EMPTY: Pixels = columns.map(() => rows.map(() => 13));
 
@@ -271,123 +282,58 @@ const Editor = ({
   return (
     <div className="editor">
       <div className="canvas-peek">
-        <div
-          className="canvas"
-          draggable={false}
-          onPointerDown={(e) => {
-            setDrawing(true);
-          }}
-          onPointerUp={() => setDrawing(false)}
-          onMouseLeave={() => setDrawing(false)}
-          onPointerLeave={() => setDrawing(false)}
-        >
-          {columns.map((y) => {
-            return rows.map((x) => {
-              return (
-                <div
-                  id={`${x}_${y}`}
-                  key={`${x}_${y}`}
-                  className="box"
-                  style={{ backgroundColor: palette[pixels?.[x]?.[y]] }}
-                  onPointerEnter={(e) => onMouseEnter(e, x, y)}
-                  onMouseDown={(e) => onMouseEnter(e, x, y)}
-                  onMouseOver={(e) => onMouseEnter(e, x, y)}
-                  onTouchMove={(e) => {
-                    touchEnter(e);
+        <div className="canvas-neighbors">
+          <div
+            className="canvas"
+            draggable={false}
+            onPointerDown={(e) => {
+              setDrawing(true);
+            }}
+            onPointerUp={() => setDrawing(false)}
+            onMouseLeave={() => setDrawing(false)}
+            onPointerLeave={() => setDrawing(false)}
+          >
+            {columns.map((y) => {
+              return rows.map((x) => {
+                return (
+                  <div
+                    id={`${x}_${y}`}
+                    key={`${x}_${y}`}
+                    className="box"
+                    style={{ backgroundColor: palette[pixels?.[x]?.[y]] }}
+                    onPointerEnter={(e) => onMouseEnter(e, x, y)}
+                    onMouseDown={(e) => onMouseEnter(e, x, y)}
+                    onMouseOver={(e) => onMouseEnter(e, x, y)}
+                    onTouchMove={(e) => {
+                      touchEnter(e);
+                    }}
+                    onTouchStart={(e) => {
+                      touchEnter(e);
+                    }}
+                  ></div>
+                );
+              });
+            })}
+          </div>
+
+          {!hideMinimap ? (
+            <>
+              {peek.map(({ offsetX, offsetY }) => (
+                <img
+                  key={`${offsetX},${offsetY}`}
+                  src={`/api/tiles/terramasu/${x + offsetX}/${y + offsetY}/svg`}
+                  style={{
+                    left: `${100 * offsetX}%`,
+                    top: `${100 * offsetY}%`
                   }}
-                  onTouchStart={(e) => {
-                    touchEnter(e);
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none';
                   }}
-                ></div>
-              );
-            });
-          })}
+                />
+              ))}
+            </>
+          ) : null}
         </div>
-
-        {!hideMinimap && (
-          <>
-            <div className="peek-north">
-              <TileSVG
-                x={x - 1}
-                y={y - 1}
-                viewbox={'30 29.5 32 32'}
-                style={{
-                  height: `${PIXEL_SIZE * 2}px`,
-                  width: `${PIXEL_SIZE * 2}px`
-                }}
-                svgWidth={`${PIXEL_SIZE * 32}px`}
-              ></TileSVG>
-              <TileSVG
-                x={x}
-                y={y - 1}
-                viewbox={'0 29.5 32 32'}
-                style={{
-                  height: `${PIXEL_SIZE * 2}px`,
-                  width: `${PIXEL_SIZE * 32}px`
-                }}
-              ></TileSVG>
-              <TileSVG
-                x={x + 1}
-                y={y - 1}
-                viewbox={'0 29.5 32 32'}
-                style={{
-                  height: `${PIXEL_SIZE * 2}px`,
-                  width: `${PIXEL_SIZE * 2}px`
-                }}
-                svgWidth={`${PIXEL_SIZE * 32}px`}
-              ></TileSVG>
-            </div>
-
-            <div className="peek-south">
-              <TileSVG
-                x={x - 1}
-                y={y + 1}
-                viewbox={'30 -0.5 32 32'}
-                style={{
-                  height: `${PIXEL_SIZE * 2}px`,
-                  width: `${PIXEL_SIZE * 2}px`
-                }}
-                svgHeight={`${PIXEL_SIZE * 32}px`}
-              ></TileSVG>
-              <TileSVG
-                x={x}
-                y={y + 1}
-                viewbox={'0 -0.5 32 32'}
-                style={{
-                  height: `${PIXEL_SIZE * 2}px`,
-                  width: `${PIXEL_SIZE * 32}px`
-                }}
-              ></TileSVG>
-              <TileSVG
-                x={x + 1}
-                y={y + 1}
-                viewbox={'0 -0.5 32 32'}
-                style={{
-                  height: `${PIXEL_SIZE * 2}px`,
-                  width: `${PIXEL_SIZE * 2}px`
-                }}
-                svgHeight={`${PIXEL_SIZE * 32}px`}
-              ></TileSVG>
-            </div>
-
-            <div className="peek-west">
-              <TileSVG
-                x={x - 1}
-                y={y}
-                viewbox={'30 -0.5 32 32'}
-                svgHeight={`${PIXEL_SIZE * 32}px`}
-              ></TileSVG>
-            </div>
-            <div className="peek-east">
-              <TileSVG
-                x={x + 1}
-                y={y}
-                viewbox={'0 -0.5 32 32'}
-                svgHeight={`${PIXEL_SIZE * 32}px`}
-              ></TileSVG>
-            </div>
-          </>
-        )}
       </div>
 
       <div className="canvas-aside-left">
@@ -592,30 +538,19 @@ const Editor = ({
         }
 
         .canvas-peek {
-          display: ${!hideMinimap ? 'grid' : 'block'};
-          grid-template-columns: 36px auto 36px;
-          grid-template-rows: 36px auto 31px;
-          gap: 0px 0px;
-          grid-template-areas:
-            'peek-north peek-north peek-north'
-            'peek-west canvas peek-east'
-            'peek-south peek-south peek-south';
+          width: ${PIXEL_SIZE * (MAX + 8)}px;
+          height: ${PIXEL_SIZE * (MAX + 8)}px;
+          padding: ${PIXEL_SIZE * 4}px;
+          overflow: hidden;
           background: #333;
         }
-        .peek-north {
-          grid-area: peek-north;
-          display: flex;
+        .canvas-neighbors {
+          position relative;
         }
-        .peek-south {
-          grid-area: peek-south;
-          display: flex;
-          margin-top: -4px;
-        }
-        .peek-west {
-          grid-area: peek-west;
-        }
-        .peek-east {
-          grid-area: peek-east;
+        .canvas-neighbors > img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
         }
 
         .preview-minimap {
