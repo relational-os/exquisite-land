@@ -3,17 +3,17 @@ import { LandGranter__factory } from '@sdk/factories/LandGranter__factory';
 import sharp from 'sharp';
 import crypto from 'crypto';
 
-let basePath = process.cwd();
-if (process.env.NODE_ENV === 'production') {
-  basePath = path.join(process.cwd(), '.next/server/chunks');
-}
-path.resolve(basePath, 'fonts', 'fonts.conf');
-path.resolve(basePath, 'fonts', 'VT323-Regular.ttf');
+// let basePath = process.cwd();
+// if (process.env.NODE_ENV === 'production') {
+//   basePath = path.join(process.cwd(), '.next/server/chunks');
+// }
+// path.resolve(basePath, 'fonts', 'fonts.conf');
+// path.resolve(basePath, 'fonts', 'VT323-Regular.ttf');
 
 // @ts-ignore
 import steggy from 'steggy';
 import { Wallet } from '@ethersproject/wallet';
-import path from 'path';
+// import path from 'path';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import { getCoordinates } from '@app/features/TileUtils';
 import { parse, stringify } from 'svgson';
@@ -177,7 +177,7 @@ export const generateCoin = async (
       },
       {
         input: Buffer.from(
-          `<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg"><style type="text/css">@font-face { font-family: VT323; src: url(data:application/font-woff2;charset=utf-8;base64,${fontWoffB64String}); }</style><text fill="#E68D3E" xml:space="preserve" style="white-space: pre" font-family="VT323" font-size="72" letter-spacing="0em" x="50%" y="64%" dominant-baseline="middle" text-anchor="middle">[${x},${y}]</text></svg>`
+          `<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg"><style type="text/css">@font-face { font-family: VT323; src: url(${fontWoffB64String}); }</style><text fill="#E68D3E" xml:space="preserve" style="white-space: pre" font-family="VT323" font-size="72" letter-spacing="0em" x="50%" y="64%" dominant-baseline="middle" text-anchor="middle">[${x},${y}]</text></svg>`
         )
       }
     ])
