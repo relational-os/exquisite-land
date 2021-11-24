@@ -5,9 +5,8 @@ import { Tool } from '@app/features/State';
 import Icon from './Icon';
 import EditorPreview from './EditorPreview';
 import update from 'immutability-helper';
-import { useDebouncedCallback } from 'use-debounce';
 import { getSVGFromPixels } from '@app/features/TileUtils';
-import { useLocalStorage } from 'react-use';
+import { usePixels } from './usePixels';
 
 interface EditorProps {
   x: number;
@@ -46,26 +45,10 @@ const Editor = ({
   hideMinimap,
   refreshCanvas
 }: EditorProps) => {
+  usePixels(x, y);
   const [drawing, setDrawing] = useState(false);
-  // TODO: add contract address or other ID to localStorage key so cache is cleared per canvas
-  const [pixelsCache, setPixelsCache] = useLocalStorage<Pixels>(
-    `${x},${y}`,
-    EMPTY
-  );
-  const [pixels, setPixelsState] = useState<Pixels>(pixelsCache || EMPTY);
-  const [pixelsHistory, setPixelsHistory] = useState<Pixels[]>([
-    pixelsCache || EMPTY
-  ]);
-  const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
-    setPixelsHistory([newPixels, ...pixelsHistory]);
-  }, 500);
-  // debounce because mutating localStorage during a click-and-drag is a little intense
-  const setPixelsCacheDebounced = useDebouncedCallback(setPixelsCache, 200);
 
-  const setPixels = (newPixels: Pixels) => {
-    setPixelsState(newPixels);
-    setPixelsCacheDebounced(newPixels);
-  };
+  const { pixels, setPixels, undo, canUndo } = usePixels(x, y);
 
   const {
     palette,
@@ -117,7 +100,6 @@ const Editor = ({
 
   const handleClear = () => {
     if (confirm('Are you sure you want to erase your drawing?')) {
-      setPixelsHistory([EMPTY]);
       setPixels(EMPTY);
     }
   };
@@ -136,14 +118,12 @@ const Editor = ({
       elem.setAttribute('style', `background-color: ${palette[activeColor]}`);
       const newPixels = update(pixels, { [x]: { [y]: { $set: activeColor } } });
       setPixels(newPixels);
-      addPixelsToHistory(newPixels);
     } else if (activeTool == Tool.EYEDROPPER) {
       setActiveColor(palette[pixels[x][y]]);
       setActiveTool(prevTool);
     } else if (activeTool == Tool.BUCKET) {
       const newPixels = paintNeighbors(activeColor, pixels[x][y], x, y, pixels);
       setPixels(newPixels);
-      addPixelsToHistory(newPixels);
     }
   };
 
@@ -340,6 +320,7 @@ const Editor = ({
         <div className="tool-container">
           <div className="toolbar">
             <button
+              type="button"
               onClick={(e) => setActiveTool(Tool.BRUSH)}
               className={
                 activeTool == Tool.BRUSH ? `active brush` : `` + ' brush'
@@ -355,6 +336,7 @@ const Editor = ({
               />
             </button>
             <button
+              type="button"
               onClick={(e) => setActiveTool(Tool.BUCKET)}
               className={
                 activeTool == Tool.BUCKET ? `active bucket` : `` + ' bucket'
@@ -369,6 +351,7 @@ const Editor = ({
               />
             </button>
             <button
+              type="button"
               onClick={(e) => setActiveTool(Tool.EYEDROPPER)}
               className={
                 activeTool == Tool.EYEDROPPER
@@ -385,13 +368,10 @@ const Editor = ({
               />
             </button>
             <button
+              type="button"
               className="undo"
-              disabled={!pixelsHistory.length || pixelsHistory[0] === EMPTY}
-              onClick={() => {
-                const [_pixels, ...prevPixelsHistory] = pixelsHistory;
-                setPixelsHistory(prevPixelsHistory);
-                setPixels(prevPixelsHistory[0] || EMPTY);
-              }}
+              disabled={!canUndo}
+              onClick={undo}
             >
               <Icon
                 name="undo"
