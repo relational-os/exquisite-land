@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { gzipSync, gunzipSync } from 'zlib';
 import { Pixels } from '@app/hooks/use-editor';
 import { useDebouncedCallback } from 'use-debounce';
