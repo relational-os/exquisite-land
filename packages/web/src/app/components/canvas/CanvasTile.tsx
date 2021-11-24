@@ -28,7 +28,7 @@ const CanvasTile = ({
 }) => {
   const { tile } = useFetchTile(x, y);
 
-  const { account } = useWallet();
+  const { account, provider } = useWallet();
 
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
@@ -129,14 +129,17 @@ const CanvasTile = ({
           {!isInvitable && tile?.owner && (
             <div className="owner">
               {ownedTransaction ? (
-                <ENSName address={account} provider={getEthJsonRpcProvider} />
+                <ENSName
+                  address={account}
+                  provider={provider ? provider : getEthJsonRpcProvider}
+                />
               ) : tile.owner.id.toLowerCase() ==
                 LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase() ? (
                 'UNCLAIMED'
               ) : (
                 <ENSName
                   address={tile.owner.id}
-                  provider={getEthJsonRpcProvider}
+                  provider={provider ? provider : getEthJsonRpcProvider}
                 />
               )}
             </div>

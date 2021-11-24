@@ -6,7 +6,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 const ConnectWalletButton = () => {
-  const { connect, account, web3Modal } = useWallet();
+  const { connect, account, web3Modal, provider } = useWallet();
 
   const providerOptions = {
     walletconnect: {
@@ -40,7 +40,7 @@ const ConnectWalletButton = () => {
             address={account}
             displayType={AddressDisplayEnum.FIRST4_LAST4}
             withEllipses={true}
-            provider={getEthJsonRpcProvider}
+            provider={provider ? provider : getEthJsonRpcProvider}
           />
         </div>
       ) : (
