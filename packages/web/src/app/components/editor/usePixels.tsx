@@ -23,16 +23,14 @@ export const usePixels = (x: number, y: number) => {
   );
 
   const [pixels, setPixelsState] = useState<Pixels>(
-    pixelsHistory ? pixelsHistory[0] : emptyTile
+    pixelsHistory?.[0] || emptyTile
   );
 
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
-    console.log('adding pixels to history');
     setPixelsHistory([newPixels, ...(pixelsHistory || [emptyTile])]);
   }, 500);
 
   const setPixels = (newPixels: Pixels) => {
-    console.log('setting pixels');
     setPixelsState(newPixels);
     addPixelsToHistory(newPixels);
   };
