@@ -19,7 +19,7 @@ const api: NextApiHandler = async (req, res) => {
     `
   );
 
-  if (!tile) return res.status(404).end();
+  if (!tile?.svg) return res.status(404).end();
 
   res.setHeader('Content-Type', 'image/svg+xml');
   res.setHeader('Cache-Control', 'public, s-max-age=31536000');

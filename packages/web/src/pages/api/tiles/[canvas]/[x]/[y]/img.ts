@@ -20,7 +20,7 @@ const api: NextApiHandler = async (req, res) => {
     `
   );
 
-  if (!tile) return res.status(404).end();
+  if (!tile?.svg) return res.status(404).end();
 
   const sizeParam = parseInt(req.query.size as string);
   let image;
