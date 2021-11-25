@@ -10,6 +10,8 @@ import {
 import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
+import { useProgressTiles } from './useProgressTiles';
+import { ProgressTile } from './ProgressTile';
 
 const CanvasTile = ({
   x,
@@ -27,6 +29,8 @@ const CanvasTile = ({
   style?: React.CSSProperties;
 }) => {
   const { tile } = useFetchTile(x, y);
+  const { getProgressTile } = useProgressTiles();
+  const progressTile = getProgressTile(x, y);
 
   const { account, provider } = useWallet();
 
@@ -120,6 +124,7 @@ const CanvasTile = ({
           className="tile-image"
         ></img>
       )}
+      {progressTile ? <ProgressTile pixels={progressTile} /> : null}
       <div className="meta">
         <div className="coords">
           [{x},{y}]

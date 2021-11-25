@@ -115,6 +115,7 @@ const Canvas = () => {
   }, [wrapperRef, router.query]);
 
   const [isPanning, setPanning] = useState(false);
+
   return (
     <>
       <TransformWrapper

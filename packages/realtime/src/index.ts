@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
   socket.join('progress');
   socket.on('progress', (x, y, pixels) => {
     console.log('got progress, emitting', [x, y]);
-    io.to('progress').emit('progress', x, y, pixels);
+    socket.broadcast.to('progress').emit('progress', x, y, pixels);
   });
   socket.on('disconnect', () => {
     console.log('someone left');
