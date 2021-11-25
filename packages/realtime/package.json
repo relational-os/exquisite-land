@@ -1,0 +1,15 @@
+{
+  "name": "@exquisiteland/realtime",
+  "version": "0.3.2",
+  "private": true,
+  "scripts": {
+    "start": ""
+  },
+  "dependencies": {
+    "socket.io": "^4.4.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.5",
+    "utf-8-validate": "^5.0.7"
+  }
+}
