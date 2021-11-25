@@ -38,7 +38,6 @@ const attach = (attachment: any, name: any) =>
   new MessageAttachment(attachment, name);
 
 client.on('messageCreate', async (message) => {
-  console.log('messageCreate: message', message);
   if (!message.content.startsWith('!init')) return;
   await message.channel.send({
     embeds: [
