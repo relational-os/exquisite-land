@@ -3,3 +3,4 @@ node_modules
 package-lock.json
 packages/web/out
 packages/discord/data/*
+lerna-debug.log

@@ -1,0 +1,20 @@
+{
+  "name": "@exquisiteland/realtime",
+  "version": "0.3.2",
+  "private": true,
+  "main": "src",
+  "scripts": {
+    "dev": "ts-node src"
+  },
+  "dependencies": {
+    "socket.io": "^4.4.0",
+    "ts-node": "^10.4.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.5",
+    "utf-8-validate": "^5.0.7"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
+}
