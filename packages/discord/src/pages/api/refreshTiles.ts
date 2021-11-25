@@ -11,16 +11,6 @@ import { getENSName } from '@app/features/useENSorAddress';
 const api: NextApiHandler = async (_req, res) => {
   const data = await getAllTiles();
 
-  // @ts-ignore
-  // await prisma.tile.updateMany({
-  //   where: {
-  //     discordSent: false
-  //   },
-  //   data: {
-  //     discordSent: true
-  //   }
-  // });
-
   for (const tile of data?.tiles) {
     // @ts-ignore
     const foundTile = await prisma.tile.findUnique({
