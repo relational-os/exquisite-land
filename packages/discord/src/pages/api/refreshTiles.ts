@@ -93,14 +93,10 @@ const api: NextApiHandler = async (_req, res) => {
     console.log(
       `Sending tile notification for ${toDeliver.id} with image ${pngUrl}`
     );
-    let apiResponse = await sendMessageWithImage(channelId, message, pngUrl);
 
-    // console.log({ apiResponse });
-    // let apiResponse = { id: true }; // for debugging
-
-    // TODO: improve discord API response error handling
-    if (apiResponse.id) {
-      // @ts-ignore
+    try {
+      await sendMessageWithImage(channelId, message, pngUrl);
+      // update our db object with success state
       await prisma.tile.update({
         where: {
           id: toDeliver.id
@@ -110,8 +106,8 @@ const api: NextApiHandler = async (_req, res) => {
         }
       });
       return res.json({ success: true });
-    } else {
-      console.log('discord api error', apiResponse);
+    } catch (error) {
+      console.log('error', error);
       return res.json({ success: false });
     }
   } else {
