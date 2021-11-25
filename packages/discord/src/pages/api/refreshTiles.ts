@@ -71,7 +71,7 @@ const api: NextApiHandler = async (_req, res) => {
     const resolvedName = await getENSName(toDeliver.owner);
 
     let message;
-    if (resolvedName) {
+    if (resolvedName && false) {
       message = `${resolvedName} minted tile [${toDeliver.x}, ${toDeliver.y}]`;
     } else {
       message = `${toDeliver.owner.slice(-6)} minted tile [${toDeliver.x}, ${
