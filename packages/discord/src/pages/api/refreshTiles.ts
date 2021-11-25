@@ -12,7 +12,6 @@ const api: NextApiHandler = async (_req, res) => {
   const data = await getAllTiles();
 
   for (const tile of data?.tiles) {
-    // @ts-ignore
     const foundTile = await prisma.tile.findUnique({
       where: {
         id: tile.id
@@ -20,10 +19,8 @@ const api: NextApiHandler = async (_req, res) => {
     });
 
     if (foundTile) {
-      // @ts-ignore
       await prisma.tile.update({
         data: {
-          // @ts-ignore
           status: tile.status,
           svg: tile.svg
         },
@@ -37,7 +34,6 @@ const api: NextApiHandler = async (_req, res) => {
         data: {
           id: tile.id,
           discordSent: false,
-          // @ts-ignore
           svg: tile.svg,
           x: parseInt(tile.x),
           y: parseInt(tile.y),
@@ -48,12 +44,10 @@ const api: NextApiHandler = async (_req, res) => {
     }
   }
 
-  // @ts-ignore
   let queuedNotifications = await prisma.tile.findMany({
     where: {
       discordSent: false,
       NOT: {
-        // @ts-ignore
         owner: {
           in: [LAND_GRANTER_CONTRACT_ADDRESS]
         }
