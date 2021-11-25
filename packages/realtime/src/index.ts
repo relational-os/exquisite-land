@@ -21,11 +21,22 @@ const io = new Server<
   ClientToServerEvents,
   InterServerEvents,
   SocketData
->(port);
+>(port, {
+  cors: {
+    // TODO: put in env
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+});
 
 io.on('connection', (socket) => {
+  console.log('someone joined');
   socket.join('progress');
   socket.on('progress', (x, y, pixels) => {
+    console.log('got progress, emitting', [x, y]);
     io.to('progress').emit('progress', x, y, pixels);
+  });
+  socket.on('disconnect', () => {
+    console.log('someone left');
   });
 });

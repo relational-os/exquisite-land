@@ -4,6 +4,7 @@ import { Pixels } from '@app/hooks/use-editor';
 import { useDebouncedCallback } from 'use-debounce';
 import { useLocalStorage } from 'react-use';
 import { EXQUISITE_LAND_CONTRACT_ADDRESS } from '../../features/AddressBook';
+import { socket } from '@app/realtime';
 
 const tileSize = 32;
 const tileColumns = Array.from(Array(tileSize).keys());
@@ -28,6 +29,7 @@ export const usePixels = (x: number, y: number) => {
 
   const addPixelsToHistory = useDebouncedCallback((newPixels: Pixels) => {
     setPixelsHistory([newPixels, ...(pixelsHistory || [emptyTile])]);
+    socket.emit('progress', x, y, newPixels);
   }, 500);
 
   const setPixels = (newPixels: Pixels) => {
@@ -37,8 +39,10 @@ export const usePixels = (x: number, y: number) => {
 
   const undo = () => {
     const [_pixels, ...prevPixelsHistory] = pixelsHistory || [emptyTile];
+    const newPixels = prevPixelsHistory[0] || emptyTile;
     setPixelsHistory(prevPixelsHistory);
-    setPixelsState(prevPixelsHistory[0] || emptyTile);
+    setPixelsState(newPixels);
+    socket.emit('progress', x, y, newPixels);
   };
 
   const canUndo = pixelsHistory && pixelsHistory.length > 0;
