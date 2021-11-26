@@ -6,7 +6,7 @@ type Tile @entity {
   y: BigInt!
   status: TileStatus!
   createdAt: BigInt!
-  filledAt: BigInt!
+  filledAt: BigInt
   updatedAt: BigInt!
 }
 
