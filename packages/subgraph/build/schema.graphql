@@ -5,6 +5,8 @@ type Tile @entity {
   x: BigInt!
   y: BigInt!
   status: TileStatus!
+  createdAt: BigInt!
+  updatedAt: BigInt!
 }
 
 type Player @entity {

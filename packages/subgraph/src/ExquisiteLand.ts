@@ -12,7 +12,8 @@ import {
 function createTileToken(
   tokenId: BigInt,
   recipient: Address,
-  address: Address
+  address: Address,
+  timestamp: BigInt
 ): void {
   let contract = ExquisiteLand.bind(address);
   let result = contract.getCoordinates(tokenId);
@@ -29,15 +30,27 @@ function createTileToken(
   tile.x = x;
   tile.y = y;
   tile.status = 'UNLOCKED';
+  tile.createdAt = timestamp;
+  tile.updatedAt = timestamp;
   tile.save();
 }
 
 export function handleSeedCreated(event: SeedCreated): void {
-  createTileToken(event.params.tokenId, event.params.recipient, event.address);
+  createTileToken(
+    event.params.tokenId,
+    event.params.recipient,
+    event.address,
+    event.block.timestamp
+  );
 }
 
 export function handleNeighborInvited(event: NeighborInvited): void {
-  createTileToken(event.params.tokenId, event.params.recipient, event.address);
+  createTileToken(
+    event.params.tokenId,
+    event.params.recipient,
+    event.address,
+    event.block.timestamp
+  );
 }
 
 export function handleTileCreated(event: TileCreated): void {
@@ -45,6 +58,7 @@ export function handleTileCreated(event: TileCreated): void {
   let tile = Tile.load(tokenID.toString());
   tile.svg = ExquisiteLand.bind(event.address).getTileSVG(tokenID);
   tile.status = 'LOCKED';
+  tile.updatedAt = event.block.timestamp;
   tile.save();
 }
 
@@ -53,6 +67,7 @@ export function handleTileReset(event: TileReset): void {
   let tile = Tile.load(tokenID.toString());
   tile.svg = null;
   tile.status = 'UNLOCKED';
+  tile.updatedAt = event.block.timestamp;
   tile.save();
 }
 
@@ -80,6 +95,7 @@ export function handleTileTransfer(event: Transfer): void {
   let tile = Tile.load(tokenId.toString());
   if (tile != null) {
     tile.owner = toWallet.id;
+    tile.updatedAt = event.block.timestamp;
     tile.save();
   }
 }
