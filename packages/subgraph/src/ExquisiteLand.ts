@@ -58,6 +58,7 @@ export function handleTileCreated(event: TileCreated): void {
   let tile = Tile.load(tokenID.toString());
   tile.svg = ExquisiteLand.bind(event.address).getTileSVG(tokenID);
   tile.status = 'LOCKED';
+  tile.filledAt = event.block.timestamp;
   tile.updatedAt = event.block.timestamp;
   tile.save();
 }

@@ -104,6 +104,15 @@ export class Tile extends Entity {
     this.set("createdAt", Value.fromBigInt(value));
   }
 
+  get filledAt(): BigInt {
+    let value = this.get("filledAt");
+    return value.toBigInt();
+  }
+
+  set filledAt(value: BigInt) {
+    this.set("filledAt", Value.fromBigInt(value));
+  }
+
   get updatedAt(): BigInt {
     let value = this.get("updatedAt");
     return value.toBigInt();
