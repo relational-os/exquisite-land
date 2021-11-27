@@ -5,7 +5,8 @@ import {
 import { useFetchTile } from '@app/features/Graph';
 import { generateTokenID } from '@app/features/TileUtils';
 import React from 'react';
-import { ENSName } from 'react-ens-name';
+
+import CachedENSName from '../CachedENSName';
 
 const TileModal = ({ x, y }: { x: number; y: number }) => {
   const { tile } = useFetchTile(x, y);
@@ -23,7 +24,7 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
       )}
       <div className="meta">
         <a href="#" className="title">
-          [{x},{y}] by <ENSName address={tile.owner.id} />
+          [{x},{y}] by <CachedENSName address={tile.owner.id} />
         </a>
         <div className="spacer"></div>
         <a

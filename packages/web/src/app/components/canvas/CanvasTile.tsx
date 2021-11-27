@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useFetchTile } from '@app/features/Graph';
 import useTilesInWallet from '@app/features/useTilesInWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
-import { ENSName } from 'react-ens-name';
 import {
   useOpenNeighborStore,
   OpenNeighborStatus
 } from '@app/features/useOpenNeighborsForWallet';
-import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
+import CachedENSName from '../CachedENSName';
 
 const CanvasTile = ({
   x,
@@ -28,7 +27,7 @@ const CanvasTile = ({
 }) => {
   const { tile } = useFetchTile(x, y);
 
-  const { account, provider } = useWallet();
+  const { account } = useWallet();
 
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
@@ -129,18 +128,12 @@ const CanvasTile = ({
           {!isInvitable && tile?.owner && (
             <div className="owner">
               {ownedTransaction ? (
-                <ENSName
-                  address={account}
-                  provider={provider ? provider : getEthJsonRpcProvider}
-                />
+                <CachedENSName address={account} />
               ) : tile.owner.id.toLowerCase() ==
                 LAND_GRANTER_CONTRACT_ADDRESS.toLowerCase() ? (
                 'UNCLAIMED'
               ) : (
-                <ENSName
-                  address={tile.owner.id}
-                  provider={provider ? provider : getEthJsonRpcProvider}
-                />
+                <CachedENSName address={tile.owner.id} />
               )}
             </div>
           )}
