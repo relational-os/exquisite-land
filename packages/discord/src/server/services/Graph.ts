@@ -1,6 +1,7 @@
 import { GRAPH_URL } from '@app/features/AddressBook';
 import request, { gql } from 'graphql-request';
 
+// TODO: handle 501 errors
 export const getTilesInWallet = async (address: string) => {
   const query = gql`
     query TilesInWalletQuery($address: String) {
