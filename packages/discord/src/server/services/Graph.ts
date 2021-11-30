@@ -25,7 +25,7 @@ export const getTilesInWallet = async (address: string) => {
 export const getAllTiles = async () => {
   const query = gql`
     {
-      tiles(first: 500, orderBy: createdAt, orderDirection: desc) {
+      tiles(first: 500, orderby: createdAt, orderDirection: desc) {
         id
         svg
         status
