@@ -10,9 +10,8 @@ import {
 const api: NextApiHandler = async (_req, res) => {
   console.log('incoming refreshTiles request');
   const data = await getAllTiles();
-  console.log({ data });
 
-  for (const tile of data?.tiles) {
+  for (const tile of data) {
     const foundTile = await prisma.tile.findUnique({
       where: {
         id: tile.id
@@ -56,6 +55,8 @@ const api: NextApiHandler = async (_req, res) => {
     }
   });
 
+  console.log(`${queuedNotifications.length} queued tile notifications`);
+
   // choose the first pending Tile, and send a notification for it
   if (queuedNotifications.length > 0) {
     let toDeliver = queuedNotifications[0];
@@ -63,20 +64,25 @@ const api: NextApiHandler = async (_req, res) => {
 
     const pngUrl = `https://exquisite.land/api/tiles/terramasu/${toDeliver.x}/${toDeliver.y}/img?size=500`;
 
-    // const resolvedName =
+    let resolvedName;
 
-    let message;
-    // if (resolvedName && false) {
-    //   message = `${resolvedName} minted tile [${toDeliver.x}, ${toDeliver.y}]`;
-    // } else {
-    message = `${toDeliver.owner.slice(-6)} minted tile [${toDeliver.x}, ${
-      toDeliver.y
-    }]`;
-    // }
-    console.log({ message });
+    try {
+      let response = await fetch(
+        `https://exquisite.land/api/ens-name?address=${toDeliver.owner}`
+      );
 
+      let json = await response.json();
+      console.log({ json });
+      resolvedName = json.name;
+    } catch (error) {
+      console.log(error);
+      console.log('failed to resolve ENS name, falling back to address');
+      resolvedName = toDeliver.owner.slice(0, 6);
+    }
+
+    const message = `${resolvedName} minted tile [${toDeliver.x}, ${toDeliver.y}]`;
     console.log(
-      `Sending tile notification for ${toDeliver.id} with image ${pngUrl}`
+      `Sending tile notification for ${toDeliver.id} with image ${pngUrl} and message "${message}"`
     );
 
     try {
