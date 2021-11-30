@@ -14,30 +14,61 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
   if (!tile) return null;
   return (
     <div className="tile-modal">
-      {tile.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/img`}
-          width="100"
-          height="100"
-          className="tile-image"
-        />
+      {x == 12 && y == 15 ? (
+        <>
+          <h2 className="title">THE GORBLIN IS COMING</h2>
+          <img
+            src="/graphics/coin-spin.gif"
+            width="100"
+            height="100"
+            className="tile-image"
+          />
+          <div className="meta">
+            <div className="spacer"></div>
+            {/* TODO change the URL and what to do after the modal is closed? */}
+            <a
+              href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
+                x,
+                y
+              )}`}
+              className="button"
+              style={{ background: '#327345', marginTop: '1.5rem' }}
+              target="_blank"
+            >
+              <img src="/graphics/icon-opensea.svg" /> Invite the Gorblin for
+              Drinks
+            </a>
+            <div className="spacer"></div>
+          </div>
+        </>
+      ) : (
+        <>
+          {tile.svg && (
+            <img
+              src={`/api/tiles/terramasu/${x}/${y}/img`}
+              width="100"
+              height="100"
+              className="tile-image"
+            />
+          )}
+          <div className="meta">
+            <a href="#" className="title">
+              [{x},{y}] by <CachedENSName address={tile.owner.id} />
+            </a>
+            <div className="spacer"></div>
+            <a
+              href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
+                x,
+                y
+              )}`}
+              className="button"
+              target="_blank"
+            >
+              <img src="/graphics/icon-opensea.svg" /> OpenSea
+            </a>
+          </div>
+        </>
       )}
-      <div className="meta">
-        <a href="#" className="title">
-          [{x},{y}] by <CachedENSName address={tile.owner.id} />
-        </a>
-        <div className="spacer"></div>
-        <a
-          href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
-            x,
-            y
-          )}`}
-          className="button"
-          target="_blank"
-        >
-          <img src="/graphics/icon-opensea.svg" /> OpenSea
-        </a>
-      </div>
       <style jsx>{`
         .tile-modal {
           width: min(90vw, 500px);

@@ -103,13 +103,17 @@ const CanvasTile = ({
 
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
-      {tile?.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/svg`}
-          width="100"
-          height="100"
-          className="tile-image"
-        />
+      {x == 12 && y == 15 ? (
+        <img src="/graphics/coin-spin.gif" width="128px" height="128px" />
+      ) : (
+        tile?.svg && (
+          <img
+            src={`/api/tiles/terramasu/${x}/${y}/svg`}
+            width="100"
+            height="100"
+            className="tile-image"
+          />
+        )
       )}
       {!tile?.svg && pendingSvg && (
         <img
