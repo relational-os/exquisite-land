@@ -25,7 +25,7 @@ export const getTilesInWallet = async (address: string) => {
 export const getAllTiles = async () => {
   const query = gql`
     {
-      tiles(first: 500, where: { svg_not: null }) {
+      tiles(first: 500, orderBy: createdAt, orderDirection: desc) {
         id
         svg
         status
@@ -38,5 +38,11 @@ export const getAllTiles = async () => {
     }
   `;
   const data = await request(GRAPH_URL, query);
-  return data;
+  // filter out tiles with a null svg value
+
+  // @ts-ignore
+  let filtered = data.tiles.filter((tile) => {
+    return tile.svg !== null;
+  });
+  return filtered;
 };
