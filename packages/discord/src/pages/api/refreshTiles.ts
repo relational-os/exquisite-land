@@ -6,7 +6,6 @@ import {
   DISCORD_CHANNELS,
   LAND_GRANTER_CONTRACT_ADDRESS
 } from '@app/features/AddressBook';
-import { getENSName } from '@app/features/useENSorAddress';
 
 const api: NextApiHandler = async (_req, res) => {
   console.log('incoming refreshTiles request');
