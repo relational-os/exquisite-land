@@ -94,11 +94,40 @@ export const getTokenIDForCoin = async (
   // TODO: lookup x_y from db, for now this is done in memory
   const decoded = await decodePencil(coinB64);
 
-  const result = await prisma.generatedCoin.findFirst({
+  let result = await prisma.generatedCoin.findFirst({
     where: {
       digest: decoded
     }
   });
+
+  if (result) {
+    // if there was a result for this coin, make sure that
+    // there are no gorblin coins for the tile
+
+    const gorblin = await prisma.gorblinCoin.findFirst({
+      where: {
+        x: result.x,
+        y: result.y
+      }
+    });
+
+    // if a gorblin for this x,y exists say this is an invalid coin
+    if (gorblin) {
+      return {
+        tokenId: undefined,
+        coinCreator: undefined
+      };
+    }
+  }
+
+  // lookup gorblin coin
+  if (result == undefined) {
+    result = await prisma.gorblinCoin.findFirst({
+      where: {
+        digest: decoded
+      }
+    });
+  }
 
   return { tokenId: result?.tokenID, coinCreator: result?.creator };
 };
@@ -142,13 +171,22 @@ export const grantLandTile = async (
   });
 };
 
-export const encodePencil = async (x: number, y: number, addr: string) => {
+export const encodePencil = async (
+  x: number,
+  y: number,
+  addr: string,
+  gorblin: boolean = false
+) => {
   const parsedPencilSVG = await parse(pencilSVG);
   console.log(parsedPencilSVG.children.length);
 
   const data = crypto
     .createHash('sha256')
-    .update(`${process.env.LAND_GRANTER_SALT}${x}${y}${addr.slice(2)}`)
+    .update(
+      `${
+        gorblin ? process.env.GORBLIN_SALT : process.env.LAND_GRANTER_SALT
+      }${x}${y}${addr.slice(2)}`
+    )
     .digest('hex')
     .slice(0, 23);
 
@@ -163,11 +201,22 @@ export const encodePencil = async (x: number, y: number, addr: string) => {
 // Should only be called by admin
 export const generateCoin = async (
   tokenId: number,
-  address: string
+  address: string,
+  isGorblin: boolean = false
 ): Promise<{ coin: Buffer; digest: string }> => {
   const [x, y] = getCoordinates(tokenId);
-  const baseCoinBuffer = Buffer.from(baseCoinB64String, 'base64');
-  const { svg: encodedPencil, digest } = await encodePencil(x, y, address);
+
+  // TODO change to gorblin coin if isGorblin is true
+  const baseCoinBuffer = Buffer.from(
+    isGorblin ? baseCoinB64String : baseCoinB64String,
+    'base64'
+  );
+  const { svg: encodedPencil, digest } = await encodePencil(
+    x,
+    y,
+    address,
+    isGorblin
+  );
   const coinBuffer = await sharp(baseCoinBuffer)
     .composite([
       {
