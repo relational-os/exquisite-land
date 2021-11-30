@@ -9,7 +9,9 @@ import {
 import { getENSName } from '@app/features/useENSorAddress';
 
 const api: NextApiHandler = async (_req, res) => {
+  console.log('incoming refreshTiles request');
   const data = await getAllTiles();
+  console.log({ data });
 
   for (const tile of data?.tiles) {
     const foundTile = await prisma.tile.findUnique({
@@ -62,16 +64,16 @@ const api: NextApiHandler = async (_req, res) => {
 
     const pngUrl = `https://exquisite.land/api/tiles/terramasu/${toDeliver.x}/${toDeliver.y}/img?size=500`;
 
-    const resolvedName = await getENSName(toDeliver.owner);
+    // const resolvedName =
 
     let message;
-    if (resolvedName && false) {
-      message = `${resolvedName} minted tile [${toDeliver.x}, ${toDeliver.y}]`;
-    } else {
-      message = `${toDeliver.owner.slice(-6)} minted tile [${toDeliver.x}, ${
-        toDeliver.y
-      }]`;
-    }
+    // if (resolvedName && false) {
+    //   message = `${resolvedName} minted tile [${toDeliver.x}, ${toDeliver.y}]`;
+    // } else {
+    message = `${toDeliver.owner.slice(-6)} minted tile [${toDeliver.x}, ${
+      toDeliver.y
+    }]`;
+    // }
     console.log({ message });
 
     console.log(
@@ -95,6 +97,7 @@ const api: NextApiHandler = async (_req, res) => {
       return res.json({ success: false });
     }
   } else {
+    console.log('no new tiles, finishing run');
     return res.json({ success: true });
   }
 };
