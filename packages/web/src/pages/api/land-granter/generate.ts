@@ -25,7 +25,7 @@ const api: NextApiHandler = async (req, res) => {
     x?: string;
     y?: string;
     address?: string;
-    gorblin?: boolean;
+    gorblin?: string;
   } = req.query;
   // if (!tokenId || (!x && !y) || isNaN(parseInt(tokenId)))
   //   return res.status(400).json({ error: 'Missing tokenId.' });
@@ -56,11 +56,11 @@ const api: NextApiHandler = async (req, res) => {
   const { coin: coinImage, digest } = await generateCoin(
     parseInt(tokenId!),
     address,
-    gorblin
+    gorblin == 'true'
   );
 
   // TODO: remove upsert it's avoiding errors for dev
-  if (gorblin == undefined || (gorblin != undefined && gorblin == false)) {
+  if (gorblin == undefined || (gorblin != undefined && gorblin != 'true')) {
     console.log('upserting regular');
     await prisma.generatedCoin.upsert({
       where: {
@@ -76,7 +76,7 @@ const api: NextApiHandler = async (req, res) => {
       }
     });
     console.log('finsihed upserting regular');
-  } else if (gorblin != undefined && gorblin == true) {
+  } else if (gorblin != undefined && gorblin == 'true') {
     console.log('upserting gorblin');
     await prisma.gorblinCoin.upsert({
       where: {
