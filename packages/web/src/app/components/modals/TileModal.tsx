@@ -4,67 +4,19 @@ import {
 } from '@app/features/AddressBook';
 import { useFetchTile } from '@app/features/Graph';
 import { generateTokenID } from '@app/features/TileUtils';
-import { useWallet } from '@gimmixorg/use-wallet';
 import React from 'react';
 
 import CachedENSName from '../CachedENSName';
+import GorblinModal from './GorblinModal';
 
 const TileModal = ({ x, y }: { x: number; y: number }) => {
-  const { provider } = useWallet();
   const { tile } = useFetchTile(x, y);
 
   if (!tile) return null;
   return (
     <div className="tile-modal">
       {x == 12 && y == 15 ? (
-        <>
-          <h2 className="title">THE GORBLIN IS COMING</h2>
-          <img
-            src="/graphics/coin-spin.gif"
-            width="100"
-            height="100"
-            className="tile-image"
-          />
-          <div className="meta">
-            <div className="spacer"></div>
-            {/* TODO change the URL and what to do after the modal is closed? */}
-            <a
-              // href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
-              //   x,
-              //   y
-              // )}`}
-              onClick={async () => {
-                console.log('clicked');
-                if (provider) {
-                  const sig = await provider
-                    .getSigner()
-                    .signMessage('I HERBY RELEASE THE GORBLIN');
-                  console.log(sig);
-
-                  // TODO hit endpoint to release the gorblin
-                }
-              }}
-              className="button"
-              style={{ background: '#6b289e', marginTop: '1.5rem' }}
-              target="_blank"
-            >
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}
-              >
-                <img
-                  src="/graphics/gorblin.png"
-                  style={{
-                    imageRendering: 'pixelated',
-                    width: '3rem',
-                    height: '3rem'
-                  }}
-                />{' '}
-                <h3 style={{ margin: 0 }}>Release the Gorblin</h3>
-              </div>
-            </a>
-            <div className="spacer"></div>
-          </div>
-        </>
+        <GorblinModal></GorblinModal>
       ) : (
         <>
           {tile.svg && (
