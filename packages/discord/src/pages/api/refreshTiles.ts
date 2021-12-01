@@ -8,7 +8,7 @@ import {
 } from '@app/features/AddressBook';
 
 const api: NextApiHandler = async (_req, res) => {
-  console.log('incoming refreshTiles request');
+  console.log('incoming refreshTiles request ');
   const data = await getAllTiles();
 
   for (const tile of data) {
