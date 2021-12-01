@@ -3,9 +3,11 @@ import prisma from '../helpers/prisma';
 import Discord, {
   Intents,
   MessageActionRow,
+  MessageAttachment,
   MessageButton,
   MessageEmbed
 } from 'discord.js';
+
 const client = new Discord.Client({
   intents: [
     Intents.FLAGS.GUILDS,
@@ -31,7 +33,11 @@ const client = new Discord.Client({
 //   polygon: getJsonRpcProvider('polygon-mainnet')
 // };
 
-client.on('messageCreate', async message => {
+const embed = () => new MessageEmbed();
+const attach = (attachment: any, name: any) =>
+  new MessageAttachment(attachment, name);
+
+client.on('messageCreate', async (message) => {
   if (!message.content.startsWith('!init')) return;
   await message.channel.send({
     embeds: [
@@ -53,7 +59,7 @@ client.on('messageCreate', async message => {
   });
 });
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isButton()) return;
   if (interaction.customId === 'link-wallet') {
     const user = await prisma.user.upsert({
@@ -77,3 +83,34 @@ client.login(process.env.DISCORD_CLIENT_TOKEN);
 client.on('ready', () => {
   console.log('ready!');
 });
+
+function sendMessageWithImage(
+  channelId: string,
+  content: string,
+  imageUrl: string
+) {
+  const channel = client.channels.cache.get(channelId);
+  if (channel) {
+    if (channel.type == 'GUILD_TEXT') {
+      // @ts-ignore
+      return channel.send({
+        content: content,
+        embed: embed().setImage('attachment://tile.png'),
+        files: [attach(imageUrl, 'tile.png')]
+      });
+    }
+  }
+}
+
+function sendMessage(channelId: string, content: string) {
+  const channel = client.channels.cache.get(channelId);
+  if (channel) {
+    console.log({ channel });
+    if (channel.type == 'GUILD_TEXT') {
+      // @ts-ignore
+      return channel.send(content);
+    }
+  }
+}
+
+export { sendMessage, sendMessageWithImage };

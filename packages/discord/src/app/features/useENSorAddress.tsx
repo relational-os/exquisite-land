@@ -1,8 +1,8 @@
 import useSWR from 'swr';
-import getJsonRpcProvider from './getJsonRpcProvider';
+import { getEthJsonRpcProvider } from './getJsonRpcProvider';
 
-const getENSName = (account: string) => {
-  return getJsonRpcProvider('mainnet').lookupAddress(account);
+export const getENSName = (account: string) => {
+  return getEthJsonRpcProvider.lookupAddress(account);
 };
 const useENSNameOrAddress = (account?: string) => {
   const { data } = useSWR(account ? [account, 'ens'] : null, getENSName, {

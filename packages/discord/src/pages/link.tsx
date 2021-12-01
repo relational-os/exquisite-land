@@ -4,7 +4,7 @@ import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName } from 'ethereum-ens-name';
-import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 
 export const SIGNING_MESSAGE = 'ALL HAIL KING SEAWORM';
 
@@ -60,13 +60,13 @@ const LinkWallet = ({
       </div>
       {isLinked ? (
         <>
-          <ENSName address={account} provider={ethJsonRpcProvider} /> linked!
+          <ENSName address={account} provider={getEthJsonRpcProvider} /> linked!
         </>
       ) : error ? (
         <div className="error">{error}</div>
       ) : account ? (
         <>
-          <ENSName address={account} provider={ethJsonRpcProvider} />
+          <ENSName address={account} provider={getEthJsonRpcProvider} />
           <button onClick={signMessage}>Sign message</button>
         </>
       ) : (
