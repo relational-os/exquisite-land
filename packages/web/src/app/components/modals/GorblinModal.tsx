@@ -12,7 +12,9 @@ const GorblinModal = () => {
     if (provider) {
       const sig = await provider
         .getSigner()
-        .signMessage('I HEREBY RELEASE THE GORBLIN');
+        .signMessage(
+          'I HEREBY INVITE THE GORBLIN IN AND ASSUME ALL RESPONSIBILITY FOR ANY SLIMINGS'
+        );
       console.log(sig);
       setState('complete');
     }
