@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model User {
@@ -20,20 +17,4 @@ model User {
   roles                String[]
   lastChecked          DateTime @default(now())
   joined               DateTime @default(now())
-}
-
-model Tile {
-  id          String  @unique
-  discordSent Boolean
-  svg         String
-  x           Int
-  y           Int
-  status      String
-  owner       String
-}
-
-model GorblinInviter {
-  id          String    @id @default(uuid())  
-  address     String
-  inviteTime  DateTime  @default(now())
 }
