@@ -76,7 +76,10 @@ const GorblinModal = () => {
         </div>
       ) : (
         <div className="gorblin-mode">
-          <img src="/graphics/gorblin.png" />
+          <img
+            src="/graphics/gorblin.png"
+            style={{ imageRendering: 'pixelated' }}
+          />
           <div className="gorblin-countdown">
             <h1>gorblin inbound: 23:00:24</h1>
 
