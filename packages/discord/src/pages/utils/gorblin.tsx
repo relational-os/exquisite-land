@@ -1,9 +1,6 @@
-import { useWallet } from '@gimmixorg/use-wallet';
 import React from 'react';
 
 const GorblinTools = () => {
-  const { account } = useWallet();
-
   const [text, setText] = React.useState('');
 
   function sendWebhookRequest() {
