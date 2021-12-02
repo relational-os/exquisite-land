@@ -113,6 +113,9 @@ export const setRolesForUser = async (roles: string[], userID: string) => {
 };
 
 export const addRoleForUser = async (roleId: string, userID: string) => {
+  console.log(
+    `adding role ${roleId} to user ${userID} on server ${process.env.DISCORD_SERVER_ID}`
+  );
   await fetch(
     `https://discord.com/api/v8/guilds/${process.env.DISCORD_SERVER_ID}/members/${userID}/roles/${roleId}`,
     {
@@ -125,6 +128,9 @@ export const addRoleForUser = async (roleId: string, userID: string) => {
   ).then(res => res.text());
 };
 export const removeRoleForUser = async (roleId: string, userID: string) => {
+  console.log(
+    `removing role ${roleId} from user ${userID} on server ${process.env.DISCORD_SERVER_ID}`
+  );
   await fetch(
     `https://discord.com/api/v8/guilds/${process.env.DISCORD_SERVER_ID}/members/${userID}/roles/${roleId}`,
     {
