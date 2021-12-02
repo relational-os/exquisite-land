@@ -180,6 +180,7 @@ const GorblinModal = () => {
         .gorblin-mode img.successful-gorblin {
           width: 70vw;
           align-self: flex-end;
+          image-rendering: pixelated;
         }
         .gorblin-countdown-container {
           display: flex;
