@@ -76,11 +76,26 @@ const GorblinModal = () => {
         </div>
       ) : (
         <div className="gorblin-mode">
-          <img src="/graphics/gorblin.png" />
-          <div className="gorblin-countdown">
-            <h1>gorblin inbound: 23:00:24</h1>
+          <img src="/graphics/gorblin.png" className="successful-gorblin" />
+          <div className="gorblin-countdown-container">
+            <div className="gorblin-countdown-header gorblin">
+              <span></span>
+              gorblin inbound!
+              <span></span>
+            </div>
+            <div className="gorblin-countdown">
+              <img src="/graphics/coin-gorblin.gif" width="24" />
+              <span>23:00:24</span>
+              <img src="/graphics/coin-gorblin.gif" width="24" />
+            </div>
 
-            <h1 className="gorblin">lfg! i'm gonna coin the communal ass</h1>
+            <div className="spacer"></div>
+            <h1 className="message gorblin">
+              yessss.
+              <br />
+              imma coin ya’lls asses so good!
+            </h1>
+            <div className="spacer"></div>
           </div>
         </div>
       )}
@@ -106,7 +121,8 @@ const GorblinModal = () => {
         }
 
         .tile-image {
-          width: 300px;
+          min-width: 300px;
+          min-height: 300px;
           height: auto;
           image-rendering: pixelated;
         }
@@ -161,9 +177,54 @@ const GorblinModal = () => {
           align-items: center;
           justify-content: center;
         }
-        .gorblin-mode img {
+        .gorblin-mode img.successful-gorblin {
           width: 70vw;
           align-self: flex-end;
+        }
+        .gorblin-countdown-container {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          max-width: 40vw;
+          text-align: center;
+        }
+
+        .gorblin-countdown-container .message {
+          font-size: 2.5rem;
+        }
+
+        .gorblin-countdown-header {
+          height: 5rem;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          font-size: 2rem;
+        }
+        .gorblin-countdown-header span {
+          margin: 0 2rem;
+          width: 6px;
+          height: 100%;
+          background: #3f2832;
+        }
+
+        .gorblin-countdown {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          background: #3f2832;
+        }
+        .gorblin-countdown span {
+          padding: 0.75rem 0;
+          flex: 2;
+          color: #fff;
+          text-shadow: 0 0 1px #000;
+          text-align: center;
+          font-size: 3rem;
+        }
+        .gorblin-countdown img {
+          margin: 1rem;
         }
       `}</style>
     </div>
