@@ -80,7 +80,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.login(process.env.DISCORD_CLIENT_TOKEN);
-client.on('ready', () => {
+client.once('ready', () => {
   console.log('ready!');
 });
 
