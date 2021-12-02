@@ -22,8 +22,6 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           {tile.svg && (
             <img
               src={`/api/tiles/terramasu/${x}/${y}/img`}
-              width="100"
-              height="100"
               className="tile-image"
             />
           )}
@@ -64,10 +62,18 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           margin-left: 0.5rem;
         }
         .tile-image {
+          min-width: 512px;
+          min-height: 512px;
           width: 100%;
           height: auto;
           image-rendering: pixelated;
           background: #222;
+        }
+        @media (max-width: 768px) {
+          .tile-image {
+            min-width: 375px;
+            min-height: 375px;
+          }
         }
         .meta {
           display: flex;
