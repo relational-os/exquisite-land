@@ -54,7 +54,8 @@ const api: NextApiHandler = async (req, res) => {
   const { coin: coinImage, digest } = await generateCoin(
     parseInt(tokenId!),
     address,
-    false
+    false,
+    ''
   );
 
   // TODO: remove upsert it's avoiding errors for dev

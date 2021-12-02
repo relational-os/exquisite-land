@@ -90,6 +90,7 @@ export const getTokenIDForCoin = async (
 ): Promise<{
   tokenId: number | undefined;
   coinCreator: string | undefined;
+  claimer: string | undefined;
 }> => {
   // TODO: lookup x_y from db, for now this is done in memory
   const decoded = await decodePencil(coinB64);
@@ -115,21 +116,34 @@ export const getTokenIDForCoin = async (
     if (gorblin) {
       return {
         tokenId: undefined,
-        coinCreator: undefined
+        coinCreator: undefined,
+        claimer: undefined
       };
     }
   }
 
   // lookup gorblin coin
   if (result == undefined) {
-    result = await prisma.gorblinCoin.findFirst({
+    const gorblinResult = await prisma.gorblinCoin.findFirst({
       where: {
         digest: decoded
       }
     });
+
+    if (gorblinResult) {
+      return {
+        tokenId: gorblinResult.tokenID,
+        coinCreator: gorblinResult.creator,
+        claimer: gorblinResult.claimer
+      };
+    }
   }
 
-  return { tokenId: result?.tokenID, coinCreator: result?.creator };
+  return {
+    tokenId: result?.tokenID,
+    coinCreator: result?.creator,
+    claimer: undefined
+  };
 };
 
 export const checkTokenIdIsOwnedByLandGranter = async (
@@ -175,7 +189,8 @@ export const encodePencil = async (
   x: number,
   y: number,
   addr: string,
-  gorblin: boolean = false
+  gorblin: boolean = false,
+  claimer: string = ''
 ) => {
   const parsedPencilSVG = await parse(pencilSVG);
   console.log(parsedPencilSVG.children.length);
@@ -185,7 +200,7 @@ export const encodePencil = async (
     .update(
       `${
         gorblin ? process.env.GORBLIN_SALT : process.env.LAND_GRANTER_SALT
-      }${x}${y}${addr.slice(2)}`
+      }${x}${y}${addr.slice(2)}${claimer}`
     )
     .digest('hex')
     .slice(0, 23);
@@ -202,7 +217,8 @@ export const encodePencil = async (
 export const generateCoin = async (
   tokenId: number,
   address: string,
-  isGorblin: boolean = false
+  isGorblin: boolean = false,
+  claimer: string = ''
 ): Promise<{ coin: Buffer; digest: string }> => {
   const [x, y] = getCoordinates(tokenId);
 
@@ -215,7 +231,8 @@ export const generateCoin = async (
     x,
     y,
     address,
-    isGorblin
+    isGorblin,
+    claimer
   );
   const coinBuffer = await sharp(baseCoinBuffer)
     .composite([

@@ -26,4 +26,5 @@ model GorblinCoin {
   x       Int
   y       Int
   creator String
+  claimer String
 }

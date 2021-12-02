@@ -15,6 +15,8 @@ const ADMIN_ADDRS = [
   '0x292ff025168d2b51f0ef49f164d281c36761ba2b'
 ]; // cjpais.eth, shahruz.eth, kpaxle.eth, gorum.eth, jonbo.eth
 
+export const GORBLIN_ADDR = '0x32649b5229Aa947fDea358bCc433Ad636B52F8C0';
+
 const api: NextApiHandler = async (req, res) => {
   // const { tokenId, signature }: { tokenId?: string; signature?: string } =
   //   req.query;
@@ -27,11 +29,13 @@ const api: NextApiHandler = async (req, res) => {
     tokenId,
     x,
     y,
-    sig
+    sig,
+    claimer
   }: {
     tokenId?: string;
     x?: string;
     y?: string;
+    claimer?: string;
     sig?: string;
   } = req.query;
   // if (!tokenId || (!x && !y) || isNaN(parseInt(tokenId)))
@@ -58,17 +62,24 @@ const api: NextApiHandler = async (req, res) => {
   if (!sig)
     return res.status(400).json({ error: 'Must sign to generate coin.' });
 
+  if (!claimer)
+    return res.status(400).json({
+      error: 'Must specify claimer (who is allowed to claim this coin).'
+    });
+
   const address = verifyMessage(
     `I Generated Gorblin Coin for [${x},${y}]`,
     sig
   );
+
   if (!ADMIN_ADDRS.includes(address.toLowerCase()))
     return res.status(400).json({ error: "You're not an admin" });
 
   const { coin: coinImage, digest } = await generateCoin(
     parseInt(tokenId!),
-    address,
-    true
+    GORBLIN_ADDR,
+    true,
+    claimer
   );
 
   // TODO: remove upsert it's avoiding errors for dev
@@ -83,7 +94,8 @@ const api: NextApiHandler = async (req, res) => {
       x: parseInt(x!),
       y: parseInt(y!),
       tokenID: parseInt(tokenId!),
-      creator: address
+      creator: GORBLIN_ADDR,
+      claimer: claimer
     }
   });
   console.log('finsihed upserting gorblin');

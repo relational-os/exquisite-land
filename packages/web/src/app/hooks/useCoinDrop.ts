@@ -1,9 +1,11 @@
+import { useWallet } from '@gimmixorg/use-wallet';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export const useCoinDrop = (
   setProcessing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
+  const { account } = useWallet();
   const [tokenId, setTokenId] = useState<number | null>(null);
   const [coinCreator, setCoinCreator] = useState<string | null>(null);
   const [dropError, setDropError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export const useCoinDrop = (
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ coinB64 })
+          body: JSON.stringify({ coinB64, recipient: account })
         }
       ).then((r) => r.json());
       setProcessing(false);
