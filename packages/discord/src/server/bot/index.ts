@@ -79,11 +79,6 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-client.login(process.env.DISCORD_CLIENT_TOKEN);
-client.on('ready', () => {
-  console.log('ready!');
-});
-
 function sendMessageWithImage(
   channelId: string,
   content: string,
@@ -113,4 +108,11 @@ function sendMessage(channelId: string, content: string) {
   }
 }
 
-export { sendMessage, sendMessageWithImage };
+function init() {
+  client.login(process.env.DISCORD_CLIENT_TOKEN);
+  client.once('ready', () => {
+    console.log('bot ready!');
+  });
+}
+
+export { sendMessage, sendMessageWithImage, init };

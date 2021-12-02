@@ -31,3 +31,9 @@ model Tile {
   status      String
   owner       String
 }
+
+model GorblinInviter {
+  id          String    @id @default(uuid())  
+  address     String
+  inviteTime  DateTime  @default(now())
+}

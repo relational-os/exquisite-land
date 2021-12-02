@@ -6,7 +6,8 @@ import { getTilesInWallet } from './Graph';
 export const ROLES = {
   ADMIN: '888532000108073002',
   OWNER: '888531194273202206',
-  TERRAMASU: '888531270865408020'
+  TERRAMASU: '888531270865408020',
+  WANDERER: '915769820178436127'
 };
 
 export const refreshRoles = async (user: User) => {
@@ -30,6 +31,14 @@ export const refreshRoles = async (user: User) => {
   } else {
     await removeRoleForUser(ROLES.TERRAMASU, user.discordId);
     await removeRoleFromDB(ROLES.TERRAMASU, user);
+  }
+
+  if (tiles.length == 0) {
+    await addRoleForUser(ROLES.WANDERER, user.discordId);
+    await addRoleToDB(ROLES.WANDERER, user);
+  } else {
+    await removeRoleForUser(ROLES.WANDERER, user.discordId);
+    await removeRoleFromDB(ROLES.WANDERER, user);
   }
 };
 

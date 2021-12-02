@@ -18,3 +18,8 @@ export const DISCORD_CHANNELS = {
   'terra-masu': '888518144346427392',
   'bot-testing': '910957967849967619'
 };
+
+// format is `Discord Server - Character - Channel`
+export const DISCORD_WEBHOOKS = {
+  'relational-gorblin-builders': process.env.RELATIONAL_GORBLIN_BUILDERS || ''
+};
