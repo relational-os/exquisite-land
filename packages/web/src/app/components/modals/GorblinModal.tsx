@@ -12,7 +12,7 @@ const GorblinModal = () => {
     if (provider) {
       const sig = await provider
         .getSigner()
-        .signMessage('I HERBY RELEASE THE GORBLIN');
+        .signMessage('I HEREBY RELEASE THE GORBLIN');
       console.log(sig);
       setState('complete');
     }
@@ -23,147 +23,94 @@ const GorblinModal = () => {
   return (
     <div className="gorblinmodal">
       {state == 'initial' ? (
-        <>
-          <h1 className="title" style={{ margin: 0, padding: 0 }}>
-            the gorblin has a
+        <div className="gorblin-container">
+          <h1 className="title">
+            the gorblin has a<br /> deal for you
           </h1>
-          <h1 className="title" style={{ margin: 0, marginBottom: '1rem' }}>
-            deal for you
-          </h1>
-          <img
-            src="/graphics/gorblin.png"
-            width="100"
-            height="100"
-            className="tile-image"
-            style={{ position: 'relative', top: '-1rem' }}
-          />
-          <h1 className="title" style={{ color: '#B6D17D' }}>
-            if you let me in, it'll be super chill trust me ;)
-          </h1>
-          <div className="meta">
-            <div className="spacer"></div>
-            {/* TODO change the URL and what to do after the modal is closed? */}
-            <a
-              // href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
-              //   x,
-              //   y
-              // )}`}
-              onClick={() => {
-                setState('sign');
-              }}
-              className="button"
-              style={{ background: '#7CC45D', marginTop: '1.5rem' }}
-              target="_blank"
-            >
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}
-              >
-                {/* <img
-                  src="/graphics/gorblin.png"
-                  style={{
-                    imageRendering: 'pixelated',
-                    width: '3rem',
-                    height: '3rem'
-                  }}
-                />{' '} */}
-                <h3 style={{ margin: 0 }}>agree to let the gorblin in</h3>
-              </div>
-            </a>
-            {/* <a>
-              <h2>uhh, i'm not so sure</h2>
-            </a> */}
-            <div className="spacer"></div>
-          </div>
-        </>
+          <img src="/graphics/gorblin.png" className="tile-image" />
+          <p className="dialog">
+            lemme into the discord, it’ll be super chill trust me ;)
+          </p>
+          {/* TODO change the URL and what to do after the modal is closed? */}
+          <button
+            // href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
+            //   x,
+            //   y
+            // )}`}
+            onClick={() => {
+              setState('sign');
+            }}
+            className="button"
+          >
+            let the gorblin in?
+          </button>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+        </div>
       ) : state == 'sign' ? (
-        <div>
-          <h1 className="gorblin">
-            you sure, bud? the stuarts are gonna hate this. i’m about to get
-            real weird
-          </h1>
-          <img
-            src="/graphics/gorblin.png"
-            width="100"
-            height="100"
-            className="tile-image"
-          />
-          <a
+        <div className="gorblin-container">
+          <h1 className="title gorblin">woah, really?</h1>
+          <img src="/graphics/gorblin.png" className="tile-image" />
+          <p className="dialog">
+            the stuarts are gonna hate this. imma get real weird
+          </p>
+          <button
             onClick={() => {
               signAndInviteGorblin();
             }}
             className="button"
-            style={{ background: '#7CC45D', marginTop: '1.5rem' }}
-            target="_blank"
           >
-            <div
-              style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}
-            >
-              {/* <img
-                  src="/graphics/gorblin.png"
-                  style={{
-                    imageRendering: 'pixelated',
-                    width: '3rem',
-                    height: '3rem'
-                  }}
-                />{' '} */}
-              <h3 style={{ margin: 0 }}>sign to let the gorblin in</h3>
-            </div>
-          </a>
-          <a
+            sign to let the gorblin in
+          </button>
+          <button
             onClick={() => {
               setState('initial');
             }}
-            // className="button"
-            // style={{ background: '#7CC45D', marginTop: '1.5rem' }}
-            target="_blank"
+            className="cancel"
           >
-            <h3 className="pantheon" style={{ margin: 0 }}>
-              uhhh, i'm not so sure
-            </h3>
-          </a>
+            uhhh, i'm not so sure
+          </button>
         </div>
       ) : (
-        <div>
-          <h1 className="pantheon">gorblin inbound: 23:00:24</h1>
-          <img
-            src="/graphics/gorblin.png"
-            width="100"
-            height="100"
-            className="tile-image"
-          />
-          <h1 className="gorblin">lfg! i'm gonna coin the communal ass</h1>
+        <div className="gorblin-mode">
+          <img src="/graphics/gorblin.png" />
+          <div className="gorblin-countdown">
+            <h1>gorblin inbound: 23:00:24</h1>
+
+            <h1 className="gorblin">lfg! i'm gonna coin the communal ass</h1>
+          </div>
         </div>
       )}
       <style jsx>{`
+        .gorblin-container {
+          width: min(90vw, 500px);
+          text-align: center;
+        }
+
+        .title {
+          color: #fff;
+          padding: 8px 0;
+          text-align: center;
+        }
         .gorblin {
           color: #b6d17d;
         }
-        .pantheon {
-          color: #fff;
-        }
-        .tile-modal {
-          width: min(90vw, 500px);
-        }
-        .title {
-          padding-bottom: 0.75rem;
+
+        .dialog {
+          color: #b6d17d;
           text-align: center;
-          color: #fff;
-          padding: 8px 0;
-          text-decoration: none;
+          font-size: 2rem;
         }
-        .title:hover {
-          text-decoration: underline;
-        }
-        .title:hover::after {
-          content: ' 🔗';
-          position: absolute;
-          margin-left: 0.5rem;
-        }
+
         .tile-image {
-          width: 100%;
+          width: 300px;
           height: auto;
           image-rendering: pixelated;
         }
+
         .meta {
           display: flex;
           margin: 0.5rem 0;
@@ -176,11 +123,11 @@ const GorblinModal = () => {
           flex: 1;
         }
 
-        a.button {
-          display: block;
-          padding: 8px 14px;
+        button.button {
+          padding: 8px 1.5rem;
           border: 0;
-          background: #ddd;
+          outline: 0;
+          background: #7cc45d;
           font-family: inherit;
           cursor: pointer;
           will-change: transform;
@@ -188,13 +135,35 @@ const GorblinModal = () => {
           color: rgba(0, 0, 0, 1);
           border-bottom: 4px solid rgba(0, 0, 0, 0.3);
           text-decoration: none;
+          text-align: center;
+          font-size: 1.5rem;
         }
-        a.button:hover {
+        button.button:hover {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
         }
-        a.button img {
-          width: 16px;
-          vertical-align: middle;
+        button.cancel {
+          margin-top: 0.5rem;
+          font-family: inherit;
+          cursor: pointer;
+          background: transparent;
+          border: 0;
+          outline: 0;
+          padding: 0.5rem;
+          color: #ddd;
+          font-size: 1.4rem;
+        }
+
+        .gorblin-mode {
+          width: 90vw;
+          height: 100vh;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+        }
+        .gorblin-mode img {
+          width: 70vw;
+          align-self: flex-end;
         }
       `}</style>
     </div>

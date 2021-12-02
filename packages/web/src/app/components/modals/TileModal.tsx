@@ -47,7 +47,6 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
       )}
       <style jsx>{`
         .tile-modal {
-          width: min(90vw, 500px);
         }
         .title {
           padding-bottom: 0.75rem;
