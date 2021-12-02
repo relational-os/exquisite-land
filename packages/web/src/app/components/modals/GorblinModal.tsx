@@ -24,10 +24,17 @@ const GorblinModal = () => {
     <div className="gorblinmodal">
       {state == 'initial' ? (
         <div className="gorblin-container">
-          <h1 className="title">
+          <div className="gorblin-countdown-header step1">
+            <span></span>
+            <div></div>
+            <span></span>
+          </div>
+          <div className="gorblin-countdown step1">
             the gorblin has a<br /> deal for you
-          </h1>
+          </div>
+          <div className="spacer"></div>
           <img src="/graphics/gorblin.png" className="tile-image" />
+          <div className="spacer"></div>
           <p className="dialog">
             lemme into the discord, it’ll be super chill trust me ;)
           </p>
@@ -44,16 +51,14 @@ const GorblinModal = () => {
           >
             let the gorblin in?
           </button>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
+          <div className="spacer"></div>
         </div>
       ) : state == 'sign' ? (
         <div className="gorblin-container">
           <h1 className="title gorblin">woah, really?</h1>
+          <div className="spacer"></div>
           <img src="/graphics/gorblin.png" className="tile-image" />
+          <div className="spacer"></div>
           <p className="dialog">
             the stuarts are gonna hate this. imma get real weird
           </p>
@@ -102,7 +107,12 @@ const GorblinModal = () => {
       <style jsx>{`
         .gorblin-container {
           width: min(90vw, 500px);
+          height: 100vh;
           text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
 
         .title {
@@ -158,7 +168,7 @@ const GorblinModal = () => {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
         }
         button.cancel {
-          margin-top: 0.5rem;
+          margin: 0.5rem 0 1rem;
           font-family: inherit;
           cursor: pointer;
           background: transparent;
@@ -207,6 +217,12 @@ const GorblinModal = () => {
           height: 100%;
           background: #3f2832;
         }
+        .gorblin-countdown-header div {
+          width: 100px;
+        }
+        .gorblin-countdown-header.step1 {
+          height: 2rem;
+        }
 
         .gorblin-countdown {
           display: flex;
@@ -225,6 +241,14 @@ const GorblinModal = () => {
         }
         .gorblin-countdown img {
           margin: 1rem;
+        }
+
+        .gorblin-countdown.step1 {
+          width: 60%;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          font-size: 2rem;
+          color: #bfa4a4;
         }
       `}</style>
     </div>
