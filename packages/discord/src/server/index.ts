@@ -1,4 +1,5 @@
 import { createServer } from 'http';
+import { init } from './bot';
 import { parse } from 'url';
 import next from 'next';
 import './bot';
@@ -18,4 +19,5 @@ app.prepare().then(() => {
       dev ? 'development' : process.env.NODE_ENV
     }`
   );
+  init();
 });

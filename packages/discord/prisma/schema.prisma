@@ -21,3 +21,19 @@ model User {
   lastChecked          DateTime @default(now())
   joined               DateTime @default(now())
 }
+
+model Tile {
+  id          String  @unique
+  discordSent Boolean
+  svg         String
+  x           Int
+  y           Int
+  status      String
+  owner       String
+}
+
+model GorblinInviter {
+  id          String    @id @default(uuid())  
+  address     String
+  inviteTime  DateTime  @default(now())
+}

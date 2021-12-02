@@ -3,8 +3,7 @@ import prisma from '@server/helpers/prisma';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { useWallet } from '@gimmixorg/use-wallet';
-import { ENSName } from 'ethereum-ens-name';
-import { ethJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import CachedENSName from '@app/components/CachedENSName';
 
 export const SIGNING_MESSAGE = 'ALL HAIL KING SEAWORM';
 
@@ -60,13 +59,13 @@ const LinkWallet = ({
       </div>
       {isLinked ? (
         <>
-          <ENSName address={account} provider={ethJsonRpcProvider} /> linked!
+          <CachedENSName address={account} /> linked!
         </>
       ) : error ? (
         <div className="error">{error}</div>
       ) : account ? (
         <>
-          <ENSName address={account} provider={ethJsonRpcProvider} />
+          <CachedENSName address={account} />
           <button onClick={signMessage}>Sign message</button>
         </>
       ) : (

@@ -12,6 +12,7 @@ const api: NextApiHandler = async (_req, res) => {
   for (const user of usersToRefresh) {
     await refreshRoles(user);
   }
+
   return res.json({ success: true });
 };
 

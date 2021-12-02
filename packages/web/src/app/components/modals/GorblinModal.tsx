@@ -4,22 +4,31 @@ import React from 'react';
 type GorblinModalState = 'initial' | 'sign' | 'complete';
 
 const GorblinModal = () => {
-  const { provider } = useWallet();
+  const { account, provider } = useWallet();
 
   const [state, setState] = React.useState<GorblinModalState>('initial');
 
   const signAndInviteGorblin = async () => {
     if (provider) {
-      const sig = await provider
+      const signature = await provider
         .getSigner()
         .signMessage(
           'I HEREBY INVITE THE GORBLIN IN AND ASSUME ALL RESPONSIBILITY FOR ANY SLIMINGS'
         );
-      console.log(sig);
-      setState('complete');
-    }
+      console.log(signature);
 
-    // TODO hit endpoint to release the gorblin
+      // TODO: hit endpoint to release the gorblin
+      // const { error, success } = await fetch(
+      //   'https://exquisite-land-discord-dev.up.railway.app/api/invite',
+      //   {
+      //     method: 'POST',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify({ signature: signature, account: account })
+      //   }
+      // ).then((res) => res.json());
+      // // if (error) (error);
+      // if (success) setState('complete');
+    }
   };
 
   return (
