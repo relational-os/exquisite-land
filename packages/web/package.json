@@ -51,6 +51,7 @@
     "@types/react": "^17.0.0",
     "@types/react-canvas-draw": "^1.1.1",
     "@types/react-linkify": "^1.0.1",
+    "@types/react-lottie": "^1.2.6",
     "@types/react-modal": "^3.12.1",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
     "@types/react-window": "^1.8.5",
