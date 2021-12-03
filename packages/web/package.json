@@ -31,6 +31,7 @@
     "react-dropzone": "^11.3.5",
     "react-ens-name": "^0.2.3",
     "react-linkify": "^1.0.0-alpha",
+    "react-lottie": "^1.2.3",
     "react-modal": "^3.14.3",
     "react-sketch-canvas": "^5.3.4",
     "react-use": "^17.3.1",
