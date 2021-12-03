@@ -1,9 +1,16 @@
 import React from 'react';
 import { useWallet } from '@gimmixorg/use-wallet';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import useSWR from 'swr';
 import ConnectWalletButton from '@app/components/ConnectWalletButton';
 import { ButtonSuccess } from '@app/components/Button';
+
+const discordBotServerUrl = process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL;
+if (!discordBotServerUrl) {
+  throw new Error(
+    'Missing environment variable: NEXT_PUBLIC_DISCORD_BOT_SERVER_URL'
+  );
+}
 
 // TODO: import this type from our discord package
 type User = {
@@ -14,7 +21,8 @@ type User = {
   discordAvatar: string;
 };
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) =>
+  fetch(`${discordBotServerUrl}${url}`).then((res) => res.json());
 
 const queryValues = (param: string | string[] | undefined) => {
   if (Array.isArray(param)) {
@@ -26,49 +34,41 @@ const queryValues = (param: string | string[] | undefined) => {
   return [];
 };
 
+type DiscordUserData = {
+  user: User;
+  linkAddressMessage: string;
+};
+
 const useDiscordUser = ():
-  | { user: User; error: null; pending: false }
-  | { user: null; error: Error; pending: false }
-  | { user: null; error: null; pending: true } => {
+  | { data: DiscordUserData; error: null; pending: false }
+  | { data: null; error: Error; pending: false }
+  | { data: null; error: null; pending: true } => {
   const router = useRouter();
   const id = queryValues(router.query.id)[0];
 
-  const { data, error, isValidating } = useSWR<{ user: User }>(
-    id ? `/api/discord/user?${new URLSearchParams({ id }).toString()}` : null,
+  const { data, error, isValidating } = useSWR<DiscordUserData>(
+    id ? `/api/user?${new URLSearchParams({ id }).toString()}` : null,
     fetcher
   );
 
-  return {
-    user: {
-      id: '1234',
-      discordId: '1234',
-      discordUsername: 'holic',
-      discordDiscriminator: '4944',
-      discordAvatar:
-        'https://cdn.discordapp.com/avatars/79416844720537600/2342b5c3d3b59e4ab7e8dd700abd47a1.webp'
-    },
-    error: null,
-    pending: false
-  };
-
-  if (data?.user) {
-    return { user: data.user, error: null, pending: false };
+  if (data) {
+    return { data, error: null, pending: false };
   }
 
   if (error) {
     return {
-      user: null,
+      data: null,
       error: error instanceof Error ? error : new Error(error.toString()),
       pending: false
     };
   }
 
   if (isValidating) {
-    return { user: null, error: null, pending: true };
+    return { data: null, error: null, pending: true };
   }
 
   return {
-    user: null,
+    data: null,
     error: new Error(
       // TODO: clarify where in Discord to get the right link
       'No verification ID found. Try clicking from the Discord channel.'
@@ -79,7 +79,7 @@ const useDiscordUser = ():
 
 const DiscordLinkDialogContents = () => {
   const { account, provider } = useWallet();
-  const { user, error, pending } = useDiscordUser();
+  const { data, error, pending } = useDiscordUser();
 
   if (pending) {
     return <>Loading…</>;
@@ -87,7 +87,7 @@ const DiscordLinkDialogContents = () => {
   if (error) {
     return <>Error: {error.message}</>;
   }
-  if (!user) {
+  if (!data) {
     // Shouldn't be able to get here, but not sure how to get the TS "or" to work
     throw new Error('Something broke');
   }
@@ -103,17 +103,19 @@ const DiscordLinkDialogContents = () => {
           alignItems: 'center'
         }}
       >
-        <img src={user.discordAvatar} style={{ borderRadius: '50%' }} />
-        {user.discordUsername}#{user.discordDiscriminator}
+        <img src={data.user.discordAvatar} style={{ borderRadius: '50%' }} />
+        {data.user.discordUsername}#{data.user.discordDiscriminator}
       </div>
       {account && provider ? (
         <ButtonSuccess
-          onClick={async () => {
-            // TODO: add some server-sent nonce or hash so this can't be altered
-            const message = `ALL HAIL KING SEAWORM\n\n\n${user.id}`;
+          onClick={async (event) => {
+            // TODO: pending state instead of this hack
+            event.currentTarget.disabled = true;
+
+            const message = data.linkAddressMessage;
             const signature = await provider.getSigner().signMessage(message);
 
-            const res = await fetch('/api/link', {
+            const result = await fetch(`${discordBotServerUrl}/api/link`, {
               method: 'post',
               headers: {
                 'Content-Type': 'application/json'
@@ -121,15 +123,16 @@ const DiscordLinkDialogContents = () => {
               body: JSON.stringify({
                 account,
                 message,
-                signature,
-                id: user.id
+                signature
               })
-            });
+            }).then((res) => res.json());
 
-            // TODO: redirect or show some success message
+            if (result.success) {
+              router.push('/');
+            }
           }}
         >
-          Sign message to verify
+          sign message to verify
         </ButtonSuccess>
       ) : (
         <ConnectWalletButton />

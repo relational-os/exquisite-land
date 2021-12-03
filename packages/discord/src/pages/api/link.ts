@@ -1,22 +1,26 @@
-import { verifyMessage } from '@ethersproject/wallet';
 import prisma from '@server/helpers/prisma';
 import { refreshRoles } from '@server/services/Roles';
 import { NextApiHandler } from 'next';
-import { SIGNING_MESSAGE } from '../link';
+import { verifyLinkAddressMessage } from '@server/signedMessages';
+import NextCors from 'nextjs-cors';
 
 const api: NextApiHandler = async (req, res) => {
-  const {
-    signature,
-    account,
-    id
-  }: { signature: string; account: string; id: string } = req.body;
-  const signingAccount = verifyMessage(SIGNING_MESSAGE, signature);
+  await NextCors(req, res, {
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  });
 
-  if (account.toLowerCase() != signingAccount.toLowerCase())
-    return res.status(400).json({ error: 'Invalid signature' });
+  const {
+    message,
+    signature,
+    account
+  }: { message: string; signature: string; account: string } = req.body;
+
+  const { userId } = verifyLinkAddressMessage(message, signature, account);
 
   const user = await prisma.user.update({
-    where: { id },
+    where: { id: userId },
     data: { address: account.toLowerCase() }
   });
 

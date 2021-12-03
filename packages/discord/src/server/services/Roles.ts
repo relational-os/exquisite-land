@@ -5,9 +5,12 @@ import { getTilesInWallet } from './Graph';
 
 export const ROLES = {
   ADMIN: '888532000108073002',
-  OWNER: '888531194273202206',
-  TERRAMASU: '888531270865408020',
-  WANDERER: '915769820178436127'
+  // OWNER: '888531194273202206',
+  // TERRAMASU: '888531270865408020',
+  // WANDERER: '915769820178436127'
+  OWNER: '916015477006938122',
+  TERRAMASU: '915768392806465557',
+  WANDERER: '915761719811383306'
 };
 
 export const refreshRoles = async (user: User) => {
@@ -54,6 +57,6 @@ export const removeRoleFromDB = async (role: string, user: User) => {
   if (user.roles.includes(role)) return;
   await prisma.user.update({
     where: { id: user.id },
-    data: { roles: user.roles.filter(r => r != role) }
+    data: { roles: user.roles.filter((r) => r != role) }
   });
 };
