@@ -24,7 +24,9 @@ const GorblinModal = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ signature: signature, account: account })
       }).then((res) => res.json());
-      // if (error) (error);
+      if (error) {
+        console.log(error);
+      }
       if (success) setState('complete');
     }
   };
