@@ -48,3 +48,28 @@ export const useFetchCanvas = (
   );
   return { data, error, refresh: mutate };
 };
+
+// TODO: figure out how to use Hook in API file
+export const getAllTiles = async () => {
+  const query = gql`
+    {
+      tiles(first: 500, orderby: createdAt, orderDirection: desc) {
+        id
+        svg
+        status
+        x
+        y
+        owner {
+          address
+        }
+      }
+    }
+  `;
+  const data = await request(GRAPH_URL, query);
+  // filter out tiles with a null svg value
+
+  let filtered = data.tiles.filter((tile: any) => {
+    return tile.svg !== null;
+  });
+  return filtered;
+};
