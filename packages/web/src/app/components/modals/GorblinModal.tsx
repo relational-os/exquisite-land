@@ -17,17 +17,15 @@ const GorblinModal = () => {
         );
       console.log(signature);
 
-      // TODO: hit endpoint to release the gorblin
-      // const { error, success } = await fetch(
-      //   'https://exquisite-land-discord-dev.up.railway.app/api/invite',
-      //   {
-      //     method: 'POST',
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify({ signature: signature, account: account })
-      //   }
-      // ).then((res) => res.json());
-      // // if (error) (error);
-      // if (success) setState('complete');
+      // hit endpoint to release the gorblin
+      // TODO: handle error state
+      const { error, success } = await fetch('/api/gorblin/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ signature: signature, account: account })
+      }).then((res) => res.json());
+      // if (error) (error);
+      if (success) setState('complete');
     }
   };
 
