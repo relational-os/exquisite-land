@@ -226,7 +226,7 @@ const GorblinModal = () => {
           justify-content: center;
         }
         .gorblin-mode img.successful-gorblin {
-          width: 60vw;
+          width: 46vw;
           margin-right: 5vw;
           align-self: flex-end;
           image-rendering: pixelated;
