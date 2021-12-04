@@ -13,6 +13,7 @@
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/wallet": "^5.4.0",
     "@exquisiteland/contracts": "^0.3.2",
+    "@exquisiteland/discord": "^0.3.2",
     "@gimmixorg/use-wallet": "^0.0.28",
     "@prisma/client": "^3.3.0",
     "@svgr/webpack": "^5.5.0",

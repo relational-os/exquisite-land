@@ -8,6 +8,7 @@ import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { useAsync, useAsyncFn } from 'react-use';
 import Modal from 'react-modal';
 import Link from 'next/link';
+import type { User } from '@exquisiteland/discord/src/types';
 
 const discordBotServerUrl = process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL;
 if (!discordBotServerUrl) {
@@ -24,19 +25,6 @@ const queryValues = (param: string | string[] | undefined) => {
     return [param];
   }
   return [];
-};
-
-type DiscordUserData = {
-  // TODO: import this type from our discord package?
-  user: {
-    id: string;
-    discordId: string;
-    discordUsername: string;
-    discordDiscriminator: string;
-    discordAvatar: string;
-    address?: string;
-  };
-  linkAddressMessage: string;
 };
 
 const useDiscordUser = () => {
@@ -64,7 +52,8 @@ const useDiscordUser = () => {
       );
     }
 
-    const data: DiscordUserData = await res.json();
+    const data: { user: User; linkAddressMessage: string } = await res.json();
+
     return data;
   }, [id]);
 };
@@ -117,8 +106,7 @@ const DiscordLinkDialogContents = () => {
     return <>Error: {error.message}</>;
   }
   if (!value) {
-    // Shouldn't be able to get here, but not sure how to get the TS "or" to work
-    throw new Error('Something broke');
+    return <>Error: Failed to fetch link ID. Try a new one from Discord?</>;
   }
 
   return (
