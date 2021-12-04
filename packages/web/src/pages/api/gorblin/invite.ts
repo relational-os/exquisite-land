@@ -1,6 +1,7 @@
 import { verifyMessage } from '@ethersproject/wallet';
 import { NextApiHandler } from 'next';
 import { sendMessage } from '@server/Discord';
+import prisma from 'lib/prisma';
 
 const SIGNING_MESSAGE =
   'I HEREBY INVITE THE GORBLIN IN AND ASSUME ALL RESPONSIBILITY FOR ANY SLIMINGS';
@@ -23,6 +24,12 @@ const api: NextApiHandler = async (req, res) => {
 
     const message = `${account} completed signature and gorblin invitiation flow`;
     await sendMessage('admin-chat', 'xqst', message);
+
+    await prisma.gorblin.create({
+      data: {
+        address: account
+      }
+    });
 
     return res.json({ success: true });
   }

@@ -38,3 +38,10 @@ model Tile {
   status      String
   owner       String
 }
+
+
+model Gorblin {
+  id          Int      @id @default(autoincrement())
+  address     String
+  createdAt   DateTime @default(now())
+}
