@@ -92,7 +92,10 @@ const GorblinModal = () => {
         </div>
       ) : (
         <div className="gorblin-mode">
-          <img src="/graphics/gorblin.png" className="successful-gorblin" />
+          <img
+            src="/graphics/gorblin-sassy-noeyebrows.png"
+            className="successful-gorblin"
+          />
           <div className="gorblin-countdown-container">
             <div className="gorblin-countdown-header gorblin">
               <span></span>
@@ -199,7 +202,8 @@ const GorblinModal = () => {
           justify-content: center;
         }
         .gorblin-mode img.successful-gorblin {
-          width: 70vw;
+          width: 60vw;
+          margin-right: 5vw;
           align-self: flex-end;
           image-rendering: pixelated;
         }
