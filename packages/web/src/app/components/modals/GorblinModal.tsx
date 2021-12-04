@@ -68,7 +68,7 @@ const GorblinModal = () => {
         <div className="gorblin-container">
           <h1 className="title gorblin">woah, really?</h1>
           <div className="spacer"></div>
-          <img src="/graphics/gorblin.png" className="tile-image" />
+          <img src="/graphics/gorblin-sassy.png" className="tile-image" />
           <div className="spacer"></div>
           <p className="dialog">
             the stuarts are gonna hate this. imma get real weird
