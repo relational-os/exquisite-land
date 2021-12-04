@@ -18,7 +18,7 @@ const GorblinModal = () => {
       console.log(signature);
 
       // hit endpoint to release the gorblin
-      // TODO: handle error state
+      // TODO: handle error state, display
       const { error, success } = await fetch('/api/gorblin/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
