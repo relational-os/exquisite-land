@@ -9,6 +9,7 @@ const api: NextApiHandler = async (_req, res) => {
   const data = await getAllTiles();
 
   for (const tile of data) {
+    console.log('procesing', tile);
     const foundTile = await prisma.tile.findUnique({
       where: {
         id: tile.id
@@ -25,6 +26,7 @@ const api: NextApiHandler = async (_req, res) => {
           id: tile.id
         }
       });
+      console.log(`${tile.id}, updated`);
     } else {
       await prisma.tile.create({
         data: {
@@ -37,6 +39,7 @@ const api: NextApiHandler = async (_req, res) => {
           owner: tile.owner.address
         }
       });
+      console.log(`${tile.id}, created`);
     }
   }
 
