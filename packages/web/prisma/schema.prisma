@@ -18,3 +18,30 @@ model GeneratedCoin {
   y       Int
   creator String
 }
+
+model GorblinCoin {
+  id      Int    @id @default(autoincrement())
+  digest  String @unique
+  tokenID Int
+  x       Int
+  y       Int
+  creator String
+  claimer String
+}
+
+model Tile {
+  id          String  @unique
+  discordSent Boolean
+  svg         String
+  x           Int
+  y           Int
+  status      String
+  owner       String
+}
+
+
+model Gorblin {
+  id          Int      @id @default(autoincrement())
+  address     String
+  createdAt   DateTime @default(now())
+}

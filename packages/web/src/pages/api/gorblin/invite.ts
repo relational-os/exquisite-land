@@ -1,6 +1,7 @@
 import { verifyMessage } from '@ethersproject/wallet';
-import prisma from '@server/helpers/prisma';
 import { NextApiHandler } from 'next';
+import { sendMessage } from '@server/Discord';
+import prisma from 'lib/prisma';
 
 const SIGNING_MESSAGE =
   'I HEREBY INVITE THE GORBLIN IN AND ASSUME ALL RESPONSIBILITY FOR ANY SLIMINGS';
@@ -18,18 +19,16 @@ const api: NextApiHandler = async (req, res) => {
 
     console.log(`signature matches! signed by ${account}`);
 
-    let introMessage = `sup I'ma coin y'alls asses. Thanks for the invite, ${account}`;
+    let introMessage = `you’ve 72 hrs ’til I abuse my powers\nplenty o' time to prepare for me slime\ngreen tiles growing landless smiles`;
+    await sendMessage('bot-testing', 'gorblin', introMessage);
 
-    fetch(`${process.env.HOST}/api/message`, {
-      method: 'POST',
-      body: JSON.stringify({ content: introMessage }),
-      headers: {
-        'Content-Type': 'application/json'
+    const message = `${account} completed signature and gorblin invitiation flow`;
+    await sendMessage('admin-chat', 'xqst', message);
+
+    await prisma.gorblin.create({
+      data: {
+        address: account
       }
-    }).then((res) => res.json());
-
-    await prisma.gorblinInviter.create({
-      data: { address: account }
     });
 
     return res.json({ success: true });

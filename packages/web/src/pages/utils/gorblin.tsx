@@ -6,9 +6,13 @@ const GorblinTools = () => {
   function sendWebhookRequest() {
     console.log('sendWebhookMessage', text);
 
-    const response = fetch('/api/message', {
+    const response = fetch(`/api/bot/send-message`, {
       method: 'POST',
-      body: JSON.stringify({ content: text }),
+      body: JSON.stringify({
+        content: text,
+        channel: 'bot-testing',
+        as: 'gorblin'
+      }),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -24,7 +28,7 @@ const GorblinTools = () => {
       <div className="message-send">
         <span>Send message as Gorblin</span>
         <span className="description">
-          will send to Relational Discord : #bot-testing
+          will send to Exquisite Land : #bot-testing
         </span>
         <input
           value={text}
@@ -38,7 +42,7 @@ const GorblinTools = () => {
 
       <style jsx>{`
         .message-send {
-          padding: 2rem;
+          padding: 4rem;
           width: 350px;
           display: flex;
           flex-direction: column;

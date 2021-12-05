@@ -1,14 +1,11 @@
-import prisma from '@server/helpers/prisma';
-import { getAllTiles } from '@server/services/Graph';
+import prisma from 'lib/prisma';
+import { getAllTiles } from '@app/features/Graph';
 import { NextApiHandler } from 'next';
-import { sendMessageWithImage } from '@server/bot';
-import {
-  DISCORD_CHANNELS,
-  LAND_GRANTER_CONTRACT_ADDRESS
-} from '@app/features/AddressBook';
+import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
+import { sendMessage } from '@server/Discord';
 
 const api: NextApiHandler = async (_req, res) => {
-  console.log('incoming refreshTiles request ');
+  console.log('incoming refreshTiles request');
   const data = await getAllTiles();
 
   for (const tile of data) {
@@ -29,7 +26,6 @@ const api: NextApiHandler = async (_req, res) => {
         }
       });
     } else {
-      // @ts-ignore
       await prisma.tile.create({
         data: {
           id: tile.id,
@@ -60,19 +56,18 @@ const api: NextApiHandler = async (_req, res) => {
   // choose the first pending Tile, and send a notification for it
   if (queuedNotifications.length > 0) {
     let toDeliver = queuedNotifications[0];
-    let channelId = DISCORD_CHANNELS['terra-masu'];
 
     const pngUrl = `https://exquisite.land/api/tiles/terramasu/${toDeliver.x}/${toDeliver.y}/img?size=500`;
 
     let resolvedName;
 
     try {
+      // TODO: get this directly through a function call
       let response = await fetch(
         `https://exquisite.land/api/ens-name?address=${toDeliver.owner}`
       );
 
       let json = await response.json();
-      console.log({ json });
       resolvedName = json.name;
     } catch (error) {
       console.log(error);
@@ -86,16 +81,31 @@ const api: NextApiHandler = async (_req, res) => {
     );
 
     try {
-      await sendMessageWithImage(channelId, message, pngUrl);
-      // update our db object with success state
-      await prisma.tile.update({
-        where: {
-          id: toDeliver.id
-        },
-        data: {
-          discordSent: true
+      await sendMessage('bot-testing', 'xqst', '', [
+        {
+          title: message,
+          type: 'rich',
+          image: {
+            url: pngUrl
+          }
+        }
+      ]).then((res) => {
+        if (res == true) {
+          prisma.tile
+            .update({
+              where: {
+                id: toDeliver.id
+              },
+              data: {
+                discordSent: true
+              }
+            })
+            .then((r: any) => {
+              console.log(r);
+            });
         }
       });
+
       return res.json({ success: true });
     } catch (error) {
       console.log('error', error);

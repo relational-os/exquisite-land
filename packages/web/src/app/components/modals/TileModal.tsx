@@ -7,6 +7,7 @@ import { generateTokenID } from '@app/features/TileUtils';
 import React from 'react';
 
 import CachedENSName from '../CachedENSName';
+import GorblinModal from './GorblinModal';
 
 const TileModal = ({ x, y }: { x: number; y: number }) => {
   const { tile } = useFetchTile(x, y);
@@ -14,33 +15,36 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
   if (!tile) return null;
   return (
     <div className="tile-modal">
-      {tile.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/img`}
-          width="100"
-          height="100"
-          className="tile-image"
-        />
+      {x == 12 && y == 15 ? (
+        <GorblinModal></GorblinModal>
+      ) : (
+        <>
+          {tile.svg && (
+            <img
+              src={`/api/tiles/terramasu/${x}/${y}/img`}
+              className="tile-image"
+            />
+          )}
+          <div className="meta">
+            <a href="#" className="title">
+              [{x},{y}] by <CachedENSName address={tile.owner.id} />
+            </a>
+            <div className="spacer"></div>
+            <a
+              href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
+                x,
+                y
+              )}`}
+              className="button"
+              target="_blank"
+            >
+              <img src="/graphics/icon-opensea.svg" /> OpenSea
+            </a>
+          </div>
+        </>
       )}
-      <div className="meta">
-        <a href="#" className="title">
-          [{x},{y}] by <CachedENSName address={tile.owner.id} />
-        </a>
-        <div className="spacer"></div>
-        <a
-          href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
-            x,
-            y
-          )}`}
-          className="button"
-          target="_blank"
-        >
-          <img src="/graphics/icon-opensea.svg" /> OpenSea
-        </a>
-      </div>
       <style jsx>{`
         .tile-modal {
-          width: min(90vw, 500px);
         }
         .title {
           padding-bottom: 0.75rem;
@@ -58,10 +62,18 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           margin-left: 0.5rem;
         }
         .tile-image {
+          min-width: 512px;
+          min-height: 512px;
           width: 100%;
           height: auto;
           image-rendering: pixelated;
           background: #222;
+        }
+        @media (max-width: 768px) {
+          .tile-image {
+            min-width: 375px;
+            min-height: 375px;
+          }
         }
         .meta {
           display: flex;

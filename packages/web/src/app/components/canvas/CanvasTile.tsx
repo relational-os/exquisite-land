@@ -9,6 +9,8 @@ import {
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import CachedENSName from '../CachedENSName';
+import Lottie from 'react-lottie';
+import * as animationData from '@app/graphics/gorblin-walk.json';
 
 const CanvasTile = ({
   x,
@@ -72,6 +74,15 @@ const CanvasTile = ({
     return false;
   });
 
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
   useEffect(() => {
     const found = tilesOwned?.find((t) => t.x == x && t.y == y);
     if (found || (!found && ownedTransaction?.status == 'confirmed')) {
@@ -103,13 +114,17 @@ const CanvasTile = ({
 
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
-      {tile?.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/svg`}
-          width="100"
-          height="100"
-          className="tile-image"
-        />
+      {x == 12 && y == 15 ? (
+        <Lottie options={defaultOptions} height={128} width={128} />
+      ) : (
+        tile?.svg && (
+          <img
+            src={`/api/tiles/terramasu/${x}/${y}/svg`}
+            width="100"
+            height="100"
+            className="tile-image"
+          />
+        )
       )}
       {!tile?.svg && pendingSvg && (
         <img
