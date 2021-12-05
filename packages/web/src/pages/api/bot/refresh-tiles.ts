@@ -86,7 +86,7 @@ const api: NextApiHandler = async (_req, res) => {
     );
 
     try {
-      await sendMessage('bot-testing', 'xqst', '', [
+      await sendMessage('terra-masu', 'xqst', '', [
         {
           title: message,
           type: 'rich',
