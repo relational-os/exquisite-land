@@ -9,7 +9,6 @@ const api: NextApiHandler = async (_req, res) => {
   const data = await getAllTiles();
 
   for (const tile of data) {
-    console.log('procesing', tile);
     const foundTile = await prisma.tile.findUnique({
       where: {
         id: tile.id
