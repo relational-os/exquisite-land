@@ -17,16 +17,18 @@ const api: NextApiHandler = async (_req, res) => {
     });
 
     if (foundTile) {
-      await prisma.tile.update({
-        data: {
-          status: tile.status,
-          svg: tile.svg
-        },
-        where: {
-          id: tile.id
-        }
-      });
-      console.log(`${tile.id}, updated`);
+      if (foundTile.status != tile.status) {
+        await prisma.tile.update({
+          data: {
+            status: tile.status,
+            svg: tile.svg
+          },
+          where: {
+            id: tile.id
+          }
+        });
+        console.log(`${tile.id}, updated`);
+      }
     } else {
       await prisma.tile.create({
         data: {
