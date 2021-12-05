@@ -20,7 +20,7 @@ const api: NextApiHandler = async (req, res) => {
     console.log(`signature matches! signed by ${account}`);
 
     let introMessage = `you’ve 72 hrs ’til I abuse my powers\nplenty o' time to prepare for me slime\ngreen tiles growing landless smiles`;
-    await sendMessage('bot-testing', 'gorblin', introMessage);
+    await sendMessage('terra-masu', 'gorblin', introMessage);
 
     const message = `${account} completed signature and gorblin invitiation flow`;
     await sendMessage('admin-chat', 'xqst', message);
