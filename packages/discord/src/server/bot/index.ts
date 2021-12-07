@@ -74,7 +74,7 @@ client.on('interactionCreate', async (interaction) => {
     });
     await interaction.reply({
       ephemeral: true,
-      content: `Please visit ${process.env.HOST}/link?id=${user.id} and tap Connect Wallet.`
+      content: `Please visit ${process.env.WEB_HOST}/discord/link?id=${user.id} and tap Connect Wallet.`
     });
   }
 });
