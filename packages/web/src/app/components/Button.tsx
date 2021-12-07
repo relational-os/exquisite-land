@@ -6,7 +6,12 @@ const Button = React.forwardRef(function Button(
 ) {
   return (
     <>
-      <button ref={ref} type="button" {...props} className={`button ${props.className}`} />
+      <button
+        ref={ref}
+        type="button"
+        {...props}
+        className={`button ${props.className}`}
+      />
       <style jsx>{`
         .button {
           padding: 8px 16px;
@@ -24,6 +29,9 @@ const Button = React.forwardRef(function Button(
 
         .button:hover {
           box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
+        }
+        .button:disabled {
+          opacity: 0.5;
         }
       `}</style>
     </>
