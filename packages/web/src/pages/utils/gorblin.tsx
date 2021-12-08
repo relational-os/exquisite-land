@@ -86,6 +86,7 @@ const GorblinTools = () => {
     setCoinImage(responseJson.coinImage);
     setWinner(responseJson.winner);
     setAddresses(responseJson.addresses);
+    setResponses(responseJson.reactions);
   }
 
   function sendWebhookRequest() {

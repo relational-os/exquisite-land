@@ -53,7 +53,7 @@ const api: NextApiHandler = async (req, res) => {
       `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['landless']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
     ).then((r) => r.json());
 
-    const { addresses } = response;
+    const { addresses, reactions } = response;
     console.log({ addresses });
 
     let recipientAddress;
@@ -89,8 +89,9 @@ const api: NextApiHandler = async (req, res) => {
     console.log(gorblinCoinBuffer.toString('base64'));
     return res.json({
       coinImage: gorblinCoinBuffer.toString('base64'),
-      entrants: addresses,
-      winner: recipientAddress
+      addresses: addresses,
+      winner: recipientAddress,
+      reactions: reactions
     });
 
     // get discord user id from bot server
