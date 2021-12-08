@@ -1,6 +1,6 @@
 import prisma from '@server/helpers/prisma';
 import { NextApiHandler } from 'next';
-import NextCors from 'nextjs-cors';
+// import NextCors from 'nextjs-cors';
 
 const api: NextApiHandler = async (req, res) => {
   console.log(req.query);
