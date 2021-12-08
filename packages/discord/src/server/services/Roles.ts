@@ -8,18 +8,19 @@ export const ROLES = {
   // EXQUISITE LAND DISCORD SERVER
   OWNER: '888531194273202206',
   TERRAMASU: '888531270865408020',
-  WANDERER: '915769820178436127'
+  LANDLESS: '915769820178436127'
   // RELATIONAL OS DISCORD SERVER
   // OWNER: '916015477006938122',
   // TERRAMASU: '915768392806465557',
-  // WANDERER: '915761719811383306'
+  // LANDLESS: '915761719811383306'
 };
 
+// TODO: return role difference for bot notification filtering
 export const refreshRoles = async (user: User) => {
   if (!user.address) return;
   const tiles = await getTilesInWallet(user.address);
 
-  console.log(tiles);
+  console.log('tile.length', tiles.length);
 
   if (tiles.length > 0) {
     let r = await addRoleForUser(ROLES.OWNER, user.discordId);
