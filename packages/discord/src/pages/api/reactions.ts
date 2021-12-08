@@ -18,7 +18,9 @@ const api: NextApiHandler = async (_req, res) => {
 
   // compile list of valid addresses
   let addresses: string[] = [];
-  let promises = response.map(async (reaction: any) => {
+  let reactions: string[] = [];
+  let promises = response?.map(async (reaction: any) => {
+    console.log({ reaction });
     const userRecord = await prisma.user.findUnique({
       where: { discordId: reaction.id as string },
       select: {
@@ -29,6 +31,8 @@ const api: NextApiHandler = async (_req, res) => {
       }
     });
 
+    reactions.push(`${reaction.username}#${reaction.discriminator}`);
+
     if (userRecord && userRecord.roles.includes(ROLES.LANDLESS)) {
       if (userRecord.address) {
         addresses.push(userRecord.address);
@@ -38,7 +42,11 @@ const api: NextApiHandler = async (_req, res) => {
 
   await Promise.all(promises);
 
-  return res.json({ success: true, addresses: addresses });
+  return res.json({
+    success: true,
+    addresses: addresses,
+    reactions: reactions
+  });
 };
 
 export const listEmojiReactionsOnMessage = async (
