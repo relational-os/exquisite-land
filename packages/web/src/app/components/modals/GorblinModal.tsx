@@ -6,23 +6,10 @@ import dayjs from 'dayjs';
 
 type GorblinModalState = 'initial' | 'sign' | 'complete';
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
 const GorblinModal = () => {
   const { account, provider } = useWallet();
 
-  const [state, setState] = React.useState<GorblinModalState>('initial');
-
-  const { data, error } = useSWR<{ gorblinExists: boolean; createdAt: string }>(
-    '/api/gorblin/activated',
-    fetcher
-  );
-  useEffect(() => {
-    console.log({ data });
-    if (data?.gorblinExists) {
-      setState('complete');
-    }
-  }, [data]);
+  const [state, setState] = React.useState<GorblinModalState>('complete');
 
   const signAndInviteGorblin = async () => {
     if (provider) {
@@ -46,10 +33,6 @@ const GorblinModal = () => {
       if (success) setState('complete');
     }
   };
-
-  if (!data && !error) {
-    return null;
-  }
 
   return (
     <div className="gorblinmodal">
@@ -124,11 +107,7 @@ const GorblinModal = () => {
             </div>
             <div className="gorblin-countdown">
               <img src="/graphics/coin-gorblin.gif" width="24" />
-              <span>
-                <Countdown
-                  date={dayjs(data?.createdAt).add(3, 'day').toDate()}
-                />
-              </span>
+              <span>hey hey! i’m giving coins to the landless in discord</span>
               <img src="/graphics/coin-gorblin.gif" width="24" />
             </div>
 
