@@ -29,6 +29,9 @@ export const refreshRoles = async (user: User) => {
     await removeRoleFromDB(ROLES.OWNER, user);
   }
 
+  // re-fetch the user from the database
+  user = (await prisma.user.findUnique({ where: { id: user.id } })) || user;
+
   // TODO: Switch to canvas ownership check when re-enabled
   if (tiles.length > 0) {
     await addRoleForUser(ROLES.TERRAMASU, user.discordId);
@@ -37,6 +40,8 @@ export const refreshRoles = async (user: User) => {
     await removeRoleForUser(ROLES.TERRAMASU, user.discordId);
     await removeRoleFromDB(ROLES.TERRAMASU, user);
   }
+
+  user = (await prisma.user.findUnique({ where: { id: user.id } })) || user;
 
   if (tiles.length == 0) {
     await addRoleForUser(ROLES.WANDERER, user.discordId);
@@ -48,6 +53,7 @@ export const refreshRoles = async (user: User) => {
 };
 
 export const addRoleToDB = async (role: string, user: User) => {
+  console.log('adding', role, 'to', user.discordId);
   if (user.roles.includes(role)) return;
   await prisma.user.update({
     where: { id: user.id },
