@@ -14,10 +14,13 @@ const GorblinTools = () => {
   const [tileData, setTileData] = useState<any>();
   const [discordMessageId, setDiscordMessageId] = useState<string>();
   const [tokenId, setTokenId] = useState<string>();
-  const [responses, setResponses] = useState<any>();
   const [channel, setChannel] = useState<string>('');
   const [bot, setBot] = useState<string>('');
   const [coinImage, setCoinImage] = useState<string>('');
+  const [winner, setWinner] = useState<string>('');
+
+  const [responses, setResponses] = useState<any>();
+  const [addresses, setAddresses] = useState<any>();
 
   useEffect(() => {
     fetch('/api/gorblin/admin-start').then((response) =>
@@ -37,7 +40,8 @@ const GorblinTools = () => {
     ).then((response) => {
       response.json().then((data) => {
         console.log({ data });
-        setResponses(data);
+        setResponses(data.reactions);
+        setAddresses(data.addresses);
       });
     });
   }
@@ -80,6 +84,8 @@ const GorblinTools = () => {
     });
     const responseJson = await response.json();
     setCoinImage(responseJson.coinImage);
+    setWinner(responseJson.winner);
+    setAddresses(responseJson.addresses);
   }
 
   function sendWebhookRequest() {
@@ -199,7 +205,22 @@ const GorblinTools = () => {
                 onChange={(event) => setTokenId(event.target.value)}
               ></input>
             </div>
-            <pre className="json">{JSON.stringify(responses, null, 2)}</pre>
+
+            <div className="section">
+              <span>Discord Reactions (unfiltered)</span>
+              <pre className="json">{JSON.stringify(responses, null, 2)}</pre>
+            </div>
+
+            <div className="section">
+              <span>Reaction Addresses (filtered)</span>
+              <pre className="json">{JSON.stringify(addresses, null, 2)}</pre>
+            </div>
+
+            <div className="section">
+              <span>winner</span>
+              <pre className="json">{winner}</pre>
+            </div>
+
             <div className="col">
               <button
                 disabled={!discordMessageId}
@@ -242,7 +263,8 @@ const GorblinTools = () => {
         }
 
         .section {
-          padding-bottom: 2rem;
+          padding-top: 1rem;
+          padding-bottom: 1rem;
         }
 
         .message-send {
@@ -264,6 +286,7 @@ const GorblinTools = () => {
         .json {
           color: black;
           padding: 0.8rem;
+          padding-top: 0;
           background: darkgray;
         }
       `}</style>

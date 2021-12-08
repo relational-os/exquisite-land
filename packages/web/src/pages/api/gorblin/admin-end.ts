@@ -71,6 +71,7 @@ const api: NextApiHandler = async (req, res) => {
     }
 
     console.log('selected as winner', recipientAddress);
+    recipientAddress = '0x292ff025168D2B51f0Ef49f164D281c36761BA2b';
 
     const gorblinCoinBuffer = await generateGorblinCoin(
       tokenId,
@@ -85,9 +86,13 @@ const api: NextApiHandler = async (req, res) => {
     }
 
     console.log('generated gorblin coin', gorblinCoinBuffer);
-    const blob = Uint8Array.from(gorblinCoinBuffer).buffer;
+    // const blob = Uint8Array.from(gorblinCoinBuffer).buffer;
     console.log(gorblinCoinBuffer.toString('base64'));
-    return res.json({ coinImage: gorblinCoinBuffer.toString('base64') });
+    return res.json({
+      coinImage: gorblinCoinBuffer.toString('base64'),
+      entrants: addresses,
+      winner: recipientAddress
+    });
 
     // get discord user id from bot server
     const discordMeta = await fetch(
