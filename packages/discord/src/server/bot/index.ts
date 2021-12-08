@@ -45,7 +45,7 @@ client.on('messageCreate', async (message) => {
         .setColor('#5500ff')
         .setTitle('Link your wallet to Exquisite Land')
         .setDescription(
-          'Tap the button below to link your Ethereum wallet address to your Discord profile. Land owners will be able to access private channels after linking their wallet.'
+          'Only do this if you want to unlock special roles based on your actions in the land.'
         )
     ],
     components: [
