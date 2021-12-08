@@ -1,8 +1,15 @@
 import prisma from '@server/helpers/prisma';
 import { NextApiHandler } from 'next';
 import { ROLES } from '@server/services/Roles';
+import NextCors from 'nextjs-cors';
 
 const api: NextApiHandler = async (_req, res) => {
+  await NextCors(_req, res, {
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  });
+
   const channelId = _req.query.channelId as string;
   const messageId = _req.query.messageId as string;
   const emoji = _req.query.emoji as string;
