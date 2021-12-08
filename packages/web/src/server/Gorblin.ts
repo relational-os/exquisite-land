@@ -1,4 +1,7 @@
-import { GRAPH_URL } from '@app/features/AddressBook';
+import {
+  GRAPH_URL,
+  LAND_GRANTER_CONTRACT_ADDRESS
+} from '@app/features/AddressBook';
 import request, { gql } from 'graphql-request';
 import dayjs from 'dayjs';
 
@@ -10,6 +13,7 @@ export const getNextTile = async (): Promise<{
   owner: {
     id: string;
   };
+  svg: string | null;
 } | null> => {
   const query = gql`
     {

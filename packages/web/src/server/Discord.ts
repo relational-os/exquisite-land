@@ -33,6 +33,29 @@ export const getMessagesForChannel = async (channelID: string) => {
   return messages;
 };
 
+export const sendReaction = async (
+  channelId: string,
+  messageId: string,
+  as: string,
+  emoji: string
+) => {
+  if (as !== 'xqst') {
+    return false;
+  }
+
+  // TODO: extract server_id to env
+  return await fetch(
+    `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${emoji}/@me`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+};
+
 export const sendMessage = async (
   channel: string,
   as: string,
@@ -70,9 +93,6 @@ export const sendMessage = async (
     headers: {
       'Content-Type': 'application/json'
     }
-  }).then((res) => {
-    // responsds with a 204 on happy state
-    return res.status == 204;
   });
 };
 

@@ -25,14 +25,16 @@ export const GRAPH_URL = isProd
 export const DISCORD_CHANNELS = {
   'terra-masu': '888518144346427392',
   'bot-testing': '910957967849967619',
-  'admin-chat': '888520558969487391'
+  'admin-chat': '888520558969487391',
+  landless: '917866480283033660'
 };
 
 export const DISCORD_WEBHOOKS = {
   gorblin: {
     'admin-chat': process.env.GORBLIN_ADMIN_CHAT,
     'bot-testing': process.env.GORBLIN_BOT_TESTING,
-    'terra-masu': process.env.GORBLIN_TERRA_MASU
+    'terra-masu': process.env.GORBLIN_TERRA_MASU,
+    'gorblin-giveaway': process.env.RELATIONAL_GORBLIN_GIVEAWAY
   },
   xqst: {
     'admin-chat': process.env.XQST_ADMIN_CHAT,
@@ -48,3 +50,9 @@ export const ADMIN_ADDRESSES = [
   '0x0456fdb63a3cc7ec354435754e5cf30458105416',
   '0x292ff025168d2b51f0ef49f164d281c36761ba2b'
 ]; // cjpais.eth, shahruz.eth, kpaxle.eth, gorum.eth, jonbo.eth
+
+export const GORBLIN_ADDR = '0x32649b5229Aa947fDea358bCc433Ad636B52F8C0';
+
+export const EMOJI_CODES = {
+  ':green_circle:': '%F0%9F%9F%A2'
+};
