@@ -71,7 +71,6 @@ const api: NextApiHandler = async (req, res) => {
     }
 
     console.log('selected as winner', recipientAddress);
-    recipientAddress = '0x292ff025168D2B51f0Ef49f164D281c36761BA2b';
 
     const gorblinCoinBuffer = await generateGorblinCoin(
       tokenId,
