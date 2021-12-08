@@ -1,8 +1,5 @@
 import { useWallet } from '@gimmixorg/use-wallet';
-import React, { useEffect } from 'react';
-import useSWR from 'swr';
-import Countdown from 'react-countdown';
-import dayjs from 'dayjs';
+import React from 'react';
 
 type GorblinModalState = 'initial' | 'sign' | 'complete';
 
