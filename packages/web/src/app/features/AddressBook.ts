@@ -40,3 +40,11 @@ export const DISCORD_WEBHOOKS = {
     'terra-masu': process.env.XQST_TERRA_MASU
   }
 };
+
+export const ADMIN_ADDRESSES = [
+  '0xd286064cc27514b914bab0f2fad2e1a89a91f314',
+  '0xf73fe15cfb88ea3c7f301f16ade3c02564aca407',
+  '0x1a7be7db3a050624eb17b1a0e747fbaaf2b8a9ca',
+  '0x0456fdb63a3cc7ec354435754e5cf30458105416',
+  '0x292ff025168d2b51f0ef49f164d281c36761ba2b'
+]; // cjpais.eth, shahruz.eth, kpaxle.eth, gorum.eth, jonbo.eth
