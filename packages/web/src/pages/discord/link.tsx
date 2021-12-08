@@ -159,11 +159,7 @@ const DiscordLinkDialogContents = () => {
             await linkUser(account, message, signature);
           }}
         >
-          {linkUserState.loading ? (
-            <>linking…</>
-          ) : (
-            <>sign with wallet to link discord</>
-          )}
+          {linkUserState.loading ? <>linking…</> : <>sign to link discord</>}
         </ButtonSuccess>
       ) : (
         <ConnectWalletButton />
