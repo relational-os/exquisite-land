@@ -146,7 +146,10 @@ const DiscordLinkDialogContents = () => {
           disabled={linkUserState.loading}
           onClick={async (event) => {
             const message = value.linkAddressMessage;
-            const signature = await provider.getSigner().signMessage(message);
+            const signature = await provider.send('personal_sign', [
+              message,
+              account
+            ]);
 
             await linkUser(account, message, signature);
           }}
