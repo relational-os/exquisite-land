@@ -19,7 +19,7 @@ export const getNextTile = async (): Promise<{
         orderDirection: asc
         where: { status: "UNLOCKED", updatedAt_lt: "${dayjs()
           .subtract(1, 'day')
-          .unix()}" }
+          .unix()}", svg: null }
       ) {
         id
         x
