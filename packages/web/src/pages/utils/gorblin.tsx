@@ -17,6 +17,7 @@ const GorblinTools = () => {
   const [responses, setResponses] = useState<any>();
   const [channel, setChannel] = useState<string>('');
   const [bot, setBot] = useState<string>('');
+  const [coinImage, setCoinImage] = useState<string>('');
 
   useEffect(() => {
     fetch('/api/gorblin/admin-start').then((response) =>
@@ -65,9 +66,9 @@ const GorblinTools = () => {
     }).then((res) => res.json());
   }
 
-  function concludeGorblin() {
+  async function concludeGorblin() {
     console.log('concluding gorblin!');
-    fetch('/api/gorblin/admin-end', {
+    const response = await fetch('/api/gorblin/admin-end', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -76,7 +77,9 @@ const GorblinTools = () => {
         discordMessageId: discordMessageId,
         tokenId: tokenId
       })
-    }).then((res) => res.json());
+    });
+    const responseJson = await response.json();
+    setCoinImage(responseJson.coinImage);
   }
 
   function sendWebhookRequest() {
@@ -112,93 +115,112 @@ const GorblinTools = () => {
         ) : account ? (
           <>
             <CachedENSName address={account} />
-            <button onClick={signMessage}>Sign message</button>
+            <button onClick={signMessage}>Sign In</button>
           </>
         ) : (
           <button onClick={() => connect()}>Connect Wallet</button>
         )}
       </div>
 
-      <div className="message-send section">
-        <h2>Send message as Gorblin</h2>
-        <span className="description">type your messsage here</span>
-        <input
-          value={text}
-          className="select"
-          onChange={(event) => setText(event.target.value)}
-        ></input>
+      {signature && (
+        <div>
+          <div className="message-send section">
+            <h2>Send message as Gorblin</h2>
+            <span className="description">type your messsage here</span>
+            <input
+              value={text}
+              className="select"
+              onChange={(event) => setText(event.target.value)}
+            ></input>
 
-        <span className="description">
-          select the bot you would like to send with
-        </span>
-        <Select
-          options={[
-            { value: 'gorblin', label: 'gorblin' },
-            { value: 'xqst', label: 'xqst' }
-          ]}
-          onChange={(selected) => {
-            if (selected) {
-              setBot(selected.value);
-            }
-          }}
-        />
+            <span className="description">
+              select the bot you would like to send with
+            </span>
+            <Select
+              options={[
+                { value: 'gorblin', label: 'gorblin' },
+                { value: 'xqst', label: 'xqst' }
+              ]}
+              onChange={(selected) => {
+                console.log({ selected });
+                if (selected) {
+                  setBot(selected.value);
+                }
+              }}
+            />
 
-        <span className="description">
-          select the channel you'd like to send to
-        </span>
-        <Select
-          options={[
-            { value: 'landless', label: 'landless' },
-            { value: 'bot-testing', label: 'bot-testing' },
-            { value: 'terra-masu', label: 'terra-masu' }
-          ]}
-          onChange={(selected) => {
-            if (selected) {
-              setChannel(selected.value);
-            }
-          }}
-        />
+            <span className="description">
+              select the channel you'd like to send to
+            </span>
+            <Select
+              options={[
+                { value: 'landless', label: 'landless' },
+                { value: 'bot-testing', label: 'bot-testing' },
+                { value: 'terra-masu', label: 'terra-masu' }
+              ]}
+              onChange={(selected) => {
+                if (selected) {
+                  setChannel(selected.value);
+                }
+              }}
+            />
 
-        <button className="sendButton" onClick={sendWebhookRequest}>
-          send
-        </button>
-      </div>
+            <button
+              disabled={!channel || !bot || !text}
+              className="sendButton"
+              onClick={sendWebhookRequest}
+            >
+              send
+            </button>
+          </div>
 
-      <div className="admin-start section">
-        <h2>Giveaway Start Controls</h2>
+          <div className="admin-start section">
+            <h2>Giveaway Start Controls</h2>
 
-        <pre className="json">{JSON.stringify(tileData, null, 2)}</pre>
+            <pre className="json">{JSON.stringify(tileData, null, 2)}</pre>
 
-        <button onClick={initiateGorblin}>Announce giveaway</button>
-      </div>
+            <button onClick={initiateGorblin}>Announce giveaway</button>
+          </div>
 
-      <div className="admin-end section">
-        <h2>Giveaway End Controls</h2>
+          <div className="admin-end section">
+            <h2>Giveaway End Controls</h2>
 
-        <div className="col">
-          <span>message ID from Discord</span>
-          <input
-            placeholder="message id"
-            value={discordMessageId}
-            onChange={(event) => setDiscordMessageId(event.target.value)}
-          ></input>
-          <span>tile token ID</span>
-          <input
-            placeholder="token id"
-            value={tokenId}
-            onChange={(event) => setTokenId(event.target.value)}
-          ></input>
+            <div className="col">
+              <span>message ID from Discord</span>
+              <input
+                placeholder="message id"
+                value={discordMessageId}
+                onChange={(event) => setDiscordMessageId(event.target.value)}
+              ></input>
+              <span>tile token ID</span>
+              <input
+                placeholder="token id"
+                value={tokenId}
+                onChange={(event) => setTokenId(event.target.value)}
+              ></input>
+            </div>
+            <pre className="json">{JSON.stringify(responses, null, 2)}</pre>
+            <div className="col">
+              <button
+                disabled={!discordMessageId}
+                className="button"
+                onClick={getResponses}
+              >
+                Preview Responses
+              </button>
+
+              <button
+                disabled={!discordMessageId || !tokenId}
+                className="button"
+                onClick={concludeGorblin}
+              >
+                Generate Coin
+              </button>
+              {coinImage && <img src={`data:image/png;base64,${coinImage}`} />}
+            </div>
+          </div>
         </div>
-        <pre className="json">{JSON.stringify(responses, null, 2)}</pre>
-        <div className="col">
-          <button className="button" onClick={getResponses}>
-            Preview Responses
-          </button>
-          <button className="button" onClick={concludeGorblin}>
-            Conclude giveaway
-          </button>
-        </div>
-      </div>
+      )}
 
       <style jsx>{`
         .button {

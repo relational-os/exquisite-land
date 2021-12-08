@@ -50,7 +50,7 @@ const api: NextApiHandler = async (req, res) => {
     }
 
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['bot-testing']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
+      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['landless']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
     ).then((r) => r.json());
 
     const { addresses } = response;
@@ -72,18 +72,22 @@ const api: NextApiHandler = async (req, res) => {
 
     console.log('selected as winner', recipientAddress);
 
-    const gorblinCoin = await generateGorblinCoin(
+    const gorblinCoinBuffer = await generateGorblinCoin(
       tokenId,
       tile.x,
       tile.y,
       signature,
       recipientAddress
     );
-    if (gorblinCoin instanceof Error) {
+
+    if (gorblinCoinBuffer instanceof Error) {
       return res.status(400).json({ error: 'Error generating coin' });
     }
 
-    console.log('generated gorblin coin', gorblinCoin);
+    console.log('generated gorblin coin', gorblinCoinBuffer);
+    const blob = Uint8Array.from(gorblinCoinBuffer).buffer;
+    console.log(gorblinCoinBuffer.toString('base64'));
+    return res.json({ coinImage: gorblinCoinBuffer.toString('base64') });
 
     // get discord user id from bot server
     const discordMeta = await fetch(
