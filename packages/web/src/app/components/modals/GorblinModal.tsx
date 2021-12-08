@@ -47,7 +47,7 @@ const GorblinModal = () => {
           <img src="/graphics/gorblin.png" className="tile-image" />
           <div className="spacer"></div>
           <p className="dialog">
-            lemme into the discord, it’ll be super chill trust me ;)
+            hey hey! i’m giving coins to the landless in discord
           </p>
           {/* TODO change the URL and what to do after the modal is closed? */}
           <button
@@ -99,20 +99,20 @@ const GorblinModal = () => {
           <div className="gorblin-countdown-container">
             <div className="gorblin-countdown-header gorblin">
               <span></span>
-              gorblin inbound!
+              gorblin arrived!
               <span></span>
             </div>
             <div className="gorblin-countdown">
               <img src="/graphics/coin-gorblin.gif" width="24" />
-              <span>hey hey! i’m giving coins to the landless in discord</span>
+              <span>00:00:00:00</span>
               <img src="/graphics/coin-gorblin.gif" width="24" />
             </div>
 
             <div className="spacer"></div>
             <h1 className="message gorblin">
-              yessss.
+              hey hey!
               <br />
-              imma coin ya’lls asses so good!
+              i’m giving coins to the landless in discord
             </h1>
             <div className="spacer"></div>
           </div>
