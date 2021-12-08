@@ -34,7 +34,8 @@ export const DISCORD_WEBHOOKS = {
     'admin-chat': process.env.GORBLIN_ADMIN_CHAT,
     'bot-testing': process.env.GORBLIN_BOT_TESTING,
     'terra-masu': process.env.GORBLIN_TERRA_MASU,
-    'gorblin-giveaway': process.env.RELATIONAL_GORBLIN_GIVEAWAY
+    'gorblin-giveaway': process.env.RELATIONAL_GORBLIN_GIVEAWAY,
+    landless: process.env.GORBLIN_LANDLESS
   },
   xqst: {
     'admin-chat': process.env.XQST_ADMIN_CHAT,

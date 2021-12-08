@@ -79,6 +79,9 @@ export const sendMessage = async (
   if (channel === 'terra-masu' && as === 'gorblin') {
     targetURL = DISCORD_WEBHOOKS['gorblin']['terra-masu'];
   }
+  if (channel === 'landless' && as === 'gorblin') {
+    targetURL = DISCORD_WEBHOOKS['gorblin']['landless'];
+  }
 
   if (!targetURL) {
     throw new Error(`Unknown channel/as combo: ${channel}/${as}`);
