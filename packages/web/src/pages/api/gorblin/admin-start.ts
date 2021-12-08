@@ -1,12 +1,12 @@
 import {
   ADMIN_ADDRESSES,
-  EMOJI_CODES,
+  // EMOJI_CODES,
   EXQUISITE_LAND_CONTRACT_ADDRESS
 } from '@app/features/AddressBook';
 import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { verifyMessage } from '@ethersproject/wallet';
 import { TerraMasu__factory } from '@sdk/factories/TerraMasu__factory';
-import { sendMessage, sendReaction } from '@server/Discord';
+import { sendMessage } from '@server/Discord';
 import { getNextTile } from '@server/Gorblin';
 import { Wallet } from 'ethers';
 import { NextApiHandler } from 'next';

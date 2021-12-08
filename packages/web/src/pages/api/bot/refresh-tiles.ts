@@ -94,7 +94,7 @@ const api: NextApiHandler = async (_req, res) => {
           }
         }
       ]).then((res) => {
-        if (res == true) {
+        if (res.ok) {
           prisma.tile
             .update({
               where: {
