@@ -44,12 +44,7 @@ const useDiscordUser = () => {
   const id = queryValues(router.query.id)[0];
 
   return useAsync(async () => {
-    if (!id) {
-      throw new Error(
-        // TODO: clarify where in Discord to get the right link
-        'No verification ID found. Try clicking from the Discord channel.'
-      );
-    }
+    if (!id) return;
 
     const res = await fetch(
       `${discordBotServerUrl}/api/user?${new URLSearchParams({
@@ -111,14 +106,11 @@ const DiscordLinkDialogContents = () => {
       }).then((res) => res.json())
   );
 
-  if (loading) {
-    return <>Loading…</>;
-  }
   if (error) {
     return <>Error: {error.message}</>;
   }
-  if (!value) {
-    return <>Error: Failed to fetch link ID. Try a new one from Discord?</>;
+  if (loading || !value) {
+    return <>Loading…</>;
   }
 
   return (
