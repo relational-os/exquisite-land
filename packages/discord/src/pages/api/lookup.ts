@@ -14,14 +14,17 @@ const api: NextApiHandler = async (req, res) => {
     where: { address: req.query.address as string },
     select: {
       discordId: true,
-      address: true
+      address: true,
+      discordUsername: true,
+      discordDiscriminator: true
     }
   });
   if (!user) return res.status(404).end();
 
   return res.json({
     address: user.address,
-    id: user.discordId
+    id: user.discordId,
+    discord: `${user.discordUsername}#${user.discordDiscriminator}`
   });
 };
 
