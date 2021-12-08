@@ -8,7 +8,6 @@ import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { useAsync, useAsyncFn } from 'react-use';
 import Modal from 'react-modal';
 import Link from 'next/link';
-import type { User } from '@exquisiteland/discord/src/types';
 
 const discordBotServerUrl = process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL;
 if (!discordBotServerUrl) {
@@ -25,6 +24,19 @@ const queryValues = (param: string | string[] | undefined) => {
     return [param];
   }
   return [];
+};
+
+type DiscordUserData = {
+  // TODO: import this type from our discord package?
+  user: {
+    id: string;
+    discordId: string;
+    discordUsername: string;
+    discordDiscriminator: string;
+    discordAvatar: string;
+    address?: string;
+  };
+  linkAddressMessage: string;
 };
 
 const useDiscordUser = () => {
@@ -52,7 +64,7 @@ const useDiscordUser = () => {
       );
     }
 
-    const data: { user: User; linkAddressMessage: string } = await res.json();
+    const data: DiscordUserData = await res.json();
 
     return data;
   }, [id]);
