@@ -4,6 +4,8 @@ import { useWallet } from '@gimmixorg/use-wallet';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 
+import WalletShuffle from '@app/components/utils/WalletShuffle';
+
 const GorblinTools = () => {
   const [text, setText] = React.useState('');
 
@@ -18,6 +20,7 @@ const GorblinTools = () => {
   const [bot, setBot] = useState<string>('');
   const [coinImage, setCoinImage] = useState<string>('');
   const [winner, setWinner] = useState<string>('');
+  const [winnerLoading, setWinnerLooading] = useState<boolean>(false);
   const [discordWinner, setDiscordWinner] = useState<string>('');
 
   const [responses, setResponses] = useState<any>();
@@ -70,6 +73,7 @@ const GorblinTools = () => {
 
   async function concludeGorblin() {
     console.log('concluding gorblin!');
+    setWinnerLooading(true);
     const response = await fetch('/api/gorblin/admin-end', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -85,16 +89,16 @@ const GorblinTools = () => {
     setWinner(responseJson.winner);
     setAddresses(responseJson.addresses);
     setResponses(responseJson.reactions);
-    fetch(
+
+    const discordWinnerResponse = await fetch(
       `${
         process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL
       }/api/lookup?address=${winner.toLowerCase()}`
-    ).then((response) =>
-      response.json().then((data) => {
-        console.log({ data });
-        setDiscordWinner(data.discord);
-      })
     );
+    const discordWinnerJson = await discordWinnerResponse.json();
+    console.log({ discordWinnerJson });
+    setDiscordWinner(discordWinnerJson.discord);
+    setWinnerLooading(false);
   }
 
   function sendWebhookRequest() {
@@ -225,11 +229,21 @@ const GorblinTools = () => {
               <pre className="json">{JSON.stringify(addresses, null, 2)}</pre>
             </div>
 
-            <div className="section">
-              <span>winner</span>
-              <pre className="json">{winner}</pre>
-              <pre className="json">{discordWinner}</pre>
-            </div>
+            {(winnerLoading || winner) && (
+              <div className="section">
+                <span>winner</span>
+                <pre className="json">
+                  <WalletShuffle
+                    loading={winnerLoading}
+                    wallets={addresses}
+                    selectedWallet={winner}
+                  />
+                </pre>
+                {winner && discordWinner && !winnerLoading && (
+                  <pre className="json">{discordWinner}</pre>
+                )}
+              </div>
+            )}
 
             <div className="col">
               <button
