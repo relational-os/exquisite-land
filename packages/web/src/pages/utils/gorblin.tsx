@@ -18,6 +18,7 @@ const GorblinTools = () => {
   const [bot, setBot] = useState<string>('');
   const [coinImage, setCoinImage] = useState<string>('');
   const [winner, setWinner] = useState<string>('');
+  const [discordWinner, setDiscordWinner] = useState<string>('');
 
   const [responses, setResponses] = useState<any>();
   const [addresses, setAddresses] = useState<any>();
@@ -32,9 +33,6 @@ const GorblinTools = () => {
   }, []);
 
   function getResponses() {
-    // if (!discordMessageId) {
-    //   return;
-    // }
     fetch(
       `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS.landless}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
     ).then((response) => {
@@ -87,6 +85,16 @@ const GorblinTools = () => {
     setWinner(responseJson.winner);
     setAddresses(responseJson.addresses);
     setResponses(responseJson.reactions);
+    fetch(
+      `${
+        process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL
+      }/api/lookup?address=${winner.toLowerCase()}`
+    ).then((response) =>
+      response.json().then((data) => {
+        console.log({ data });
+        setDiscordWinner(data.discord);
+      })
+    );
   }
 
   function sendWebhookRequest() {
@@ -220,6 +228,7 @@ const GorblinTools = () => {
             <div className="section">
               <span>winner</span>
               <pre className="json">{winner}</pre>
+              <pre className="json">{discordWinner}</pre>
             </div>
 
             <div className="col">
