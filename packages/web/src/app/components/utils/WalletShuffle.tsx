@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
 interface WalletSuffleLoadingProps {
   wallets: string[];
@@ -21,12 +21,14 @@ const WalletSuffleLoading = (props: WalletSuffleLoadingProps) => {
     intervalRef.current = setInterval(() => {
       let randomIndex = Math.floor(Math.random() * wallets?.length);
       // Dumb but works
-      if (randomIndex === previousWalletIndex) {
+      while (randomIndex === previousWalletIndex) {
         randomIndex = Math.floor(Math.random() * wallets?.length);
       }
-      setPreviousWalletIndex(randomIndex);
-      setWalletIndex(randomIndex);
-    }, 100);
+      setWalletIndex((prevWalletIndex) => {
+        setPreviousWalletIndex(prevWalletIndex);
+        return randomIndex;
+      });
+    }, 125);
 
     return () => clearInterval(intervalRef.current as NodeJS.Timer);
   }, [wallets, previousWalletIndex]);
