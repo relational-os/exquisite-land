@@ -176,7 +176,7 @@ const CanvasTile = ({
               )}
             </div>
           )}
-          {isInvitable && (
+          {isInvitable && x != 4 && y != 12 && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
               <button>{isCoinGenerated ? 'regenerate' : 'invite!'}</button>
