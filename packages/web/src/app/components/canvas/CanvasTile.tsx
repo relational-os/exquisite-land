@@ -112,20 +112,29 @@ const CanvasTile = ({
     }
   }, [isPending]);
 
+  function renderTileSwitch(x: number, y: number) {
+    if (x == 12 && y == 12) {
+      return <Lottie options={defaultOptions} height={128} width={128} />;
+    }
+    if (x == 4 && y == 12) {
+      // NEXT GORBLIN TILE
+      return <Lottie options={defaultOptions} height={128} width={128} />;
+    }
+    return (
+      tile?.svg && (
+        <img
+          src={`/api/tiles/terramasu/${x}/${y}/svg`}
+          width="100"
+          height="100"
+          className="tile-image"
+        />
+      )
+    );
+  }
+
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
-      {x == 12 && y == 15 ? (
-        <Lottie options={defaultOptions} height={128} width={128} />
-      ) : (
-        tile?.svg && (
-          <img
-            src={`/api/tiles/terramasu/${x}/${y}/svg`}
-            width="100"
-            height="100"
-            className="tile-image"
-          />
-        )
-      )}
+      {renderTileSwitch(x, y)}
       {!tile?.svg && pendingSvg && (
         <img
           src={pendingSvg}
