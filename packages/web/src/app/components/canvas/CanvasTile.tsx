@@ -126,7 +126,15 @@ const CanvasTile = ({
         );
       } else {
         // NEXT GORBLIN TILE
-        return <Lottie options={defaultOptions} height={128} width={128} />;
+        return (
+          <img
+            src="/graphics/gorblin-taken.png"
+            width="128"
+            height="128"
+            style={{ imageRendering: 'pixelated' }}
+            className="tile-image"
+          />
+        );
       }
     }
     return (
