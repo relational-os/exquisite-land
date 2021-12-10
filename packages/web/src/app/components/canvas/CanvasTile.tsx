@@ -112,44 +112,55 @@ const CanvasTile = ({
     }
   }, [isPending]);
 
-  function renderTileSwitch(x: number, y: number) {
-    if (x == 12 && y == 12) {
-      return <Lottie options={defaultOptions} height={128} width={128} />;
-    }
-    if (x == 4 && y == 12) {
-      if (tile?.svg != null) {
-        return (
-          <img
-            src={`/api/tiles/terramasu/${x}/${y}/svg`}
-            className="tile-image"
-          />
-        );
-      } else {
-        // NEXT GORBLIN TILE
-        return (
-          <img
-            src="/graphics/gorblin-taken.png"
-            width="128"
-            height="128"
-            style={{ imageRendering: 'pixelated' }}
-            className="tile-image"
-          />
-        );
-      }
-    }
-    return (
-      tile?.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/svg`}
-          className="tile-image"
-        />
-      )
-    );
-  }
+  // function renderTileSwitch(x: number, y: number) {
+  //   if (x == 12 && y == 12) {
+  //     return <Lottie options={defaultOptions} height={128} width={128} />;
+  //   }
+  //   if (x == 4 && y == 12) {
+  //     if (tile?.svg != null) {
+  //       return (
+  //         <img
+  //           src={`/api/tiles/terramasu/${x}/${y}/svg`}
+  //           className="tile-image"
+  //         />
+  //       );
+  //     } else {
+  //       // NEXT GORBLIN TILE
+  //       return (
+  //         <img
+  //           src="/graphics/gorblin-taken.png"
+  //           width="128"
+  //           height="128"
+  //           style={{ imageRendering: 'pixelated' }}
+  //           className="tile-image"
+  //         />
+  //       );
+  //     }
+  //   }
+  //   return (
+  //     tile?.svg && (
+  //       <img
+  //         src={`/api/tiles/terramasu/${x}/${y}/svg`}
+  //         className="tile-image"
+  //       />
+  //     )
+  //   );
+  // }
 
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
-      {renderTileSwitch(x, y)}
+      {x == 12 && y == 15 ? (
+        <Lottie options={defaultOptions} height={128} width={128} />
+      ) : (
+        tile?.svg && (
+          <img
+            src={`/api/tiles/terramasu/${x}/${y}/svg`}
+            width="100"
+            height="100"
+            className="tile-image"
+          />
+        )
+      )}
       {!tile?.svg && pendingSvg && (
         <img
           src={pendingSvg}
