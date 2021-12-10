@@ -11,6 +11,8 @@ import useTransactionsStore from '@app/features/useTransactionsStore';
 import CachedENSName from '../CachedENSName';
 import Lottie from 'react-lottie';
 import * as animationData from '@app/graphics/gorblin-walk.json';
+import useGorblinTile from '@app/features/useGorblinTile';
+import useGorblinCoins from '@app/features/useGorblinCoins';
 
 const CanvasTile = ({
   x,
@@ -35,6 +37,10 @@ const CanvasTile = ({
   const [isOwned, setOwned] = useState(false);
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
+  const { tile: gorblinTile } = useGorblinTile();
+  const { coins: gorblinCoins } = useGorblinCoins();
+  const [isGorblinTile, setIsGorblinTile] = useState(false);
+  const [isGorblinCoin, setIsGorblinCoin] = useState(false);
 
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
@@ -84,6 +90,19 @@ const CanvasTile = ({
   };
 
   useEffect(() => {
+    console.log({ gorblinTile });
+    setIsGorblinTile(gorblinTile?.x == x && gorblinTile?.y == y);
+  }, [gorblinTile]);
+
+  useEffect(() => {
+    gorblinCoins?.forEach((coin: any) => {
+      if (coin.x == x && coin.y == y) {
+        setIsGorblinCoin(true);
+      }
+    });
+  }, [gorblinCoins]);
+
+  useEffect(() => {
     const found = tilesOwned?.find((t) => t.x == x && t.y == y);
     if (found || (!found && ownedTransaction?.status == 'confirmed')) {
       setOwned(true);
@@ -112,45 +131,18 @@ const CanvasTile = ({
     }
   }, [isPending]);
 
-  // function renderTileSwitch(x: number, y: number) {
-  //   if (x == 12 && y == 12) {
-  //     return <Lottie options={defaultOptions} height={128} width={128} />;
-  //   }
-  //   if (x == 4 && y == 12) {
-  //     if (tile?.svg != null) {
-  //       return (
-  //         <img
-  //           src={`/api/tiles/terramasu/${x}/${y}/svg`}
-  //           className="tile-image"
-  //         />
-  //       );
-  //     } else {
-  //       // NEXT GORBLIN TILE
-  //       return (
-  //         <img
-  //           src="/graphics/gorblin-taken.png"
-  //           width="128"
-  //           height="128"
-  //           style={{ imageRendering: 'pixelated' }}
-  //           className="tile-image"
-  //         />
-  //       );
-  //     }
-  //   }
-  //   return (
-  //     tile?.svg && (
-  //       <img
-  //         src={`/api/tiles/terramasu/${x}/${y}/svg`}
-  //         className="tile-image"
-  //       />
-  //     )
-  //   );
-  // }
-
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
       {x == 12 && y == 15 ? (
         <Lottie options={defaultOptions} height={128} width={128} />
+      ) : isGorblinTile ? (
+        <img
+          src="/graphics/gorblin-taken.png"
+          width="128"
+          height="128"
+          style={{ imageRendering: 'pixelated' }}
+          className="tile-image"
+        />
       ) : (
         tile?.svg && (
           <img
@@ -169,13 +161,14 @@ const CanvasTile = ({
           className="tile-image"
         ></img>
       )}
+
       <div className="meta">
         <div className="coords">
           [{x},{y}]
         </div>
         {isOwned && <div className="owned">Your tile!</div>}
         <div className="deets">
-          {!isInvitable && tile?.owner && (
+          {tile?.owner && (!isInvitable || isGorblinCoin || isGorblinTile) && (
             <div className="owner">
               {ownedTransaction ? (
                 <CachedENSName address={account} />
@@ -187,7 +180,7 @@ const CanvasTile = ({
               )}
             </div>
           )}
-          {isInvitable && x != 4 && y != 12 && (
+          {isInvitable && !isGorblinCoin && !isGorblinTile && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
               <button>{isCoinGenerated ? 'regenerate' : 'invite!'}</button>
