@@ -117,8 +117,17 @@ const CanvasTile = ({
       return <Lottie options={defaultOptions} height={128} width={128} />;
     }
     if (x == 4 && y == 12) {
-      // NEXT GORBLIN TILE
-      return <Lottie options={defaultOptions} height={128} width={128} />;
+      if (tile?.svg != null) {
+        return (
+          <img
+            src={`/api/tiles/terramasu/${x}/${y}/svg`}
+            className="tile-image"
+          />
+        );
+      } else {
+        // NEXT GORBLIN TILE
+        return <Lottie options={defaultOptions} height={128} width={128} />;
+      }
     }
     return (
       tile?.svg && (
