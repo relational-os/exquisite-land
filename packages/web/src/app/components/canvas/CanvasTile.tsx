@@ -124,8 +124,6 @@ const CanvasTile = ({
       tile?.svg && (
         <img
           src={`/api/tiles/terramasu/${x}/${y}/svg`}
-          width="100"
-          height="100"
           className="tile-image"
         />
       )
