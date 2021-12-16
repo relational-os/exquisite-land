@@ -20,7 +20,7 @@ export const refreshRoles = async (user: User) => {
   if (!user.address) return;
   const tiles = await getTilesInWallet(user.address);
 
-  console.log('tile.length', tiles.length);
+  console.log('tiles.length', tiles.length);
 
   if (tiles.length > 0) {
     let r = await addRoleForUser(ROLES.OWNER, user.discordId);
@@ -60,7 +60,7 @@ export const refreshRoles = async (user: User) => {
 };
 
 export const addRoleToDB = async (role: string, user: User) => {
-  console.log('adding', role, 'to', user.discordId);
+  console.log('adding', role, 'to db', user.discordId);
   if (user.roles.includes(role)) return;
   await prisma.user.update({
     where: { id: user.id },
@@ -69,7 +69,8 @@ export const addRoleToDB = async (role: string, user: User) => {
 };
 
 export const removeRoleFromDB = async (role: string, user: User) => {
-  if (user.roles.includes(role)) return;
+  console.log('removing', role, 'from db', user.discordId);
+  if (!user.roles.includes(role)) return;
   await prisma.user.update({
     where: { id: user.id },
     data: { roles: user.roles.filter((r) => r != role) }
