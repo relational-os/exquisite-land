@@ -55,11 +55,11 @@ const api: NextApiHandler = async (req, res) => {
 
     // TODO: check tx status here for success?
 
-    await sendMessage(
-      'bot-testing',
-      'gorblin',
-      `i've claimed [${tile.x}, ${tile.y}]! place your mark 🟢 and your ass i may coin`
-    );
+    // await sendMessage(
+    //   'bot-testing',
+    //   'gorblin',
+    //   `i've claimed [${tile.x}, ${tile.y}]! place your mark 🟢 and your ass i may coin`
+    // );
 
     // TODO: pre-react to this message?
     // await sendReaction('bot-testing');

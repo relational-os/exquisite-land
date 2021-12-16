@@ -34,7 +34,7 @@ const GorblinTools = () => {
 
   function getResponses() {
     fetch(
-      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS.landless}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
+      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['terra-masu']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
     ).then((response) => {
       response.json().then((data) => {
         console.log({ data });
@@ -194,7 +194,7 @@ const GorblinTools = () => {
 
             <pre className="json">{JSON.stringify(tileData, null, 2)}</pre>
 
-            <button onClick={initiateGorblin}>Announce giveaway</button>
+            <button onClick={initiateGorblin}>Recirculate Tile</button>
           </div>
 
           <div className="admin-end section">
