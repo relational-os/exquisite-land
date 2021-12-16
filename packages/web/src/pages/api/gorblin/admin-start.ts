@@ -6,7 +6,6 @@ import {
 import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
 import { verifyMessage } from '@ethersproject/wallet';
 import { TerraMasu__factory } from '@sdk/factories/TerraMasu__factory';
-import { sendMessage } from '@server/Discord';
 import { getNextTile } from '@server/Gorblin';
 import { Wallet } from 'ethers';
 import { NextApiHandler } from 'next';
@@ -54,15 +53,6 @@ const api: NextApiHandler = async (req, res) => {
     console.log({ receipt });
 
     // TODO: check tx status here for success?
-
-    // await sendMessage(
-    //   'bot-testing',
-    //   'gorblin',
-    //   `i've claimed [${tile.x}, ${tile.y}]! place your mark 🟢 and your ass i may coin`
-    // );
-
-    // TODO: pre-react to this message?
-    // await sendReaction('bot-testing');
 
     return res.json({ success: true });
   }
