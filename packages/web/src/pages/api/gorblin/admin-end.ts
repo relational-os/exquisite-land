@@ -50,7 +50,7 @@ const api: NextApiHandler = async (req, res) => {
     }
 
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['landless']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
+      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['terra-masu']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
     ).then((r) => r.json());
 
     const { addresses, reactions } = response;
