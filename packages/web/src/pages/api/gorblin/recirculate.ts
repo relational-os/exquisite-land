@@ -4,24 +4,19 @@ import {
   EXQUISITE_LAND_CONTRACT_ADDRESS
 } from '@app/features/AddressBook';
 import { getJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { getTile } from '@app/features/useTile';
 import { verifyMessage } from '@ethersproject/wallet';
+import prisma from 'lib/prisma';
 import { TerraMasu__factory } from '@sdk/factories/TerraMasu__factory';
-import { getNextTile } from '@server/Gorblin';
 import { Wallet } from 'ethers';
 import { NextApiHandler } from 'next';
 
 const api: NextApiHandler = async (req, res) => {
-  const tile = await getNextTile();
-  if (!tile) return res.json({ error: 'No eligible tiles.' });
-
-  if (req.method == 'GET') {
-    return res.json({ nextTile: tile });
-  }
-
   if (req.method == 'POST') {
     // Authenticate
     const signature = req.body.signature as string;
     const account = req.body.account.toLowerCase() as string;
+    const tokenId = req.body.tokenId as string;
 
     const signingAccount = verifyMessage('I am me.', signature);
 
@@ -32,6 +27,9 @@ const api: NextApiHandler = async (req, res) => {
     if (!ADMIN_ADDRESSES.includes(account)) {
       return res.status(400).json({ error: 'not authorized' });
     }
+
+    const tile = await getTile(parseInt(tokenId));
+    if (!tile) return res.json({ error: 'no tile' });
 
     // verify tile is blank
     if (tile.svg != null) {
@@ -52,9 +50,14 @@ const api: NextApiHandler = async (req, res) => {
     const receipt = await tx.wait(2);
     console.log({ receipt });
 
-    // TODO: check tx status here for success?
+    await prisma.gorblinGiveaway.update({
+      where: { tokenId: parseInt(tokenId) },
+      data: { recirculated: true }
+    });
 
-    return res.json({ success: true });
+    // TODO: check tx status here for success
+
+    return res.json({ success: true, receipt: receipt, tx: tx });
   }
 };
 

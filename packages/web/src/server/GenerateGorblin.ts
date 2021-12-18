@@ -13,15 +13,6 @@ export const generateGorblinCoin = async (
   sig: string,
   claimer: string
 ) => {
-  // if (tokenId == undefined && x != undefined && y != undefined)
-  //   tokenId = `${generateTokenID(parseInt(x), parseInt(y))}`;
-
-  // if (tokenId != undefined && (x == undefined || y == undefined)) {
-  //   const [xs, ys] = getCoordinates(parseInt(tokenId));
-  //   x = xs.toString();
-  //   y = ys.toString();
-  // }
-
   const isGrantable = await checkTokenIdIsOwnedByLandGranter(
     parseInt(tokenId!)
   );
@@ -43,12 +34,15 @@ export const generateGorblinCoin = async (
   );
 
   // TODO: remove upsert it's avoiding errors for dev
-  console.log('upserting gorblin', typeof x, typeof y);
+  console.log('upserting gorblin', typeof x, typeof y, digest);
   await prisma.gorblinCoin.upsert({
     where: {
-      digest: digest
+      tokenID: parseInt(tokenId!)
     },
-    update: {},
+    update: {
+      digest: digest,
+      claimer: claimer
+    },
     create: {
       digest: digest,
       x: parseInt(x.toString()),

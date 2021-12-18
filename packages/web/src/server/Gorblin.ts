@@ -23,6 +23,7 @@ export const getNextTile = async (): Promise<{
           .unix()}", svg: null }
       ) {
         id
+        svg
         x
         y
         updatedAt
@@ -49,7 +50,7 @@ export const getNextTile = async (): Promise<{
   if (greatestHoarderEntry[1] > 0) greatestHoarder = greatestHoarderEntry[0];
 
   if (greatestHoarder)
-    return tiles.find((tile: any) => tile.owner.id === greatestHoarder);
-  else if (tiles.length) tiles[0];
+    return tiles.sort((tile: any) => tile.owner.id === greatestHoarder);
+  else if (tiles.length) tiles;
   return null;
 };
