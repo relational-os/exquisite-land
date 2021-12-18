@@ -22,11 +22,23 @@ model GeneratedCoin {
 model GorblinCoin {
   id      Int    @id @default(autoincrement())
   digest  String @unique
-  tokenID Int
+  tokenID Int    @unique
   x       Int
   y       Int
   creator String
   claimer String
+}
+
+model GorblinGiveaway {
+  id                Int    @id @default(autoincrement())
+  tokenId           Int @unique
+  recirculated      Boolean @default(false)
+  discordMessageId  String?
+  winner            String?
+  x                 Int
+  y                 Int
+  completed         Boolean @default(false)
+  createdAt         DateTime @default(now())
 }
 
 model Tile {
