@@ -10,23 +10,22 @@ import useSWR, { SWRConfiguration } from 'swr';
 //   canvas?: { id: string };
 // };
 
-const getGorblinTile = async (): Promise<any | null> => {
-  const response = await fetch('/api/gorblin/next-tile', {}).then((res) => {
-    return res.json();
-  });
-  return response.tile;
+const getGorblinTiles = async (): Promise<any | null> => {
+  const response = await fetch('/api/gorblin/giveaway', {});
+  const responseJson = await response.json();
+  return responseJson.giveaways;
 };
 
 const useGorblinTile = (swrOptions?: Partial<SWRConfiguration>) => {
   const { data, error, mutate } = useSWR<any | null>(
     ['useGorblinTile'],
-    getGorblinTile,
+    getGorblinTiles,
     {
       revalidateOnMount: true,
       ...swrOptions
     }
   );
-  return { tile: data, error, refresh: mutate };
+  return { tiles: data, error, refresh: mutate };
 };
 
 export default useGorblinTile;

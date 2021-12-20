@@ -37,7 +37,7 @@ const CanvasTile = ({
   const [isOwned, setOwned] = useState(false);
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
-  const { tile: gorblinTile } = useGorblinTile();
+  const { tiles: gorblinTiles } = useGorblinTile();
   const { coins: gorblinCoins } = useGorblinCoins();
   const [isGorblinTile, setIsGorblinTile] = useState(false);
   const [isGorblinCoin, setIsGorblinCoin] = useState(false);
@@ -90,9 +90,13 @@ const CanvasTile = ({
   };
 
   useEffect(() => {
-    console.log({ gorblinTile });
-    setIsGorblinTile(gorblinTile?.x == x && gorblinTile?.y == y);
-  }, [gorblinTile]);
+    if (!gorblinTiles) return;
+    gorblinTiles.filter((tile: any) => {
+      if (tile.x == x && tile.y == y && tile.recirculated) {
+        setIsGorblinTile(true);
+      }
+    });
+  }, [gorblinTiles]);
 
   useEffect(() => {
     gorblinCoins?.forEach((coin: any) => {
