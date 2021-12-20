@@ -123,7 +123,7 @@ const GorblinTools = () => {
       method: 'POST',
       body: JSON.stringify({
         content: `i've claimed [${x},${y}]! if yer landless, place your mark 🟢 and your ass i may coin`,
-        channel: 'bot-testing',
+        channel: 'terra-masu',
         as: 'gorblin',
         signature: signature,
         account: account
@@ -158,7 +158,7 @@ const GorblinTools = () => {
       method: 'POST',
       body: JSON.stringify({
         content: `<@${discordId}> gets me coin! you've 24 hours to draw [${x}, ${y}] or i'll be having it back`,
-        channel: 'bot-testing',
+        channel: 'terra-masu',
         as: 'gorblin',
         signature: signature,
         account: account
