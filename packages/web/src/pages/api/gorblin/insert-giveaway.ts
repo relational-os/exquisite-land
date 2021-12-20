@@ -4,6 +4,11 @@ import prisma from 'lib/prisma';
 
 const api: NextApiHandler = async (req, res) => {
   const tiles = await getNextTiles();
+
+  if (!tiles) {
+    return res.json({ error: 'No tiles found' });
+  }
+
   for (let i = 0; i < tiles.length; i++) {
     const tile = tiles[i];
 

@@ -33,17 +33,9 @@ export const generateGorblinCoin = async (
     claimer
   );
 
-  // TODO: remove upsert it's avoiding errors for dev
-  console.log('upserting gorblin', typeof x, typeof y, digest);
-  await prisma.gorblinCoin.upsert({
-    where: {
-      tokenID: parseInt(tokenId!)
-    },
-    update: {
-      digest: digest,
-      claimer: claimer
-    },
-    create: {
+  console.log('inserting gorblin', typeof x, typeof y, digest);
+  await prisma.gorblinCoin.create({
+    data: {
       digest: digest,
       x: parseInt(x.toString()),
       y: parseInt(y.toString()),
@@ -52,7 +44,7 @@ export const generateGorblinCoin = async (
       claimer: claimer
     }
   });
-  console.log('finsihed upserting gorblin');
+  console.log('finsihed inserting gorblin coin');
 
   return coinImage;
 };

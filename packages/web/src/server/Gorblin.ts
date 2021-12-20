@@ -2,16 +2,19 @@ import { GRAPH_URL } from '@app/features/AddressBook';
 import request, { gql } from 'graphql-request';
 import dayjs from 'dayjs';
 
-export const getNextTile = async (): Promise<{
-  id: string;
-  x: string;
-  y: string;
-  updatedAt: string;
-  owner: {
-    id: string;
-  };
-  svg: string | null;
-} | null> => {
+export const getNextTiles = async (): Promise<
+  | {
+      id: string;
+      x: string;
+      y: string;
+      updatedAt: string;
+      owner: {
+        id: string;
+      };
+      svg: string | null;
+    }[]
+  | null
+> => {
   const query = gql`
     {
       tiles(

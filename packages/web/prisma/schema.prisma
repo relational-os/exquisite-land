@@ -22,7 +22,7 @@ model GeneratedCoin {
 model GorblinCoin {
   id      Int    @id @default(autoincrement())
   digest  String @unique
-  tokenID Int    @unique
+  tokenID Int
   x       Int
   y       Int
   creator String
