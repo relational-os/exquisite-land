@@ -1,16 +1,9 @@
 import { ADMIN_ADDRESSES, EMOJI_CODES } from '@app/features/AddressBook';
 import { verifyMessage } from '@ethersproject/wallet';
-// import { sendMessage } from '@server/Discord';
 import { NextApiHandler } from 'next';
 import { DISCORD_CHANNELS } from '@app/features/AddressBook';
-// import GorblinTools from 'src/pages/utils/gorblin';
-// import TileSVG from '@app/components/canvas/TileSVG';
-// import { getNextTile } from '@server/Gorblin';
-import { generateGorblinCoin } from '@server/GenerateGorblin';
-// import { generateCoin } from '@server/LandGranter';
 import { getTile } from '@app/features/useTile';
-import FormData from 'form-data';
-// import { Blob } from 'buffer';
+import prisma from 'lib/prisma';
 
 function getRandomIntInclusive(min: number, max: number) {
   min = Math.ceil(min);
@@ -22,12 +15,10 @@ const api: NextApiHandler = async (req, res) => {
   const {
     signature,
     account,
-    discordMessageId,
     tokenId
   }: {
     signature: string;
     account: string;
-    discordMessageId: string;
     tokenId: string;
   } = req.body;
 
@@ -43,14 +34,21 @@ const api: NextApiHandler = async (req, res) => {
 
     console.log(tokenId);
     const tile = await getTile(parseInt(tokenId));
-    console.log({ tile });
+    const giveaway = await prisma.gorblinGiveaway.findUnique({
+      where: {
+        tokenId: parseInt(tokenId)
+      }
+    });
+    if (!giveaway || !tile) return res.json({ error: 'no tile / giveaway' });
+    console.log('giveaway', giveaway);
+    console.log('tile', tile);
 
     if (!tile) {
       return res.status(400).json({ error: 'No tile available' });
     }
 
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['terra-masu']}&messageId=${discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
+      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['terra-masu']}&messageId=${giveaway?.discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
     ).then((r) => r.json());
 
     const { addresses, reactions } = response;
@@ -66,77 +64,31 @@ const api: NextApiHandler = async (req, res) => {
         recipientAddress = addresses[0];
       } else {
         console.log('no responders!');
-        // TODO: return error state of some sort
+        return res.json({ error: 'no valid responses' });
       }
     }
 
     console.log('selected as winner', recipientAddress);
-
-    const gorblinCoinBuffer = await generateGorblinCoin(
-      tokenId,
-      tile.x,
-      tile.y,
-      signature,
-      recipientAddress
-    );
-
-    if (gorblinCoinBuffer instanceof Error) {
-      return res.status(400).json({ error: 'Error generating coin' });
-    }
-
-    console.log('generated gorblin coin', gorblinCoinBuffer);
-    // const blob = Uint8Array.from(gorblinCoinBuffer).buffer;
-    console.log(gorblinCoinBuffer.toString('base64'));
-    return res.json({
-      coinImage: gorblinCoinBuffer.toString('base64'),
-      addresses: addresses,
-      winner: recipientAddress,
-      reactions: reactions
-    });
-
-    // get discord user id from bot server
-    const discordMeta = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL
-      }/api/lookup?address=${recipientAddress.toLowerCase()}`
-    ).then((r) => r.json());
-
-    console.log({ discordMeta });
-
-    // @ts-ignore
-    // const generated = new Blob(gorblinCoin.buffer, { type: 'image/png' });
-
-    var formdata = new FormData();
-
-    // @ts-ignore
-    formdata.append('coin', gorblinCoin.toString('utf-8'), '[12,4].png');
-    console.log(formdata);
-
-    let postResponse = await fetch(process.env.XQST_BOT_TESTING!, {
-      method: 'POST',
-      body: formdata.toString(),
-      headers: {
-        'Content-Type': 'multipart/form-data'
+    await prisma.gorblinGiveaway.update({
+      where: {
+        id: giveaway.id
+      },
+      data: {
+        winner: recipientAddress
       }
     });
-    console.log({ postResponse });
 
-    // await sendMessage(
-    //   'bot-testing',
-    //   'gorblin',
-    //   `<@${discordMeta.id}> -- here's your coin!`,
-    //   [
-    //     {
-    //       title: '',
-    //       type: 'rich',
-    //       image: {
-    //         // url: 'https://exquisite.land/api/tiles/terramasu/12/15/img'
-    //       }
-    //     }
-    //   ]
-    // );
+    const discordResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/lookup?address=${recipientAddress}`
+    );
+    const discordResponseJson = await discordResponse.json();
 
-    return res.json({});
+    return res.json({
+      addresses: addresses,
+      winner: recipientAddress,
+      reactions: reactions,
+      winnerLookup: discordResponseJson
+    });
   }
 };
 

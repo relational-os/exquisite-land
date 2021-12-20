@@ -29,6 +29,18 @@ model GorblinCoin {
   claimer String
 }
 
+model GorblinGiveaway {
+  id                Int    @id @default(autoincrement())
+  tokenId           Int @unique
+  recirculated      Boolean @default(false)
+  discordMessageId  String?
+  winner            String?
+  x                 Int
+  y                 Int
+  completed         Boolean @default(false)
+  createdAt         DateTime @default(now())
+}
+
 model Tile {
   id          String  @unique
   discordSent Boolean
