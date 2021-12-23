@@ -68,7 +68,9 @@ client.on('interactionCreate', async (interaction) => {
         discordId: interaction.user.id,
         discordUsername: interaction.user.username,
         discordDiscriminator: interaction.user.discriminator,
-        discordAvatar: interaction.user.avatarURL() as string
+        discordAvatar: interaction.user.avatarURL()
+          ? (interaction.user.avatarURL() as string)
+          : ''
       },
       update: {}
     });
