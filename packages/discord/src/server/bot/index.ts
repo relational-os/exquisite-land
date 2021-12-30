@@ -92,6 +92,7 @@ function sendMessageWithImage(
       // @ts-ignore
       return channel.send({
         content: content,
+        // @ts-ignore
         embed: embed().setImage('attachment://tile.png'),
         files: [attach(imageUrl, 'tile.png')]
       });
