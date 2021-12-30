@@ -9,7 +9,11 @@ const CachedENSName = ({ address }: { address?: string }) => {
     (url: string) => fetch(url).then((res) => res.json())
   );
   if (!data) return null;
-  return <>{data.name}</>;
+  if (data.name == null) {
+    return <>{address?.slice(0, 6)}</>;
+  } else {
+    return <>{data.name}</>;
+  }
 };
 
 export default CachedENSName;
