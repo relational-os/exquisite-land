@@ -3,7 +3,9 @@ import useSWR from 'swr';
 
 const CachedENSName = ({ address }: { address?: string }) => {
   const { data } = useSWR<{ name: string }>(
-    address ? `/api/ens-name?address=${address.toLowerCase()}` : null,
+    address
+      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address)}`
+      : null,
     (url: string) => fetch(url).then((res) => res.json())
   );
   if (!data) return null;

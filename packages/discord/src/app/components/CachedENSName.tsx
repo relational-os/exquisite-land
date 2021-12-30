@@ -4,7 +4,7 @@ import useSWR from 'swr';
 const CachedENSName = ({ address }: { address?: string }) => {
   const { data } = useSWR<{ name: string }>(
     address
-      ? `https://exquisite.land/api/ens-name?address=${address.toLowerCase()}`
+      ? `https://api.ensideas.com/ens/resolve/${encodeURIComponent(address)}`
       : null,
     (url: string) => fetch(url).then((res) => res.json())
   );
