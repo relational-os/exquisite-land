@@ -13,6 +13,8 @@ const api: NextApiHandler = async (_req, res) => {
   const channelId = _req.query.channelId as string;
   const messageId = _req.query.messageId as string;
   const emoji = _req.query.emoji as string;
+  const landlessOnly = (_req.query.landlessOnly as string) === 'true' || false;
+  console.log({ landlessOnly });
 
   let response = await listEmojiReactionsOnMessage(channelId, messageId, emoji);
 
@@ -33,8 +35,12 @@ const api: NextApiHandler = async (_req, res) => {
 
     reactions.push(`${reaction.username}#${reaction.discriminator}`);
 
-    if (userRecord && userRecord.roles.includes(ROLES.LANDLESS)) {
-      if (userRecord.address) {
+    if (userRecord && userRecord.address) {
+      if (landlessOnly) {
+        if (userRecord.roles.includes(ROLES.LANDLESS)) {
+          addresses.push(userRecord.address);
+        }
+      } else {
         addresses.push(userRecord.address);
       }
     }

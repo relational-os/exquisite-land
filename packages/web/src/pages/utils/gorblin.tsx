@@ -14,6 +14,7 @@ const GorblinTools = () => {
   const [channel, setChannel] = useState<string>('');
   const [bot, setBot] = useState<string>('');
   const [coinImage, setCoinImage] = useState<string>('');
+  const [landlessOnly, setLandlessOnly] = useState(true);
   const [winner, setWinner] = useState<{
     discord: string;
     address: string;
@@ -83,7 +84,8 @@ const GorblinTools = () => {
       body: JSON.stringify({
         account,
         signature,
-        tokenId
+        tokenId,
+        landlessOnly
       })
     });
     const responseJson = await response.json();
@@ -304,6 +306,30 @@ const GorblinTools = () => {
 
           <div>
             <h2>Giveaways</h2>
+            {/* radio button to toggle between landless and everyone */}
+            <div className="">
+              <span>Who can be selected as the winner?</span>
+              <input
+                type="radio"
+                value="landless"
+                name="votesFilter"
+                checked={landlessOnly}
+                onClick={(e) => {
+                  setLandlessOnly(true);
+                }}
+              />{' '}
+              Landless
+              <input
+                type="radio"
+                value="everyone"
+                name="votesFilter"
+                checked={!landlessOnly}
+                onClick={(e) => {
+                  setLandlessOnly(false);
+                }}
+              />{' '}
+              Everyone
+            </div>
             <table className="table">
               <thead>
                 <td>Tile</td>
@@ -392,6 +418,7 @@ const GorblinTools = () => {
 
       <style jsx>{`
         .table {
+          margin-top: 1rem;
           width: 100%;
         }
         .button {

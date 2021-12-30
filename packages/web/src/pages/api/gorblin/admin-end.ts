@@ -15,11 +15,13 @@ const api: NextApiHandler = async (req, res) => {
   const {
     signature,
     account,
-    tokenId
+    tokenId,
+    landlessOnly
   }: {
     signature: string;
     account: string;
     tokenId: string;
+    landlessOnly: string;
   } = req.body;
 
   if (req.method == 'POST') {
@@ -48,7 +50,7 @@ const api: NextApiHandler = async (req, res) => {
     }
 
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['terra-masu']}&messageId=${giveaway?.discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}`
+      `${process.env.NEXT_PUBLIC_DISCORD_BOT_SERVER_URL}/api/reactions?channelId=${DISCORD_CHANNELS['terra-masu']}&messageId=${giveaway?.discordMessageId}&emoji=${EMOJI_CODES[':green_circle:']}&landlessOnly=${landlessOnly}`
     ).then((r) => r.json());
 
     const { addresses, reactions } = response;
@@ -84,6 +86,7 @@ const api: NextApiHandler = async (req, res) => {
     const discordResponseJson = await discordResponse.json();
 
     return res.json({
+      landlessOnly,
       addresses: addresses,
       winner: recipientAddress,
       reactions: reactions,
