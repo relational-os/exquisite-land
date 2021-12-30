@@ -17,6 +17,15 @@ export const ROLES = {
 
 // TODO: return role difference for bot notification filtering
 export const refreshRoles = async (user: User) => {
+  await prisma.user.update({
+    where: {
+      id: user.id
+    },
+    data: {
+      lastChecked: new Date()
+    }
+  });
+
   if (!user.address) return;
   const tiles = await getTilesInWallet(user.address);
 

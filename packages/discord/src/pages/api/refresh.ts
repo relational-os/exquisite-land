@@ -3,14 +3,19 @@ import { refreshRoles } from '@server/services/Roles';
 import { NextApiHandler } from 'next';
 
 const api: NextApiHandler = async (_req, res) => {
-  const usersToRefresh = await prisma.user.findMany({
+  // send just one user at a time to avoid spamming Discord
+  const userToRefresh = await prisma.user.findFirst({
     where: {
       lastChecked: { lte: new Date(Date.now() - 1000 * 60 * 3) }
     },
-    orderBy: { lastChecked: 'asc' }
+    orderBy: { lastChecked: 'asc' },
+    take: 1
   });
-  for (const user of usersToRefresh) {
-    await refreshRoles(user);
+
+  console.log({ userToRefresh });
+
+  if (userToRefresh) {
+    await refreshRoles(userToRefresh);
   }
 
   return res.json({ success: true });
