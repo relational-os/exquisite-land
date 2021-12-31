@@ -137,25 +137,13 @@ const CanvasTile = ({
 
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
-      {x == 12 && y == 15 ? (
-        <Lottie options={defaultOptions} height={128} width={128} />
-      ) : isGorblinTile ? (
+      {tile?.svg && (
         <img
-          src="/graphics/gorblin-taken.png"
-          width="128"
-          height="128"
-          style={{ imageRendering: 'pixelated' }}
+          src={`/api/tiles/terramasu/${x}/${y}/svg`}
+          width="100"
+          height="100"
           className="tile-image"
         />
-      ) : (
-        tile?.svg && (
-          <img
-            src={`/api/tiles/terramasu/${x}/${y}/svg`}
-            width="100"
-            height="100"
-            className="tile-image"
-          />
-        )
       )}
       {!tile?.svg && pendingSvg && (
         <img
