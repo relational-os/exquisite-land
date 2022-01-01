@@ -9,8 +9,6 @@ import {
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import CachedENSName from '../CachedENSName';
-import Lottie from 'react-lottie';
-import * as animationData from '@app/graphics/gorblin-walk.json';
 import useGorblinTile from '@app/features/useGorblinTile';
 import useGorblinCoins from '@app/features/useGorblinCoins';
 
@@ -79,15 +77,6 @@ const CanvasTile = ({
     if (tx && tx.type == 'invite-neighbor') return true;
     return false;
   });
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice'
-    }
-  };
 
   useEffect(() => {
     if (!gorblinTiles) return;
