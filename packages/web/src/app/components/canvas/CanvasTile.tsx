@@ -9,8 +9,6 @@ import {
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import CachedENSName from '../CachedENSName';
-import useGorblinTile from '@app/features/useGorblinTile';
-import useGorblinCoins from '@app/features/useGorblinCoins';
 
 const CanvasTile = ({
   x,
@@ -35,10 +33,6 @@ const CanvasTile = ({
   const [isOwned, setOwned] = useState(false);
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
-  const { tiles: gorblinTiles } = useGorblinTile();
-  const { coins: gorblinCoins } = useGorblinCoins();
-  const [isGorblinTile, setIsGorblinTile] = useState(false);
-  const [isGorblinCoin, setIsGorblinCoin] = useState(false);
 
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
@@ -77,23 +71,6 @@ const CanvasTile = ({
     if (tx && tx.type == 'invite-neighbor') return true;
     return false;
   });
-
-  useEffect(() => {
-    if (!gorblinTiles) return;
-    gorblinTiles.filter((tile: any) => {
-      if (tile.x == x && tile.y == y && tile.recirculated) {
-        setIsGorblinTile(true);
-      }
-    });
-  }, [gorblinTiles]);
-
-  useEffect(() => {
-    gorblinCoins?.forEach((coin: any) => {
-      if (coin.x == x && coin.y == y) {
-        setIsGorblinCoin(true);
-      }
-    });
-  }, [gorblinCoins]);
 
   useEffect(() => {
     const found = tilesOwned?.find((t) => t.x == x && t.y == y);
@@ -149,7 +126,7 @@ const CanvasTile = ({
         </div>
         {isOwned && <div className="owned">Your tile!</div>}
         <div className="deets">
-          {tile?.owner && (!isInvitable || isGorblinCoin || isGorblinTile) && (
+          {tile?.owner && !isInvitable && (
             <div className="owner">
               {ownedTransaction ? (
                 <CachedENSName address={account} />
@@ -161,7 +138,7 @@ const CanvasTile = ({
               )}
             </div>
           )}
-          {isInvitable && !isGorblinCoin && !isGorblinTile && (
+          {isInvitable && (
             <div className="invitable">
               <img src="/graphics/coin-spin.gif" />
               <button>{isCoinGenerated ? 'regenerate' : 'invite!'}</button>

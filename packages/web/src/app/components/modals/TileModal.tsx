@@ -7,7 +7,6 @@ import { generateTokenID } from '@app/features/TileUtils';
 import React from 'react';
 
 import CachedENSName from '../CachedENSName';
-import GorblinModal from './GorblinModal';
 
 const TileModal = ({ x, y }: { x: number; y: number }) => {
   const { tile } = useFetchTile(x, y);
@@ -15,34 +14,30 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
   if (!tile) return null;
   return (
     <div className="tile-modal">
-      {x == 12 && y == 15 ? (
-        <GorblinModal></GorblinModal>
-      ) : (
-        <>
-          {tile.svg && (
-            <img
-              src={`/api/tiles/terramasu/${x}/${y}/img`}
-              className="tile-image"
-            />
-          )}
-          <div className="meta">
-            <a href="#" className="title">
-              [{x},{y}] by <CachedENSName address={tile.owner.id} />
-            </a>
-            <div className="spacer"></div>
-            <a
-              href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
-                x,
-                y
-              )}`}
-              className="button"
-              target="_blank"
-            >
-              <img src="/graphics/icon-opensea.svg" /> OpenSea
-            </a>
-          </div>
-        </>
-      )}
+      <>
+        {tile.svg && (
+          <img
+            src={`/api/tiles/terramasu/${x}/${y}/img`}
+            className="tile-image"
+          />
+        )}
+        <div className="meta">
+          <a href="#" className="title">
+            [{x},{y}] by <CachedENSName address={tile.owner.id} />
+          </a>
+          <div className="spacer"></div>
+          <a
+            href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
+              x,
+              y
+            )}`}
+            className="button"
+            target="_blank"
+          >
+            <img src="/graphics/icon-opensea.svg" /> OpenSea
+          </a>
+        </div>
+      </>
       <style jsx>{`
         .tile-modal {
         }
