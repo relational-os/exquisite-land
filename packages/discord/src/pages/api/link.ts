@@ -26,15 +26,15 @@ const api: NextApiHandler = async (req, res) => {
 
   await refreshRoles(user);
 
-  await fetch(process.env.XQST_TERRA_MASU!, {
-    method: 'POST',
-    body: JSON.stringify({
-      content: `<@${user.discordId}> has unlocked a special role!`
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+  // await fetch(process.env.XQST_TERRA_MASU!, {
+  //   method: 'POST',
+  //   body: JSON.stringify({
+  //     content: `<@${user.discordId}> has unlocked a special role!`
+  //   }),
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   }
+  // });
 
   return res.json({ success: true });
 };
