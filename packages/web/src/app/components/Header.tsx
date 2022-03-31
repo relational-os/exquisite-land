@@ -62,12 +62,14 @@ const Header = () => {
             &nbsp;&nbsp;&nbsp;Land
           </div>
           <div className="spacer"></div>
-          <div style={{ display: 'none' }}>
-            <a href="">&#x3e; What is this land?</a>
-          </div>
           <div>
             <a href="" style={{ display: 'none' }}>
-              &#x3e; Frequently Asked
+              &#x3e; What is this land?
+            </a>
+          </div>
+          <div>
+            <a href="https://exquisiteland.substack.com" target="_blank">
+              &#x3e; Updates
             </a>
           </div>
         </div>
@@ -76,51 +78,52 @@ const Header = () => {
 
         <ul className="land-carousel">
           <li className="active">
-            <div>LAND 01</div>
+            <div>CANVAS 1</div>
             <div className="jaunt">TERRA MASU</div>
           </li>
           <li>
-            <div>LAND 02</div>
+            <div>CANVAS 2</div>
+            <div></div>
+            <span className="tooltip">in development!</span>
+          </li>
+          <li>
+            <div>CANVAS 3</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 03</div>
+            <div>CANVAS 4</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 04</div>
+            <div>CANVAS 5</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 05</div>
+            <div>CANVAS 6</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 06</div>
+            <div>CANVAS 7</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 07</div>
+            <div>CANVAS 8</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 08</div>
+            <div>CANVAS 9</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 09</div>
+            <div>CANVAS 10</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 10</div>
+            <div>CANVAS 11</div>
             <div></div>
           </li>
           <li>
-            <div>LAND 11</div>
-            <div></div>
-          </li>
-          <li>
-            <div>LAND 12</div>
+            <div>CANVAS 12</div>
             <div></div>
           </li>
         </ul>
@@ -233,7 +236,8 @@ const Header = () => {
         .menu-items button.close {
           position: fixed;
           top: 0.75rem;
-          left: 0.75rem;
+          left: 0.75rem !important;
+          right: auto;
           background: transparent;
           outline: none;
           border: none;
@@ -300,6 +304,7 @@ const Header = () => {
           overflow-x: auto;
         }
         .land-carousel li {
+          position: relative;
           color: #ffffff67;
           min-width: 180px;
           height: 120px;
@@ -318,6 +323,24 @@ const Header = () => {
           font-size: 2rem;
           padding: 0 0.5rem;
         }
+        .land-carousel li .tooltip {
+          position: absolute;
+          height: 120px;
+          line-height: 120px;
+          top: 0; 
+          left: 0; right: 0;
+         color: #fff; 
+         text-align: center;
+         animation: tada 1.2s infinite;
+        }
+
+        @keyframes tada {
+   0% {transform: scale(1);} 
+   10%, 20% {transform: scale(0.9) rotate(-3deg);} 
+   30%, 50%, 70%, 90% {transform: scale(1.1) rotate(3deg);} 
+   40%, 60%, 80% {transform: scale(1.1) rotate(-3deg);} 
+   100% {transform: scale(1) rotate(0);} 
+}
 
         button.discord-button {
           display: block;
