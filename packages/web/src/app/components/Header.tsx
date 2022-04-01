@@ -144,6 +144,11 @@ const Header = () => {
               <img src="/graphics/icon-twitter.svg" /> Twitter
             </a>
           </div>
+          <div>
+            <a href="https://www.reddit.com/r/exquisiteland/" target="_blank">
+              r/exquisiteland
+            </a>
+          </div>
           <div className="spacer"></div>
         </div>
 
