@@ -8,6 +8,10 @@
 // startVoting(int days)
     // -> contract handles voting period
 
+// TODO:
+// openVote() ownerOnly
+// closeVote() ownerOnly
+
 // SLIME_POOLS = {tileId: slimeAmount, ... }
 
 
