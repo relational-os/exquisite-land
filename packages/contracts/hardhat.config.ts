@@ -32,6 +32,9 @@ export default {
     matic: {
       chainId: 137,
       url: require('dotenv').config({ path: '.env.137' }).parsed.RPC_ENDPOINT
+    },
+    localhost: {
+      url: "http://127.0.0.1:7545"
     }
   },
   etherscan: {
