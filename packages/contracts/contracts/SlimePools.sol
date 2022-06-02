@@ -22,15 +22,16 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Interfaces.sol";
+import "./interfaces/ISlime.sol";
+import "hardhat/console.sol";
 
 
 contract SlimePools is Ownable {
     address internal slimeAddress;
-    mapping(uint32 => uint32) public slimePools;
+    mapping(uint32 => uint256) public slimePools;
     uint32 public mostSlimed;
 
-    event SlimePooled(uint32 tokenId, uint32 amount, address from);
+    event SlimePooled(uint32 tokenId, uint256 amount, address from);
 
     constructor(address slimeAddress_) {
         slimeAddress = slimeAddress_;
@@ -42,7 +43,9 @@ contract SlimePools is Ownable {
         return (x, y);
     }
 
-    function poolSlime(uint32 tokenId, uint32 slimeAmount) public payable {
+    function poolSlime(uint32 tokenId, uint32 slimeAmount) public {
+        console.log("poolSlime %s %s", tokenId, slimeAmount);
+
         // confirm transfer?
         ISlime(slimeAddress).transfer(
             msg.sender, // TODO: check w TrustedForwarder

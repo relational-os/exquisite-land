@@ -47,6 +47,10 @@ contract Slime is ERC20, ERC20Burnable, Ownable { //, TrustedForwarderRecipient 
         }
     }
 
+    function transfer(address from, address to, uint256 amount) public onlyAdmin {
+        _transfer(from, to, amount);
+    }
+
     // The following functions are overrides required by Solidity.
     function _afterTokenTransfer(address from, address to, uint256 amount)
         internal
