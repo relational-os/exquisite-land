@@ -4,7 +4,7 @@
   "scripts": {
     "build": "yarn build:contracts && yarn build:package",
     "prepublishOnly": "yarn build",
-    "test": "hardhat test",
+    "test": "NODE_OPTIONS=--openssl-legacy-provider hardhat test",
     "compile": "hardhat clean && hardhat compile",
     "typechain": "rm -rf ./typechain && typechain --show-stack-traces --target ethers-v5 --out-dir ./typechain 'artifacts/!(build-info)/**/!(*.dbg*)*.json'",
     "build:contracts": "yarn compile && yarn typechain",
