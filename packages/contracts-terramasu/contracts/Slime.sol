@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // https://polygonscan.com/address/0x7dacD1e6b4097bBAE0F2fDf4DFc09092D80b5b69#code
 
+// TODO: override needsApproval/isApproved to skip approve step
+
 contract Slime is ERC20, ERC20Burnable, Ownable { //, TrustedForwarderRecipient {
     error NotAnAdmin();
 
