@@ -1,0 +1,36 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "string[]",
+        "name": "palette",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint16",
+        "name": "numRows",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "numCols",
+        "type": "uint16"
+      }
+    ],
+    "name": "renderSVG",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
