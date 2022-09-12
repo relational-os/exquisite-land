@@ -181,15 +181,6 @@ const CanvasTile = ({
           transition: all 0.15s ease-in-out;
         }
 
-        .meta .coords {
-          ${isInvitable
-            ? 'color: #000;'
-            : tile?.status == 'UNLOCKED'
-            ? `position: relative; background: transparent; color: #000; height: auto; line-height: inherit;`
-            : 'background: #333; color: #222; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; width: 52%; height: 36px; line-height: 36px;'};
-          ${(tile?.svg || pendingSvg) &&
-          'position: relative; background: transparent; color: #fff; height: auto; line-height: inherit;'};
-        }
 
         .tile .meta {
           ${(tile?.svg || pendingSvg) && 'opacity: 0;'};

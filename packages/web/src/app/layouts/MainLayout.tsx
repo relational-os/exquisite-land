@@ -28,6 +28,12 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@exquisiteland" />
+
+        <link rel="apple-touch-icon" href="/static/logos/king-seaworm512.png" />
+        <meta name="apple-mobile-web-app-status-bar" content="#272424" />
+        <meta name="theme-color" content="#272424" />
+
+        <script src="/assets/js/app.js"></script>
       </Head>
       <Header />
       <main>{children}</main>
