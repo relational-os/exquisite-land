@@ -336,6 +336,11 @@ contract Canvas2 is
     _safeMint(_msgSender(), tokenId);
   }
 
+  function generateSecret(uint256 canvasId, uint256 tokenId, uint256 inviterTokenId, bytes8 pin) public view returns (bytes32) {
+    bytes32 secret = keccak256(abi.encodePacked(uint16(canvasId), uint16(tokenId), uint16(inviterTokenId), pin));
+    return secret;
+  }
+
   // * ERC721 Overrides * //
   function tokenURI(uint256 tokenId)
     public
