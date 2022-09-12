@@ -136,8 +136,9 @@ const Canvas = () => {
         ref={wrapperRef}
         centerOnInit
         minScale={0.16}
+        initialScale={0.9}
         centerZoomedOut
-        // maxScale={2}
+        maxScale={2}
         wheel={{ step: 0.07 }}
         velocityAnimation={{
           animationTime: 1000,
