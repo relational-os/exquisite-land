@@ -397,6 +397,40 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "canvasId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "inviterTokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes8",
+        "name": "pin",
+        "type": "bytes8"
+      }
+    ],
+    "name": "generateSecret",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "x",
         "type": "uint256"
       },
