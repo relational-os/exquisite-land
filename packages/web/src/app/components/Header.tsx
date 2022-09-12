@@ -43,7 +43,7 @@ const Header = () => {
         </button>
       )}
 
-      <UseCoinButton />
+      {/* <UseCoinButton /> */}
       <ConnectWalletButton />
 
       <div className="menu">

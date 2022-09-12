@@ -103,23 +103,6 @@ const CanvasTile = ({
 
   return (
     <div id={`tile-${x}-${y}`} className="tile" onClick={onClick} style={style}>
-      {tile?.svg && (
-        <img
-          src={`/api/tiles/terramasu/${x}/${y}/svg`}
-          width="100"
-          height="100"
-          className="tile-image"
-        />
-      )}
-      {!tile?.svg && pendingSvg && (
-        <img
-          src={pendingSvg}
-          width="100"
-          height="100"
-          className="tile-image"
-        ></img>
-      )}
-
       <div className="meta">
         <div className="coords">
           [{x},{y}]
@@ -149,51 +132,9 @@ const CanvasTile = ({
       <style jsx>{`
         .tile {
           position: relative;
-
-          background-color: ${isInvitable
-            ? '#c066ea'
-            : tile?.status == 'UNLOCKED'
-            ? '#444'
-            : '#333'};
-
-          background-image: ${isInvitable
-            ? '#c066ea'
-            : tile?.status == 'UNLOCKED'
-            ? `radial-gradient(circle, #333 1px, rgba(40, 40, 40, 0) 1px)`
-            : 'radial-gradient(circle, #111 1px, rgba(0, 0, 0, 0) 1px)'};
-
-          background-size: ${isInvitable
-            ? '100% 100%'
-            : tile?.status == 'UNLOCKED'
-            ? '10% 10%'
-            : '10% 10%'};
-
-          background-image: ${isOwned &&
-          'linear-gradient(-45deg, #ffe761, #fb922b)'};
-          background-size: ${isOwned && '400% 400%'};
-          animation: gradient ${isOwned && ' 3s ease infinite'};
-          transition: all 0.15s ease-in-out;
-          ${tile?.status == 'UNLOCKED' && 'box-shadow: inset 0 1px #333;'};
-        }
-
-        .tile:hover {
-          background-color: ${isInvitable
-            ? '#c066ea'
-            : tile?.status == 'UNLOCKED'
-            ? 'none'
-            : 'none'};
-
-          background-image: ${isInvitable
-            ? ''
-            : tile?.status == 'UNLOCKED'
-            ? `none`
-            : 'radial-gradient(circle, #000000 1px, rgba(0, 0, 0, 0) 1px)'};
-
           cursor: grab;
-
-          ${isOwned &&
-          'background-image: linear-gradient(-45deg, #ffe761, #fb922b); cursor: pointer; '};
         }
+
         .tile-image {
           width: 100%;
           height: auto;
@@ -254,11 +195,6 @@ const CanvasTile = ({
           ${(tile?.svg || pendingSvg) && 'opacity: 0;'};
         }
 
-        .tile:hover .meta {
-          ${(tile?.svg || pendingSvg) &&
-          'display: block; cursor: pointer; background: rgba(0,0,0,0.25); color:#fff; text-shadow: 2px 2px #000; opacity: 1;'};
-        }
-
         .deets {
           position: absolute;
           bottom: 10px;
@@ -286,10 +222,6 @@ const CanvasTile = ({
           border-bottom: 4px solid #843ea5;
         }
 
-        .invitable button:hover {
-          box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
-        }
-
         @keyframes gradient {
           0% {
             background-position: 0% 50%;
@@ -299,6 +231,30 @@ const CanvasTile = ({
           }
           100% {
             background-position: 0% 50%;
+          }
+        }
+
+        @media (min-width: 400px) {
+          .tile:hover {
+            background-color: ${isInvitable
+              ? '#c066ea'
+              : tile?.status == 'UNLOCKED'
+              ? 'none'
+              : 'none'};
+  
+            cursor: grab;
+  
+            ${isOwned &&
+            'background-image: linear-gradient(-45deg, #ffe761, #fb922b); cursor: pointer; '};
+          }
+
+          .invitable button:hover {
+            box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.15);
+          }
+
+          .tile:hover .meta {
+            ${(tile?.svg || pendingSvg) &&
+            'display: block; cursor: pointer; background: rgba(0,0,0,0.25); color:#fff; text-shadow: 2px 2px #000; opacity: 1;'};
           }
         }
       `}</style>
