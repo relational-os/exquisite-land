@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ConnectWalletButton from './ConnectWalletButton';
-import UseCoinButton from './UseCoinButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
 import useTransactionsStore from '@app/features/useTransactionsStore';
@@ -43,7 +42,7 @@ const Header = () => {
         </button>
       )}
 
-      <UseCoinButton />
+      {/* <UseCoinButton /> */}
       <ConnectWalletButton />
 
       <div className="menu">

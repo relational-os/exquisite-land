@@ -1,21 +1,31 @@
+import React, { useEffect, useRef }  from 'react';
 import {
   EXQUISITE_LAND_CONTRACT_ADDRESS,
   OPENSEA_URL
 } from '@app/features/AddressBook';
 import { useFetchTile } from '@app/features/Graph';
 import { generateTokenID } from '@app/features/TileUtils';
-import React from 'react';
 
 import CachedENSName from '../CachedENSName';
 
 const TileModal = ({ x, y }: { x: number; y: number }) => {
   const { tile } = useFetchTile(x, y);
 
-  if (!tile) return null;
+  const svgContainer = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (svgContainer.current) {
+      svgContainer.current.innerHTML = tile?.svg || ''
+    }
+  }, [tile?.svg])
+
   return (
     <div className="tile-modal">
-      <>
-        {tile.svg && (
+      {tile ? (
+        <>
+        {tile.svg ? (
+          <div className="tile-image" ref={svgContainer} />
+        ) : (
           <img
             src={`/api/tiles/terramasu/${x}/${y}/img`}
             className="tile-image"
@@ -38,6 +48,11 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           </a>
         </div>
       </>
+      ) : (
+        <>
+          <h1 className="title">loading</h1>
+        </>
+      )}
       <style jsx>{`
         .tile-modal {
         }
@@ -59,6 +74,8 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
         .tile-image {
           min-width: 512px;
           min-height: 512px;
+          max-width: 512px;
+          max-height: 512px;
           width: 100%;
           height: auto;
           image-rendering: pixelated;

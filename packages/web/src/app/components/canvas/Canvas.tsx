@@ -17,6 +17,9 @@ import { useUpdate } from 'react-use';
 
 Modal.setAppElement('#__next');
 
+// Hardcoded value for mobile devides
+const MOBILE_WIDTH_CUTOFF = 500;
+
 const columns = Array.from(Array(16).keys());
 const rows = Array.from(Array(16).keys());
 
@@ -114,13 +117,26 @@ const Canvas = () => {
     }
   }, [wrapperRef, router.query]);
 
+  const handleTileClick = (x: number, y: number) => {
+    console.log(document.body.clientWidth)
+    if (document.body.clientWidth <= MOBILE_WIDTH_CUTOFF) {
+      openTileModal(x, y);
+      return
+    }
+
+    if (!isPanning) {
+      openTileModal(x, y)
+    }
+  }
+
   const [isPanning, setPanning] = useState(false);
   return (
     <>
       <TransformWrapper
         ref={wrapperRef}
         centerOnInit
-        minScale={0.25}
+        minScale={0.16}
+        initialScale={0.9}
         centerZoomedOut
         maxScale={2}
         wheel={{ step: 0.07 }}
@@ -154,21 +170,23 @@ const Canvas = () => {
           <div className="canvas-header jaunt">Land 01: TERRA MASU</div>
           <div className="canvas-body">
             <div className="left"></div>
-            <div className="surface">
-              {rows.map((y) =>
-                columns.map((x) => (
-                  <CanvasTile
-                    key={`${x},${y}`}
-                    x={x}
-                    y={y}
-                    openEditor={() => !isPanning && openEditor(x, y)}
-                    openGenerateInvite={() =>
-                      !isPanning && openGenerateInvite(x, y)
-                    }
-                    openTileModal={() => !isPanning && openTileModal(x, y)}
-                  />
-                ))
-              )}
+            <div className="surface-container">
+              <div className="surface">
+                {rows.map((y) =>
+                  columns.map((x) => (
+                    <CanvasTile
+                      key={`${x},${y}`}
+                      x={x}
+                      y={y}
+                      openEditor={() => !isPanning && openEditor(x, y)}
+                      openGenerateInvite={() =>
+                        !isPanning && openGenerateInvite(x, y)
+                      }
+                      openTileModal={() => handleTileClick(x, y)}
+                    />
+                  ))
+                )}
+              </div>
             </div>
             <div className="right"></div>
           </div>
@@ -275,6 +293,13 @@ const Canvas = () => {
           grid-template-columns: repeat(${columns.length}, ${tileSize}px);
           grid-template-rows: repeat(${rows.length}, ${tileSize}px);
           box-shadow: 0 10px 64px 2px rgba(0, 0, 0, 0.3);
+          background-image: url("/static/combined.png");
+          image-rendering: pixelated;
+          background-size: 100%;
+          background-repeat: no-repeat;
+        }
+
+        .surface-container {
           background: #333;
           padding: 1rem;
         }
