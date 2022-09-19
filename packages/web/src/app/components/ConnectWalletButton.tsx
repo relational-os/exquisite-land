@@ -4,6 +4,7 @@ import { useWallet } from '@gimmixorg/use-wallet';
 import { ENSName, AddressDisplayEnum } from 'react-ens-name';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { getEthJsonRpcProvider } from '@app/features/getJsonRpcProvider';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const ConnectWalletButton = () => {
   const { connect, account, web3Modal, provider } = useWallet();
@@ -31,6 +32,10 @@ const ConnectWalletButton = () => {
       connectWallet();
     }
   }, [web3Modal?.cachedProvider, account]);
+
+  if (true) {
+    return <ConnectButton></ConnectButton>
+  }
 
   return (
     <div className="account-container">

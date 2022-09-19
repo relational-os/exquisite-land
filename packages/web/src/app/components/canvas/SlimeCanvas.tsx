@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import CanvasTile from './CanvasTile';
 import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
 import Modal from 'react-modal';
@@ -12,29 +11,93 @@ import {
   TransformComponent,
   TransformWrapper
 } from 'react-zoom-pan-pinch';
-// import TileModal from '../modals/TileModal';
 import SlimeTileModal from '../modals/SlimeTileModal';
 import { useUpdate } from 'react-use';
+import SlimeCanvasTile from './SlimeCanvasTile';
 
 Modal.setAppElement('#__next');
+
+// Hardcoded value for mobile devides
+const MOBILE_WIDTH_CUTOFF = 500;
 
 const columns = Array.from(Array(16).keys());
 const rows = Array.from(Array(16).keys());
 
-const SlimeCanvas = () => {
+const Canvas = () => {
   const update = useUpdate();
   const router = useRouter();
   const tileSize = 2 * 64; // TODO: zoom
 
+  // Populate any missing query params to center the map on the default x, y, z
+  // useEffect(() => {
+  //   if (
+  //     router.isReady &&
+  //     (router.query.x == null ||
+  //       router.query.y == null ||
+  //       router.query.z == null)
+  //   ) {
+  //     router.replace({
+  //       query: {
+  //         ...router.query,
+  //         x: router.query.x,
+  //         y: router.query.y,
+  //         z: router.query.z
+  //       }
+  //     });
+  //   }
+  // }, [router.isReady, router.query.x, router.query.y, router.query.z]);
+
   const [selectedX, setSelectedX] = useState<number>();
   const [selectedY, setSelectedY] = useState<number>();
+  const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
+  const [isInviteNeighborModalOpen, setIsInviteNeighborModalOpen] =
+    useState(false);
   const [isTilePreviewModalOpen, setIsTilePreviewModalOpen] = useState(false);
   useFetchCanvas();
   useOpenNeighborsForWallet();
 
   const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
+    // todo: if we want percentages, fetch all data from TheGraph and do the math here.
+  // todo: sort this data by poolTotal, truncate to top 8 or 10
+  const mockData = [
+    {
+      tokenId: 1,
+      x: 7,
+      y: 7,
+      poolTotal: 29523
+    },
+    {
+      tokenId: 2,
+      x: 1,
+      y: 4,
+      poolTotal: 145
+    }
+  ]
+
+  const closeEditorModal = () => {
+    setIsEditorModalOpen(false);
+    setSelectedX(undefined);
+    setSelectedY(undefined);
+  };
+  const closeInviteNeighborModal = () => {
+    setIsInviteNeighborModalOpen(false);
+  };
 
   const { provider } = useWallet();
+
+  const openEditor = (x: number, y: number) => {
+    if (!provider) return alert('Not signed in.');
+    setSelectedX(x);
+    setSelectedY(y);
+    setIsEditorModalOpen(true);
+  };
+
+  const openGenerateInvite = (x: number, y: number) => {
+    if (!provider) return alert('Not signed in.');
+    setSelectedX(x);
+    setSelectedY(y);
+    setIsInviteNeighborModalOpen(true);
+  };
 
   const zoomIn = () => wrapperRef.current?.zoomIn();
   const zoomOut = () => wrapperRef.current?.zoomOut();
@@ -70,22 +133,17 @@ const SlimeCanvas = () => {
     }
   }, [wrapperRef, router.query]);
 
-  // todo: if we want percentages, fetch all data from TheGraph and do the math here.
-  // todo: sort this data by poolTotal, truncate to top 8 or 10
-  const mockData = [
-    {
-      tokenId: 1,
-      x: 7,
-      y: 7,
-      poolTotal: 29523
-    },
-    {
-      tokenId: 2,
-      x: 1,
-      y: 4,
-      poolTotal: 145
+  const handleTileClick = (x: number, y: number) => {
+    console.log(document.body.clientWidth)
+    if (document.body.clientWidth <= MOBILE_WIDTH_CUTOFF) {
+      openTileModal(x, y);
+      return
     }
-  ]
+
+    if (!isPanning) {
+      openTileModal(x, y)
+    }
+  }
 
   const [isPanning, setPanning] = useState(false);
   return (
@@ -93,7 +151,8 @@ const SlimeCanvas = () => {
       <TransformWrapper
         ref={wrapperRef}
         centerOnInit
-        minScale={0.25}
+        minScale={0.16}
+        initialScale={0.9}
         centerZoomedOut
         maxScale={2}
         wheel={{ step: 0.07 }}
@@ -124,27 +183,26 @@ const SlimeCanvas = () => {
             cursor: 'grab'
           }}
         >
-          <div className='canvas-header'>
-            <div className="jaunt">Land 01: TERRA MASU</div>
-            {/* <div className="jaunt">slime: 350/2000</div> */}
-          </div>
+          <div className="canvas-header jaunt">Land 01: TERRA MASU</div>
           <div className="canvas-body">
             <div className="left"></div>
-            <div className="surface">
-              {rows.map((y) =>
-                columns.map((x) => (
-                  <CanvasTile
-                    key={`${x},${y}`}
-                    x={x}
-                    y={y}
-                    // openEditor={() => !isPanning}
-                    // openGenerateInvite={() =>
-                    //   !isPanning && openGenerateInvite(x, y)
-                    // }
-                    openTileModal={() => !isPanning && openTileModal(x, y)}
-                  />
-                ))
-              )}
+            <div className="surface-container">
+              <div className="surface">
+                {rows.map((y) =>
+                  columns.map((x) => (
+                    <SlimeCanvasTile
+                      key={`${x},${y}`}
+                      x={x}
+                      y={y}
+                      openEditor={() => !isPanning && openEditor(x, y)}
+                      openGenerateInvite={() =>
+                        !isPanning && openGenerateInvite(x, y)
+                      }
+                      openTileModal={() => handleTileClick(x, y)}
+                    />
+                  ))
+                )}
+              </div>
             </div>
             <div className="right"></div>
           </div>
@@ -179,28 +237,44 @@ const SlimeCanvas = () => {
           </div>
       </div>
 
-      <style jsx>
-          {`
-            .slime {
-              padding-top: 60px;
-              position: fixed;
-              top: 0;
-              right: 0;
-              height: 100%;
-              width: 20%;
-              background-color: #7CC45D;
-            }
-
-            .
-          `}
-      </style>
-
       <div className="controls">
         <button className="hide-controls-button">hide</button>
         <button onClick={zoomIn}>+</button>
         <button onClick={zoomOut}>-</button>
       </div>
 
+      <div className="scrub-controls">
+        <button className="play jaunt">&#x3e;</button>
+        <div className="scrub-bar"></div>
+        <div className="scrub-handle"></div>
+        <div className="now">NOW</div>
+      </div>
+
+      <Modal
+        isOpen={isEditorModalOpen}
+        onRequestClose={closeEditorModal}
+        style={editModalStyles}
+        contentLabel="Tile Editor Modal"
+      >
+        {selectedX != null && selectedY != null && (
+          <Editor
+            x={selectedX}
+            y={selectedY}
+            closeModal={closeEditorModal}
+            refreshCanvas={update}
+          ></Editor>
+        )}
+      </Modal>
+      <Modal
+        isOpen={isInviteNeighborModalOpen}
+        onRequestClose={closeInviteNeighborModal}
+        style={modalStyles}
+        contentLabel="Invite Neighbor Modal"
+      >
+        {selectedX != null && selectedY != null && (
+          <InviteNeighborModal x={selectedX} y={selectedY} />
+        )}
+      </Modal>
       <Modal
         isOpen={isTilePreviewModalOpen}
         onRequestClose={closeTilePreviewModal}
@@ -212,6 +286,17 @@ const SlimeCanvas = () => {
         )}
       </Modal>
       <style jsx>{`
+
+        .slime {
+          padding-top: 60px;
+          position: fixed;
+          top: 0;
+          right: 0;
+          height: 100%;
+          width: 20%;
+          background-color: #7CC45D;
+        }
+
         button.close {
           position: fixed;
           top: 1.2rem;
@@ -263,6 +348,13 @@ const SlimeCanvas = () => {
           grid-template-columns: repeat(${columns.length}, ${tileSize}px);
           grid-template-rows: repeat(${rows.length}, ${tileSize}px);
           box-shadow: 0 10px 64px 2px rgba(0, 0, 0, 0.3);
+          background-image: url("/static/combined.png");
+          image-rendering: pixelated;
+          background-size: 100%;
+          background-repeat: no-repeat;
+        }
+
+        .surface-container {
           background: #333;
           padding: 1rem;
         }
@@ -411,4 +503,4 @@ const editModalStyles = {
   }
 };
 
-export default SlimeCanvas;
+export default Canvas;

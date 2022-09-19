@@ -18,6 +18,10 @@ export const FORWARDER_CONTRACT_ADDRESS = isProd
   ? AddressBook.forwarder
   : AddressBookDev.forwarder;
 
+export const SLIME_CONTRACT_ADDRESS = "0xb05aa1f34e6fe4d24be1f0d3d08fa0b871874088";
+
+export const SLIME_POOL_CONTRACT_ADDRESS = "0xe705af740862803632ba1b8e03916e45224e74a9";
+
 export const GRAPH_URL = isProd
   ? 'https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land'
   : 'https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land-canary';
@@ -44,6 +48,8 @@ export const DISCORD_WEBHOOKS = {
   }
 };
 
+
+// TODO: update
 export const ADMIN_ADDRESSES = [
   '0xd286064cc27514b914bab0f2fad2e1a89a91f314',
   '0xf73fe15cfb88ea3c7f301f16ade3c02564aca407',
