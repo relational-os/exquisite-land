@@ -26,13 +26,17 @@ import "./interfaces/ISlime.sol";
 
 
 contract SlimePools is Ownable {
-    address internal slimeAddress;
+    address public slimeAddress;
     mapping(uint32 => uint256) public slimePools;
     uint32 public mostSlimed;
 
     event SlimePooled(uint32 tokenId, uint256 amount, address from);
 
     constructor(address slimeAddress_) {
+        slimeAddress = slimeAddress_;
+    }
+
+    function setSlimeAddress(address slimeAddress_) external onlyOwner {
         slimeAddress = slimeAddress_;
     }
 

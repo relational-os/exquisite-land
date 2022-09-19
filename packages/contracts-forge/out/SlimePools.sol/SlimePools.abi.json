@@ -132,6 +132,32 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "slimeAddress_",
+        "type": "address"
+      }
+    ],
+    "name": "setSlimeAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "slimeAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint32",
         "name": "",
         "type": "uint32"
