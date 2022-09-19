@@ -151,7 +151,7 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
 
         <div className='slime-content'>
           <span>How much slime to pool?</span>
-          <input placeholder='00'></input>
+          <input onChange={(e) => {setSlimeAmount(Number(e.target.value))}} placeholder='00'></input>
           <Button className='slime-it' onClick={slimeTile}>
             slime it!
           </Button>

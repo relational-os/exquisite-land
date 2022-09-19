@@ -12,7 +12,7 @@ enforceEnvs();
 
 // todo; clean this up
 export const { chains, provider, webSocketProvider } = configureChains(
-  [chain.rinkeby],
+  [chain.polygonMumbai],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }),
     publicProvider(),
