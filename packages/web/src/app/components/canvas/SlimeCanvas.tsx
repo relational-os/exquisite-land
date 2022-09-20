@@ -57,22 +57,7 @@ const Canvas = () => {
   useOpenNeighborsForWallet();
 
   const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
-    // todo: if we want percentages, fetch all data from TheGraph and do the math here.
-  // todo: sort this data by poolTotal, truncate to top 8 or 10
-  const mockData = [
-    {
-      tokenId: 1,
-      x: 7,
-      y: 7,
-      poolTotal: 29523
-    },
-    {
-      tokenId: 2,
-      x: 1,
-      y: 4,
-      poolTotal: 145
-    }
-  ]
+
 
   const closeEditorModal = () => {
     setIsEditorModalOpen(false);
@@ -209,34 +194,6 @@ const Canvas = () => {
         </TransformComponent>
       </TransformWrapper>
 
-      // todo: move to a modal                
-      <div className="slime">
-          <span>SLIME POOLS</span>
-
-          <span>6 days remaining!</span>
-
-          <div>
-              <span>Leaderboard</span>
-              <table>
-                {
-                  mockData.map((data, index) => (<>
-                    <tr>
-                      <td>
-                        {index + 1}. 
-                      </td>
-                      <td>
-                        [{data.x}, {data.y}]
-                      </td>
-                      <td>
-                      §{data.poolTotal}
-                      </td>
-                    </tr>
-                  </>))
-                }
-              </table>
-          </div>
-      </div>
-
       <div className="controls">
         <button className="hide-controls-button">hide</button>
         <button onClick={zoomIn}>+</button>
@@ -286,16 +243,6 @@ const Canvas = () => {
         )}
       </Modal>
       <style jsx>{`
-
-        .slime {
-          padding-top: 60px;
-          position: fixed;
-          top: 0;
-          right: 0;
-          height: 100%;
-          width: 20%;
-          background-color: #7CC45D;
-        }
 
         button.close {
           position: fixed;

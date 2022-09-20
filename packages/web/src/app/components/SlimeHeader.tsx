@@ -9,10 +9,28 @@ const SlimeHeader = () => {
   const { account } = useWallet();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDiscordFeedOpen, setDiscordFeedOpen] = useState(false);
+  const [isLeaderboardOpen, setLeaderboardOpen] = useState(false);
   const [isActivityFeedOpen, setActivityFeedOpen] = useState(false);
   const transactionCount = useTransactionsStore(
     (state) => state.transactions.length
   );
+
+  // todo: if we want percentages, fetch all data from TheGraph and do the math here.
+  // todo: sort this data by poolTotal, truncate to top 8 or 10
+  const mockData = [
+    {
+      tokenId: 1,
+      x: 7,
+      y: 7,
+      poolTotal: 29523
+    },
+    {
+      tokenId: 2,
+      x: 1,
+      y: 4,
+      poolTotal: 145
+    }
+  ]
 
   return (
     <div className="header">
@@ -21,6 +39,12 @@ const SlimeHeader = () => {
       </div>
 
       <div className="spacer" />
+
+      <button
+        className="leaderboard-button"
+        onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
+      >Leaderboard
+      </button>
 
       <button
         className="discord-button"
@@ -185,6 +209,37 @@ const SlimeHeader = () => {
           {!account ? 'Connect Wallet to join Discord' : 'Join the Discord'}
         </a>
       </div>
+
+      <div className="leaderboard">
+      <button
+          className="close jaunt"
+          onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
+        >
+          X
+        </button>
+            <h3>SLIME POOLS</h3>
+            <span>6 days remaining!</span>
+            <div>
+                <span>Leaderboard</span>
+                <table>
+                  {
+                    mockData.map((data, index) => (<>
+                      <tr>
+                        <td>
+                          {index + 1}. 
+                        </td>
+                        <td>
+                          [{data.x}, {data.y}]
+                        </td>
+                        <td>
+                        §{data.poolTotal}
+                        </td>
+                      </tr>
+                    </>))
+                  }
+                </table>
+            </div>
+        </div>
 
       <style jsx>{`
         .header {
@@ -376,6 +431,33 @@ const SlimeHeader = () => {
           flex-direction: column;
         }
 
+        .leaderboard {
+          position: fixed;
+          top: 0.5rem;
+          right: 0.5rem;
+          width: 35vw;
+          min-width: 360px;
+          height: calc(100vh - 1rem);
+          background: #7CC45D;
+          display: ${isLeaderboardOpen ? 'flex' : 'none'};
+          overflow-y: auto;
+          border-radius: 4px;
+          flex-direction: column;
+        }
+
+        .leaderboard-button {
+          border: 0;
+          background: none;
+          color: #7CC45D;
+          font-family: inherit;
+          font-size: 24px;
+        }
+
+        .leaderboard-button:hover {
+          box-shadow: none;
+          color: #76ff3b;
+        }
+
         button.close {
           position: fixed;
           top: 1.2rem;
@@ -387,6 +469,7 @@ const SlimeHeader = () => {
           color: #fff;
           cursor: pointer;
         }
+
         button.close:hover {
           box-shadow: none;
         }
