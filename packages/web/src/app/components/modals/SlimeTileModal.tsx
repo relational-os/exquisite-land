@@ -145,13 +145,16 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
       </div>
       <div className="right">
         <div className='slime-meta'>
-          <span>[15,10]</span>
+          <h3>[15,10]</h3>
           <span>Rank #5 with x slime pooled</span>
         </div>
 
         <div className='slime-content'>
           <span>How much slime to pool?</span>
-          <input onChange={(e) => {setSlimeAmount(Number(e.target.value))}} placeholder='00'></input>
+          <span className="slime-content-pool-control">
+            <input onChange={(e) => {setSlimeAmount(Number(e.target.value))}} placeholder='00'></input>
+            <button className ="slime-content-button-max">MAX</button>
+          </span>
           <Button className='slime-it' onClick={slimeTile}>
             slime it!
           </Button>
@@ -169,21 +172,75 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           flex-direction: column;
           display: flex;
           color: white;
-          margin-bottom: 1.5rem;
+          border-left: 2px solid #7CC45D;
+          border-right: 2px solid #7CC45D;
+          padding: 1.5rem;
+          background-image: url(/graphics/slime-curtain-bottom.svg), url(/graphics/slime-curtain-top.svg);
+          background-repeat: repeat-x, repeat-x;
+          background-position: bottom left, top left;
+          box-sizing: border-box;
         }
+
+        .slime-content span {
+          margin: 1rem 0;
+          font-size: 24px;
+          font-family: inherit;
+        }
+
+        .slime-content-button-max {
+          position: absolute;
+          right: 1rem;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          font-size: 24px;
+          font-family: inherit;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+        }
+
+        .slime-content-pool-control {
+          position: relative;
+          line-height: 1;
+        }
+
+        .slime-content input {
+          text-align: center;
+          border: 0;
+          padding: 8px 16px;
+          font-size: 24px;
+          font-family: inherit;
+        }
+
+        .slime-content span:last-of-type {
+          color: #7CC45D;
+        }
+
         .slime-meta {
           flex-direction: column;
           display: flex;
           color: white;
           margin-bottom: 1.5rem;
+          line-height: 1.5rem;
+          font-size: 24px;
         }
+
+        .slime-meta span {
+          color: #7CC45D;
+        }
+
         .left {
           flex: 1;
         }
+      
         .right {
           flex: 1;
           flex-direction: column;
           display: flex;
+          margin: auto  0 auto 2.5rem;
+          padding: 1.25rem;
+          text-align: center;
         }
         .tile-modal {
           display: flex;
@@ -230,6 +287,10 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
 
         .spacer {
           flex: 1;
+        }
+
+        h3 {
+          margin-top: 0;
         }
 
         a.button {

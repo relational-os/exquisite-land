@@ -1,4 +1,4 @@
-import Header from '@app/components/Header';
+import SlimeHeader from '@app/components/SlimeHeader';
 import React, { ReactNode, useEffect } from 'react';
 import Head from 'next/head';
 import useTransactionsStore from '@app/features/useTransactionsStore';
@@ -35,7 +35,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
 
         <script src="/assets/js/app.js"></script>
       </Head>
-      <Header />
+      <SlimeHeader />
       <main>{children}</main>
       <style jsx>{`
         .main-layout {
