@@ -1,0 +1,78 @@
+specVersion: 0.0.4
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Canvas2
+    network: mumbai
+    source:
+      abi: Canvas2
+      address: "0x175ebe527ff41e4f47693c9d45144ebc112ca14e"
+      startBlock: 28069192
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Tile
+        - Player
+        - TileStatus
+      abis:
+        - name: Canvas2
+          file: abis/Canvas2.abi.json
+      eventHandlers:
+        - event: SeedCreated(uint256,address)
+          handler: handleSeedCreated
+        - event: NeighborInvited(uint256,address)
+          handler: handleNeighborInvited
+        - event: TileCreated(uint256,address)
+          handler: handleTileCreated
+        - event: TileReset(uint256)
+          handler: handleTileReset
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTileTransfer
+      file: ./src/mapping.ts
+  - kind: ethereum
+    name: SlimePools
+    network: mumbai
+    source:
+      abi: SlimePools
+      address: "0xe705af740862803632ba1b8e03916e45224e74a9"
+      startBlock: 28069892
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - SlimePool
+      abis:
+        - name: SlimePools
+          file: abis/SlimePools.abi.json
+      eventHandlers:
+        - event: SlimePooled(uint32,uint256,address)
+          handler: handleSlimePooled
+      file: ./src/mapping.ts
+  # - kind: ethereum/contract
+  #   name: Canvas1
+  #   network: matic
+  #   source:
+  #     address: '0x921ec5EAADC92c134ca93b0A6558F3759e93ad3E'
+  #     startBlock: 21261454
+  #     abi: ExquisiteLand
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.4
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Tile
+  #       - Player
+  #       - Canvas
+  #     abis:
+  #       - name: ExquisiteLand
+  #         file: ./abis/ExquisiteLand.json
+  #     eventHandlers:
+  #       - event: TileCreated(uint32,address)
+  #         handler: handleTileCreatedLegacy
+  #       - event: TileReset(uint32)
+  #         handler: handleTileResetLegacy
+  #     file: ./src/mapping.ts
