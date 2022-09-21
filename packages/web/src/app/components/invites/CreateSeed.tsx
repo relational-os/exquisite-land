@@ -22,6 +22,7 @@ const CreateSeed = () => {
       account,
       getJsonRpcProvider
     );
+    // @ts-ignore
     const signature = await getSignatureForTypedData(provider, dataToSign);
     const tx = await submitTx(dataToSign, signature);
     console.log(tx.hash);
