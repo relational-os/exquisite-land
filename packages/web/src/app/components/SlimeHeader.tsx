@@ -218,9 +218,13 @@ const SlimeHeader = () => {
           X
         </button>
             <h3>SLIME POOLS</h3>
-            <span>6 days remaining!</span>
+            <span className="slime-days-remaining">6 days remaining!</span>
             <div>
-                <span>Leaderboard</span>
+                <span className="leaderboard-tileList">
+                  <img src="/graphics/coin-gorblin.gif" />
+                  <span className="leaderboard-tileList-title">Leaderboard</span>
+                  <img src="/graphics/coin-gorblin.gif" />
+                </span>
                 <table>
                   {
                     mockData.map((data, index) => (<>
@@ -228,10 +232,10 @@ const SlimeHeader = () => {
                         <td>
                           {index + 1}. 
                         </td>
-                        <td>
+                        <td className="leaderboard-pool-coords">
                           [{data.x}, {data.y}]
                         </td>
-                        <td>
+                        <td className="leaderboard-pool-total">
                         §{data.poolTotal}
                         </td>
                       </tr>
@@ -443,6 +447,22 @@ const SlimeHeader = () => {
           overflow-y: auto;
           border-radius: 4px;
           flex-direction: column;
+          text-align: center;
+        }
+
+        .slime-days-remaining {
+          padding: 1rem;
+          font-size: 250%;
+          border: 1px solid black;
+          margin: 0 1rem 1rem 1rem;
+        }
+
+        .leaderboard h3 {
+          font-size: 200%;
+          padding: 0;
+          margin: 0.75rem 0 1rem 0;
+          color: #fff;
+          text-shadow: 3px 4px 0 rgba(0, 0, 0, 0.25);
         }
 
         .leaderboard-button {
@@ -456,6 +476,37 @@ const SlimeHeader = () => {
         .leaderboard-button:hover {
           box-shadow: none;
           color: #76ff3b;
+        }
+
+        .leaderboard table {
+          color: #fff;
+          margin: 1.5rem 3rem;
+          font-size: 150%;
+          width: 27vw;
+          text-shadow: 3px 4px 0 rgba(0, 0, 0, 0.25);
+        }
+
+        .leaderboard-tileList-title {
+          opacity: 0.65;
+        }
+
+        .leaderboard-tileList {
+          color: #fff;
+          font-size: 175%;
+          text-transform: uppercase;
+        }
+
+        .leaderboard-tileList img {
+          width: 2.5rem;
+          margin: 0 1rem -.5rem 1rem;
+        }
+
+        .leaderboard-pool-total {
+          text-align: right;
+        }
+
+        .leaderboard-pool-coords {
+          text-align: left;
         }
 
         button.close {
