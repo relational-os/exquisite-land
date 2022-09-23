@@ -86,15 +86,6 @@ export class Tile extends Entity {
     this.set("y", Value.fromBigInt(value));
   }
 
-  get pooledSlime(): BigInt {
-    let value = this.get("pooledSlime");
-    return value.toBigInt();
-  }
-
-  set pooledSlime(value: BigInt) {
-    this.set("pooledSlime", Value.fromBigInt(value));
-  }
-
   get canvas(): string {
     let value = this.get("canvas");
     return value.toString();
@@ -195,6 +186,46 @@ export class Player extends Entity {
 
   set tiles(value: Array<string>) {
     this.set("tiles", Value.fromStringArray(value));
+  }
+}
+
+export class SlimePool extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save SlimePool entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save SlimePool entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("SlimePool", id.toString(), this);
+  }
+
+  static load(id: string): SlimePool | null {
+    return store.get("SlimePool", id) as SlimePool | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get totalSlime(): BigInt {
+    let value = this.get("totalSlime");
+    return value.toBigInt();
+  }
+
+  set totalSlime(value: BigInt) {
+    this.set("totalSlime", Value.fromBigInt(value));
   }
 }
 

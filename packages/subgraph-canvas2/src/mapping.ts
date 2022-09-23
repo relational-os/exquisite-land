@@ -1,24 +1,28 @@
 import { Address, BigInt, ByteArray, Bytes } from '@graphprotocol/graph-ts';
-import { Canvas, Player, Tile } from '../generated/schema';
+import { Canvas, Player, Tile, SlimePool } from '../generated/schema';
 import {
   NeighborInvited,
   SeedCreated,
   TileCreated,
   Canvas2,
   Transfer,
-  TileReset
+  TileReset,
 } from '../generated/Canvas2/Canvas2';
 import {
   SlimePooled
 } from '../generated/SlimePools/SlimePools';
-import { ExquisiteLand } from '../../subgraph/generated/ExquisiteLand/ExquisiteLand';
+// import { ExquisiteLand } from '../../subgraph/generated/ExquisiteLand/ExquisiteLand';
 
 export function handleSlimePooled(event: SlimePooled): void {
-  let tile = Tile.load(event.params.tokenId.toString());
-  if (tile) {
-    tile.pooledSlime = tile.pooledSlime.plus(event.params.amount);
-    tile.save();
+  let pool = SlimePool.load(event.params.tokenId.toString());
+  if (!pool) {
+    pool = new SlimePool(event.params.tokenId.toString());
+    pool.totalSlime = BigInt.fromString("0");
+    pool.save();
   }
+
+  pool.totalSlime = pool.totalSlime.plus(event.params.amount);
+  pool.save();
 }
 
 // TODO: add purchaseable tile metadata
@@ -56,7 +60,7 @@ function createTileToken(
   tile.status = 'UNLOCKED';
   tile.createdAt = timestamp;
   tile.updatedAt = timestamp;
-  tile.pooledSlime = BigInt.fromString("0");
+  // tile.pooledSlime = BigInt.fromString("0");
   tile.save();
 }
 
@@ -102,25 +106,25 @@ export function handleTileCreated(event: TileCreated): void {
 }
 
 // Picks up event for Canvas 1 only
-export function handleTileCreatedLegacy(event: TileCreated): void {
-  let tokenID = event.params.tokenId;
-  let tile = Tile.load(tokenID.toString());
-  if (tile) {
-    tile.svg = ExquisiteLand.bind(event.address).getTileSVG(tokenID);
-    tile.status = 'LOCKED';
-    tile.filledAt = event.block.timestamp;
-    tile.updatedAt = event.block.timestamp;
+// export function handleTileCreatedLegacy(event: TileCreated): void {
+//   let tokenID = event.params.tokenId;
+//   let tile = Tile.load(tokenID.toString());
+//   if (tile) {
+//     tile.svg = ExquisiteLand.bind(event.address).getTileSVG(tokenID);
+//     tile.status = 'LOCKED';
+//     tile.filledAt = event.block.timestamp;
+//     tile.updatedAt = event.block.timestamp;
 
-    let canvas = Canvas.load("1");
-    if (!canvas) {
-      canvas = new Canvas("1");
-      canvas.save();
-    }
-    tile.canvas = canvas.id;
+//     let canvas = Canvas.load("1");
+//     if (!canvas) {
+//       canvas = new Canvas("1");
+//       canvas.save();
+//     }
+//     tile.canvas = canvas.id;
 
-    tile.save();
-  }
-}
+//     tile.save();
+//   }
+// }
 
 export function handleTileReset(event: TileReset): void {
   let tokenID = event.params.tokenId;
@@ -141,24 +145,24 @@ export function handleTileReset(event: TileReset): void {
   }
 }
 
-export function handleTileResetLegacy(event: TileReset): void {
-  let tokenID = event.params.tokenId;
-  let tile = Tile.load(tokenID.toString());
-  if (tile) {
+// export function handleTileResetLegacy(event: TileReset): void {
+//   let tokenID = event.params.tokenId;
+//   let tile = Tile.load(tokenID.toString());
+//   if (tile) {
 
-    let canvas = Canvas.load("1");
-    if (!canvas) {
-      canvas = new Canvas("1");
-      canvas.save();
-    }
-    tile.canvas = canvas.id;
+//     let canvas = Canvas.load("1");
+//     if (!canvas) {
+//       canvas = new Canvas("1");
+//       canvas.save();
+//     }
+//     tile.canvas = canvas.id;
 
-    tile.svg = null;
-    tile.status = 'UNLOCKED';
-    tile.updatedAt = event.block.timestamp;
-    tile.save();
-  }
-}
+//     tile.svg = null;
+//     tile.status = 'UNLOCKED';
+//     tile.updatedAt = event.block.timestamp;
+//     tile.save();
+//   }
+// }
 
 export function handleTileTransfer(event: Transfer): void {
   let fromAddress = event.params.from;

@@ -4,7 +4,6 @@ type Tile @entity {
   svg: String
   x: BigInt!
   y: BigInt!
-  pooledSlime: BigInt!
   canvas: Canvas!
   status: TileStatus!
   createdAt: BigInt!
@@ -16,6 +15,11 @@ type Player @entity {
   id: ID!
   address: Bytes!
   tiles: [Tile!]! @derivedFrom(field: "owner")
+}
+
+type SlimePool @entity {
+  id: ID!
+  totalSlime: BigInt!
 }
 
 type Canvas @entity {
