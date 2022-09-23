@@ -18,6 +18,8 @@ export const FORWARDER_CONTRACT_ADDRESS = isProd
   ? AddressBook.forwarder
   : AddressBookDev.forwarder;
 
+export const CANVAS_2_CONTRACT_ADDRESS = "0x175ebe527ff41e4f47693c9d45144ebc112ca14e";
+
 export const SLIME_CONTRACT_ADDRESS = "0xb05aa1f34e6fe4d24be1f0d3d08fa0b871874088";
 
 export const SLIME_POOL_CONTRACT_ADDRESS = "0xe705af740862803632ba1b8e03916e45224e74a9";

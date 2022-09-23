@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
+import { getSlimePools } from '@app/features/Canvas2Graph';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
@@ -58,6 +59,14 @@ const Canvas = () => {
 
   const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
 
+  useEffect(
+    () => {
+      const data = getSlimePools();
+      data.then((data) => {
+        console.log(data);
+      });
+    }, []
+  )
 
   const closeEditorModal = () => {
     setIsEditorModalOpen(false);

@@ -1,5 +1,5 @@
 import { request, gql } from 'graphql-request';
-import useSWR, { SWRConfiguration } from 'swr';
+import useSWR, { SWRConfiguration } from 'swr'; 
 import { GRAPH_URL } from './AddressBook';
 
 let query = gql`

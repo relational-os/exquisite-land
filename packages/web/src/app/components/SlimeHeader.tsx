@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ConnectWalletButton from './ConnectWalletButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
+import { getSlimePools } from '@app/features/Canvas2Graph';
 
 const SlimeHeader = () => {
   const { account } = useWallet();
@@ -14,23 +15,17 @@ const SlimeHeader = () => {
   const transactionCount = useTransactionsStore(
     (state) => state.transactions.length
   );
+  const [slimePoolData, setSlimePoolData] = useState([]);
 
-  // todo: if we want percentages, fetch all data from TheGraph and do the math here.
-  // todo: sort this data by poolTotal, truncate to top 8 or 10
-  const mockData = [
-    {
-      tokenId: 1,
-      x: 7,
-      y: 7,
-      poolTotal: 29523
-    },
-    {
-      tokenId: 2,
-      x: 1,
-      y: 4,
-      poolTotal: 145
-    }
-  ]
+  useEffect(
+    () => {
+      const data = getSlimePools();
+      data.then((data) => {
+        console.log(data);
+        setSlimePoolData(data)
+      });
+    }, []
+  )
 
   return (
     <div className="header">
@@ -227,16 +222,16 @@ const SlimeHeader = () => {
                 </span>
                 <table>
                   {
-                    mockData.map((data, index) => (<>
+                    slimePoolData.map((pool) => (<>
                       <tr>
                         <td>
-                          {index + 1}. 
+                          {pool.id}. 
                         </td>
-                        <td className="leaderboard-pool-coords">
+                        {/* <td className="leaderboard-pool-coords">
                           [{data.x}, {data.y}]
-                        </td>
+                        </td> */}
                         <td className="leaderboard-pool-total">
-                        §{data.poolTotal}
+                        §{pool.totalSlime}
                         </td>
                       </tr>
                     </>))
