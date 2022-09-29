@@ -4,7 +4,7 @@ import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
-import { getSlimePools } from '@app/features/Canvas2Graph';
+import { useFetchSlimePools } from '@app/features/Canvas2Graph';
 
 const SlimeHeader = () => {
   const { account } = useWallet();
@@ -15,17 +15,9 @@ const SlimeHeader = () => {
   const transactionCount = useTransactionsStore(
     (state) => state.transactions.length
   );
-  const [slimePoolData, setSlimePoolData] = useState([]);
 
-  useEffect(
-    () => {
-      const data = getSlimePools();
-      data.then((data) => {
-        console.log(data);
-        setSlimePoolData(data)
-      });
-    }, []
-  )
+  const { data } = useFetchSlimePools();
+  console.log({data})
 
   return (
     <div className="header">
@@ -222,7 +214,7 @@ const SlimeHeader = () => {
                 </span>
                 <table>
                   {
-                    slimePoolData.map((pool) => (<>
+                    data?.map((pool: any) => (<>
                       <tr>
                         <td>
                           {pool.id}. 

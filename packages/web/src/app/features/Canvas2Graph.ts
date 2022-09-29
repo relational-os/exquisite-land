@@ -1,18 +1,25 @@
 import { request, gql } from 'graphql-request';
 import useSWR, { SWRConfiguration } from 'swr'; 
-// import { GRAPH_URL } from './AddressBook';
+import { CANVAS_2_GRAPH_URL } from './AddressBook';
 
 // TODO: pagination
-
-export const getSlimePools = async () => {
-  const query = gql`
-    {
-      slimePools(first:100) {
-        id
-        totalSlime
-      }
+const query = gql`
+  {
+    slimePools(first:100) {
+      id
+      totalSlime
     }
-  `
-  const data = await request("https://api.thegraph.com/subgraphs/name/relational-os/xqst-canvas-2", query);
-  return data.slimePools;
+  }
+`
+
+export const useFetchSlimePools = (
+  swrOptions?: Partial<SWRConfiguration>
+) => {
+  const { data, error, mutate } = useSWR(
+    ['canvas-slimepools'],
+    () => request(CANVAS_2_GRAPH_URL, query),
+    { revalidateOnMount: true, ...swrOptions }
+  );
+
+  return { data: data?.slimePools, error, refresh: mutate };
 };

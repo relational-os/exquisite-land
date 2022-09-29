@@ -59,14 +59,7 @@ const Canvas = () => {
 
   const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
 
-  useEffect(
-    () => {
-      const data = getSlimePools();
-      data.then((data) => {
-        console.log(data);
-      });
-    }, []
-  )
+
 
   const closeEditorModal = () => {
     setIsEditorModalOpen(false);
@@ -248,7 +241,7 @@ const Canvas = () => {
         contentLabel="Tile Preview Modal"
       >
         {selectedX != undefined && selectedY != undefined && (
-          <SlimeTileModal x={selectedX} y={selectedY} />
+          <SlimeTileModal x={selectedX} y={selectedY} closeModal={closeTilePreviewModal} />
         )}
       </Modal>
       <style jsx>{`

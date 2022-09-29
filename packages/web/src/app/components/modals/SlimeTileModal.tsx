@@ -1,167 +1,190 @@
-import React, { useEffect, useRef, useState, useMemo }  from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   EXQUISITE_LAND_CONTRACT_ADDRESS,
-  SLIME_CONTRACT_ADDRESS, 
   SLIME_POOL_CONTRACT_ADDRESS,
-  OPENSEA_URL
+  OPENSEA_URL,
+  MINIMAL_FORWARDER_ADDRESS,
+  SLIME_CONTRACT_ADDRESS
 } from '@app/features/AddressBook';
 import { useFetchTile } from '@app/features/Graph';
 import { generateTokenID } from '@app/features/TileUtils';
 import {
-  useNetwork,
-  useContractWrite,
-  useWaitForTransaction,
   useAccount,
-  usePrepareContractWrite,
-} from "wagmi";
+  useSignTypedData,
+  useProvider,
+  useContract,
+  useSigner,
+  useBalance
+} from 'wagmi';
 
 import SlimePoolsABI from '@sdk/abis/SlimePools.abi.json';
+import MinimalForwarderABI from '@sdk/abis/MinimalForwarder.abi.json';
 
 import CachedENSName from '../CachedENSName';
 import Button from '../Button';
-import { defaultAbiCoder } from '@ethersproject/abi';
 
-const CONTRACT_SUBMITTING_LOADING_MESSAGE = "Submitting...";
-const TRANSACTION_WAITING_LOADING_MESSAGE = "Confirming...";
-const GRAPH_POLLING_LOADING_MESSAGE = "Finalizing...";
+const SUBMITTING_LOADING_MESSAGE = 'Submitting...';
 
-const TileModal = ({ x, y }: { x: number; y: number }) => {
+import { ForwardRequest } from '@app/utils/signer';
+
+const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () => void }) => {
   const { tile } = useFetchTile(x, y);
-
   const [slimeAmount, setSlimeAmount] = useState(0);
-
   const svgContainer = useRef<HTMLDivElement | null>(null);
-  const { connector: activeConnector } = useAccount();
-  const { chain: activeChain } = useNetwork();
+  const { address, connector: activeConnector } = useAccount();
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+  const [loading, setLoading] = useState(false);
+
+  const forwarderInstance = useContract({
+    addressOrName: MINIMAL_FORWARDER_ADDRESS,
+    contractInterface: MinimalForwarderABI,
+    signerOrProvider: provider
+  });
+
+  const slimePoolsInstance = useContract({
+    addressOrName: SLIME_POOL_CONTRACT_ADDRESS,
+    contractInterface: SlimePoolsABI,
+    signerOrProvider: provider
+  });
+
+  const { data: slimeBalance } = useBalance({
+    addressOrName: address,
+    token: SLIME_CONTRACT_ADDRESS,
+  })
 
   useEffect(() => {
     if (svgContainer.current) {
-      svgContainer.current.innerHTML = tile?.svg || ''
+      svgContainer.current.innerHTML = tile?.svg || '';
     }
-  }, [tile?.svg])
+  }, [tile?.svg]);
 
-  const { config: contractConfig } = usePrepareContractWrite({
-    addressOrName: SLIME_POOL_CONTRACT_ADDRESS,
-    contractInterface: SlimePoolsABI,
-    functionName: "poolSlime",
-    args: [tile.id, slimeAmount],
-  });
+  const { signTypedDataAsync } = useSignTypedData();
 
-  const {
-    data: contractData,
-    write,
-    isLoading: isLoadingWrite,
-  } = useContractWrite(contractConfig);
-
-  const { isLoading: isTransactionLoading, isSuccess: isTransactionSuccess } =
-    useWaitForTransaction({
-      enabled: Boolean(contractData?.hash),
-      confirmations: 1,
-      hash: contractData?.hash,
-      wait: contractData?.wait,
-      onSuccess(contractData) {
-        const event = defaultAbiCoder.decode(
-          ["uint32", "uint256"],
-          contractData.logs[1].data
-        );
-
-        console.log('event', event);
-      },
-    });
-
-  const slimeTile = async () => {
+  const slimeTile = async (event: any) => {
     if (!activeConnector) {
-      throw new Error("Wallet not connected");
+      throw new Error('Wallet not connected');
     }
 
+    setLoading(true);
+
+    // todo: check if user has enough slime
+    // todo: invalidate on 0 amount
+
+    // todo:
     // await switchChain(activeConnector);
 
-    write?.();
+    const from = await signer?.getAddress();
+    const nonce = await forwarderInstance.getNonce(from);
+    const data = slimePoolsInstance?.interface?.encodeFunctionData(
+      'poolSlime',
+      [tile.id, slimeAmount]
+    );
+
+    const values = {
+      from: from?.toLowerCase(),
+      to: slimePoolsInstance.address.toLowerCase(),
+      value: 0,
+      // Maybe to real gas calculation
+      gas: 1e6,
+      nonce: nonce.toString(),
+      data
+    };
+
+    const dataToSign = {
+      domain: {
+        name: 'MinimalForwarder',
+        version: '0.0.1',
+        verifyingContract: forwarderInstance.address,
+        chainId: 80001
+      },
+      types: {
+        ForwardRequest
+      },
+      primaryType: 'ForwardRequest',
+      value: values
+    };
+
+    const signature = await signTypedDataAsync?.(dataToSign);
+    console.log({ signature });
+
+    const payload = {
+      request: values,
+      signature
+    };
+
+    const url = process.env.NEXT_PUBLIC_AUTOTASK_WEBHOOK_URL;
+    if (!url) return;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    console.log({ response });
+
+    // todo: add response status handling
+
+    closeModal();
+    setLoading(false);
   };
-
-  const isPollingForCanvas = isTransactionSuccess;
-
-  const isLoading =
-    isLoadingWrite || isTransactionLoading || isPollingForCanvas;
-
-  const publishButtonLabel = useMemo(() => {
-    if (isLoading && isLoadingWrite) {
-      return CONTRACT_SUBMITTING_LOADING_MESSAGE;
-    }
-    if (isLoading && isTransactionLoading) {
-      return TRANSACTION_WAITING_LOADING_MESSAGE;
-    }
-    if (isLoading && isPollingForCanvas) {
-      return GRAPH_POLLING_LOADING_MESSAGE;
-    }
-
-  const slimeTile = () => {
-    console.log("slimed")
-  }
-
-
-    // if (activeChain?.id !== ) {
-    //   return "Switch Chain";
-    // }
-
-    return "Publish";
-  }, [
-    isLoading,
-    isLoadingWrite,
-    isTransactionLoading,
-    isPollingForCanvas,
-  ]);
 
   return (
     <div className="tile-modal">
       {tile ? (
         <>
-      <div className='left'>
-        {tile.svg ? (
-          <div className="tile-image" ref={svgContainer} />
-        ) : (
-          <img
-            src={`/api/tiles/terramasu/${x}/${y}/img`}
-            className="tile-image"
-          />
-        )}
-        <div className="meta">
-          <a href="#" className="title">
-            [{x},{y}] by <CachedENSName address={tile.owner.id} />
-          </a>
-          <div className="spacer"></div>
-          <a
-            href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
-              x,
-              y
-            )}`}
-            className="button"
-            target="_blank"
-          >
-            <img src="/graphics/icon-opensea.svg" /> OpenSea
-          </a>
+          <div className="left">
+            {tile.svg ? (
+              <div className="tile-image" ref={svgContainer} />
+            ) : (
+              <img
+                src={`/api/tiles/terramasu/${x}/${y}/img`}
+                className="tile-image"
+              />
+            )}
+            <div className="meta">
+              <a href="#" className="title">
+                [{x},{y}] by <CachedENSName address={tile.owner.id} />
+              </a>
+              <div className="spacer"></div>
+              <a
+                href={`${OPENSEA_URL}${EXQUISITE_LAND_CONTRACT_ADDRESS}/${generateTokenID(
+                  x,
+                  y
+                )}`}
+                className="button"
+                target="_blank"
+              >
+                <img src="/graphics/icon-opensea.svg" /> OpenSea
+              </a>
+            </div>
+          </div>
+          <div className="right">
+            <div className="slime-meta">
+              <h3>[15,10]</h3>
+              <span>Rank #5 with x slime pooled</span>
+            </div>
 
-        </div>
-      </div>
-      <div className="right">
-        <div className='slime-meta'>
-          <h3>[15,10]</h3>
-          <span>Rank #5 with x slime pooled</span>
-        </div>
-
-        <div className='slime-content'>
-          <span>How much slime to pool?</span>
-          <span className="slime-content-pool-control">
-            <input onChange={(e) => {setSlimeAmount(Number(e.target.value))}} placeholder='00'></input>
-            <button className ="slime-content-button-max">MAX</button>
-          </span>
-          <Button className='slime-it' onClick={slimeTile}>
-            slime it!
-          </Button>
-          <span>slime balance: 323</span>
-        </div>
-      </div>
-     </>
+            <div className="slime-content">
+              <span>How much slime to pool?</span>
+              <span className="slime-content-pool-control">
+                <input
+                  value={slimeAmount}
+                  onChange={(e) => {
+                    setSlimeAmount(Number(e.target.value));
+                  }}
+                  placeholder="00"
+                ></input>
+                <button onClick={(e) => {setSlimeAmount(Number(slimeBalance?.value?.toString())  || 0)}} className="slime-content-button-max">MAX</button>
+              </span>
+              <Button className="slime-it" onClick={slimeTile} disabled={!slimeAmount}>
+                {loading ? SUBMITTING_LOADING_MESSAGE : "slime it!"}
+              </Button>
+              <span>slime balance: §{slimeBalance?.value.toString()}</span>
+            </div>
+          </div>
+        </>
       ) : (
         <>
           <h1 className="title">loading</h1>
@@ -172,10 +195,11 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
           flex-direction: column;
           display: flex;
           color: white;
-          border-left: 2px solid #7CC45D;
-          border-right: 2px solid #7CC45D;
+          border-left: 2px solid #7cc45d;
+          border-right: 2px solid #7cc45d;
           padding: 1.5rem;
-          background-image: url(/graphics/slime-curtain-bottom.svg), url(/graphics/slime-curtain-top.svg);
+          background-image: url(/graphics/slime-curtain-bottom.svg),
+            url(/graphics/slime-curtain-top.svg);
           background-repeat: repeat-x, repeat-x;
           background-position: bottom left, top left;
           box-sizing: border-box;
@@ -214,7 +238,7 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
         }
 
         .slime-content span:last-of-type {
-          color: #7CC45D;
+          color: #7cc45d;
         }
 
         .slime-meta {
@@ -227,18 +251,27 @@ const TileModal = ({ x, y }: { x: number; y: number }) => {
         }
 
         .slime-meta span {
-          color: #7CC45D;
+          color: #7cc45d;
+        }
+
+        .slime-it {
+          background: #7cc45d !important;
+        }
+
+        .slime-it:disabled {
+          user-select: none !important;
+          cursor: pointer !important;
         }
 
         .left {
           flex: 1;
         }
-      
+
         .right {
           flex: 1;
           flex-direction: column;
           display: flex;
-          margin: auto  0 auto 2.5rem;
+          margin: auto 0 auto 2.5rem;
           padding: 1.25rem;
           text-align: center;
         }
