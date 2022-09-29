@@ -4,13 +4,16 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 
 import {Solenv} from "solenv/Solenv.sol";
+
 import {SlimePools} from "../src/SlimePools.sol";
 import {Slime} from "../src/Slime.sol";
+import {MinimalForwarder} from "openzeppelin-contracts/contracts/metatx/MinimalForwarder.sol";
 
 contract DeploySlimeAndPools is Script {
     // Deployable contracts
     SlimePools public slimePoolsContract;
     Slime public slimeContract;
+    MinimalForwarder public forwarderContract;
 
     function run() public {
         // Deployment config from .env.local file
@@ -18,7 +21,8 @@ contract DeploySlimeAndPools is Script {
         vm.startBroadcast();
 
         slimeContract = new Slime();
-        slimePoolsContract = new SlimePools(address(slimeContract));
+        forwarderContract = new MinimalForwarder();
+        slimePoolsContract = new SlimePools(address(slimeContract), forwarderContract);
 
         vm.stopBroadcast();
     }

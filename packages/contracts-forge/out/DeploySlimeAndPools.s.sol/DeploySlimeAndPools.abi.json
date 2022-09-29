@@ -14,6 +14,19 @@
   },
   {
     "inputs": [],
+    "name": "forwarderContract",
+    "outputs": [
+      {
+        "internalType": "contract MinimalForwarder",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "run",
     "outputs": [],
     "stateMutability": "nonpayable",

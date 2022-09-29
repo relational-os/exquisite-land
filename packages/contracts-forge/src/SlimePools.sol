@@ -24,15 +24,19 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/ISlime.sol";
 
+import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
+import "@openzeppelin/contracts/metatx/MinimalForwarder.sol";
 
-contract SlimePools is Ownable {
+
+contract SlimePools is ERC2771Context, Ownable {
     address public slimeAddress;
     mapping(uint32 => uint256) public slimePools;
     uint32 public mostSlimed;
 
     event SlimePooled(uint32 tokenId, uint256 amount, address from);
 
-    constructor(address slimeAddress_) {
+    constructor(address slimeAddress_, MinimalForwarder forwarder) 
+        ERC2771Context(address(forwarder)) {
         slimeAddress = slimeAddress_;
     }
 
@@ -51,18 +55,29 @@ contract SlimePools is Ownable {
 
         // confirm transfer?
         ISlime(slimeAddress).transfer(
-            msg.sender, // TODO: check w TrustedForwarder
+            _msgSender(), // TODO: check w TrustedForwarder
             address(this),
             uint256(slimeAmount)
         );
 
         slimePools[tokenId] += slimeAmount;
-        emit SlimePooled(tokenId, slimeAmount, msg.sender);
+        emit SlimePooled(tokenId, slimeAmount, _msgSender());
 
         if (slimePools[mostSlimed] < slimePools[tokenId]) {
             mostSlimed = tokenId;
         }
     }
+
+
+    function _msgSender() internal view override(Context, ERC2771Context) returns(address) {
+        return ERC2771Context._msgSender();
+    } 
+
+    function _msgData() internal view override(Context, ERC2771Context) returns(bytes memory) 
+    {
+        return ERC2771Context._msgData();
+}  
+
 }
 
 
