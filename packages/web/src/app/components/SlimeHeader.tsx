@@ -198,39 +198,43 @@ const SlimeHeader = () => {
       </div>
 
       <div className="leaderboard">
-      <button
-          className="close jaunt"
-          onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
-        >
-          X
-        </button>
-            <h3>SLIME POOLS</h3>
-            <span className="slime-days-remaining">6 days remaining!</span>
-            <div>
-                <span className="leaderboard-tileList">
-                  <img src="/graphics/coin-gorblin.gif" />
-                  <span className="leaderboard-tileList-title">Leaderboard</span>
-                  <img src="/graphics/coin-gorblin.gif" />
-                </span>
-                <table>
-                  {
-                    data?.map((pool: any) => (<>
-                      <tr>
-                        <td>
-                          {pool.id}. 
-                        </td>
-                        {/* <td className="leaderboard-pool-coords">
-                          [{data.x}, {data.y}]
-                        </td> */}
-                        <td className="leaderboard-pool-total">
-                        §{pool.totalSlime}
-                        </td>
-                      </tr>
-                    </>))
-                  }
-                </table>
-            </div>
+        <div className="row leaderboard-slime-top">top</div>
+        <div className="row leaderboard-bg">
+          <button
+              className="close jaunt"
+              onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
+            >
+              X
+          </button>
+          <h3>SLIME POOLS</h3>
+          <div className="slime-days-remaining"><h4>6 days remaining!</h4></div>
+          <div>
+              <span className="leaderboard-tileList">
+                <img src="/graphics/coin-gorblin.gif" />
+                <span className="leaderboard-tileList-title">Leaderboard</span>
+                <img src="/graphics/coin-gorblin.gif" />
+              </span>
+              <table>
+                {
+                  data?.map((pool: any) => (<>
+                    <tr>
+                      <td>
+                        {pool.id}. 
+                      </td>
+                      {/* <td className="leaderboard-pool-coords">
+                        [{data.x}, {data.y}]
+                      </td> */}
+                      <td className="leaderboard-pool-total">
+                      §{pool.totalSlime}
+                      </td>
+                    </tr>
+                  </>))
+                }
+              </table>
+          </div>
         </div>
+        <div className="row leaderboard-slime-bottom">bottom</div>
+      </div>
 
       <style jsx>{`
         .header {
@@ -429,24 +433,57 @@ const SlimeHeader = () => {
           width: 35vw;
           min-width: 360px;
           height: calc(100vh - 1rem);
-          background: #7CC45D;
-          display: ${isLeaderboardOpen ? 'flex' : 'none'};
+          display: ${isLeaderboardOpen ? 'grid' : 'none'};
+          grid-template-columns: auto;
+          grid-template-rows: 32pt auto 32pt;
+          column-gap: 10pt;
           overflow-y: auto;
           border-radius: 4px;
           flex-direction: column;
           text-align: center;
         }
 
+        .leaderboard-bg { 
+          background: #7CC45D;
+        }
+
+        .row {
+          // border: 1px solid red;
+        }
+
+        .leaderboard-slime-top {
+          background-image: url(/graphics/slime-curtain-top.png);
+          background-position: bottom left;
+          background-size: 240%;
+          background-repeat: repeat-x;
+        }
+
+        .leaderboard-slime-bottom {
+          background-image: url(/graphics/slime-curtain-bottom.png);
+          background-position: top left;
+          background-size: 240%;
+          background-repeat: repeat-x;
+        }
+
         .slime-days-remaining {
-          padding: 1rem;
           font-size: 250%;
-          border: 1px solid black;
           margin: 0 1rem 1rem 1rem;
+          color: #AFFF83;
+          background-color: #397320;
+          background-image: url(/graphics/slime-curtain-top.png), url(/graphics/slime-curtain-bottom.png);
+          background-repeat: repeat-x, repeat-x;
+          background-position: bottom left, top left;
+          background-size: 240%, 240%;
+        }
+
+        .slime-days-remaining h4 {
+          padding: 2rem 0;
+          font-weight: 200;
+          display: block;  
         }
 
         .leaderboard h3 {
           font-size: 200%;
-          padding: 0;
           margin: 0.75rem 0 1rem 0;
           color: #fff;
           text-shadow: 3px 4px 0 rgba(0, 0, 0, 0.25);
@@ -498,7 +535,7 @@ const SlimeHeader = () => {
 
         button.close {
           position: fixed;
-          top: 1.2rem;
+          top: 4rem;
           right: 1.4rem;
           background: transparent;
           outline: none;
