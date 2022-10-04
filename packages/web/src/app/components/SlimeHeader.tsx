@@ -468,6 +468,7 @@ const SlimeHeader = () => {
         .slime-days-remaining {
           font-size: 250%;
           margin: 0 1rem 1rem 1rem;
+          padding: 0;
           color: #AFFF83;
           background-color: #397320;
           background-image: url(/graphics/slime-curtain-top.png), url(/graphics/slime-curtain-bottom.png);
@@ -478,6 +479,7 @@ const SlimeHeader = () => {
 
         .slime-days-remaining h4 {
           padding: 2rem 0;
+          margin: 0;
           font-weight: 200;
           display: block;  
         }
@@ -517,12 +519,12 @@ const SlimeHeader = () => {
         .leaderboard-tileList {
           color: #fff;
           font-size: 175%;
-          text-transform: uppercase;
+          text-transform: uppercase;     
         }
 
         .leaderboard-tileList img {
           width: 2.5rem;
-          margin: 0 1rem -.5rem 1rem;
+          margin: 0 1rem -.75rem 1rem;
         }
 
         .leaderboard-pool-total {
