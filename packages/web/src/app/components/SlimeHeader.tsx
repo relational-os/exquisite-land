@@ -219,7 +219,7 @@ const SlimeHeader = () => {
                 {
                   data?.map((pool: any) => (<>
                     <tr>
-                      <td>
+                      <td className="leaderboard-pool-id">
                         {pool.id}. 
                       </td>
                       {/* <td className="leaderboard-pool-coords">
@@ -444,7 +444,6 @@ const SlimeHeader = () => {
         }
 
         .cell {
-          // border: 1px solid red;
           display: grid-cell;
         }
 
@@ -478,14 +477,14 @@ const SlimeHeader = () => {
         }
 
         .slime-days-remaining {
-          font-size: 250%;
+          font-size: 200%;
           margin: 0 1rem 1rem 1rem;
           padding: 0;
           color: #AFFF83;
           background-color: #397320;
           background-image: url(/graphics/slime-curtain-top.png), url(/graphics/slime-curtain-bottom.png), url(/graphics/slime-curtain-left.png), url(/graphics/slime-curtain-right.png);
           background-repeat: repeat-x, repeat-x, repeat-y, no-repeat;
-          background-position: bottom left, top left, top right, top left;
+          background-position: bottom, top , top right, top left;
           background-size: auto 18pt, auto 18pt, 18pt auto, 11pt auto;
         }
 
@@ -519,13 +518,13 @@ const SlimeHeader = () => {
         .leaderboard table {
           color: #fff;
           margin: 1.5rem 3rem;
-          font-size: 150%;
+          font-size: 200%;
           width: 27vw;
           text-shadow: 3px 4px 0 rgba(0, 0, 0, 0.25);
         }
 
         .leaderboard-tileList-title {
-          opacity: 0.65;
+          opacity: 0.95;
         }
 
         .leaderboard-tileList {
@@ -537,6 +536,10 @@ const SlimeHeader = () => {
         .leaderboard-tileList img {
           width: 2.5rem;
           margin: 0 1rem -.75rem 1rem;
+        }
+
+        .leaderboard-pool-id {
+          text-align: left;
         }
 
         .leaderboard-pool-total {
