@@ -198,8 +198,9 @@ const SlimeHeader = () => {
       </div>
 
       <div className="leaderboard">
-        <div className="row leaderboard-slime-top">top</div>
-        <div className="row leaderboard-bg">
+        <div className="cell leaderboard-slime-top"> test</div>
+        <div className="cell col-3"> </div>        
+        <div className="cell leaderboard-bg">
           <button
               className="close jaunt"
               onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
@@ -233,7 +234,7 @@ const SlimeHeader = () => {
               </table>
           </div>
         </div>
-        <div className="row leaderboard-slime-bottom">bottom</div>
+        <div className="cell leaderboard-slime-bottom"> </div>
       </div>
 
       <style jsx>{`
@@ -434,21 +435,29 @@ const SlimeHeader = () => {
           min-width: 360px;
           height: calc(100vh - 1rem);
           display: ${isLeaderboardOpen ? 'grid' : 'none'};
-          grid-template-columns: auto;
-          grid-template-rows: 32pt auto 32pt;
-          column-gap: 10pt;
+          grid-template-columns: 18pt auto;
+          grid-template-rows: 18pt auto 22pt;
           overflow-y: auto;
           border-radius: 4px;
           flex-direction: column;
           text-align: center;
         }
 
-        .leaderboard-bg { 
-          background: #7CC45D;
+        .cell {
+          // border: 1px solid red;
         }
 
-        .row {
-          // border: 1px solid red;
+        .col-3 {
+          grid-column: 1;
+          grid-row: 2 / 3;
+          background-image: url(/graphics/slime-curtain-left.png);
+          background-repeat: repeat-y;
+          background-position: top right;
+          background-size: 75%;
+        }
+
+        .leaderboard-bg { 
+          background: #7CC45D;
         }
 
         .leaderboard-slime-top {
@@ -456,6 +465,7 @@ const SlimeHeader = () => {
           background-position: bottom left;
           background-size: 240%;
           background-repeat: repeat-x;
+          grid-column: 1 / 3;
         }
 
         .leaderboard-slime-bottom {
@@ -463,6 +473,7 @@ const SlimeHeader = () => {
           background-position: top left;
           background-size: 240%;
           background-repeat: repeat-x;
+          grid-column: 1 / 3;
         }
 
         .slime-days-remaining {
@@ -471,10 +482,10 @@ const SlimeHeader = () => {
           padding: 0;
           color: #AFFF83;
           background-color: #397320;
-          background-image: url(/graphics/slime-curtain-top.png), url(/graphics/slime-curtain-bottom.png);
-          background-repeat: repeat-x, repeat-x;
-          background-position: bottom left, top left;
-          background-size: 240%, 240%;
+          background-image: url(/graphics/slime-curtain-top.png), url(/graphics/slime-curtain-bottom.png), url(/graphics/slime-curtain-left.png), url(/graphics/slime-curtain-right.png);
+          background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+          background-position: bottom left, top left, top right, top left;
+          background-size: 240%, 240%, 4%, 4%;
         }
 
         .slime-days-remaining h4 {
@@ -537,7 +548,7 @@ const SlimeHeader = () => {
 
         button.close {
           position: fixed;
-          top: 4rem;
+          top: 3rem;
           right: 1.4rem;
           background: transparent;
           outline: none;
