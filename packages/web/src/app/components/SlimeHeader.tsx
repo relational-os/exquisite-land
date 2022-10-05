@@ -436,7 +436,7 @@ const SlimeHeader = () => {
           height: calc(100vh - 1rem);
           display: ${isLeaderboardOpen ? 'grid' : 'none'};
           grid-template-columns: 18pt auto;
-          grid-template-rows: 18pt auto 22pt;
+          grid-template-rows: 18pt auto 18pt;
           overflow-y: auto;
           border-radius: 4px;
           flex-direction: column;
@@ -445,6 +445,7 @@ const SlimeHeader = () => {
 
         .cell {
           // border: 1px solid red;
+          display: grid-cell;
         }
 
         .col-3 {
@@ -452,8 +453,8 @@ const SlimeHeader = () => {
           grid-row: 2 / 3;
           background-image: url(/graphics/slime-curtain-left.png);
           background-repeat: repeat-y;
-          background-position: top right;
-          background-size: 75%;
+          background-position: top left;
+          background-size: 100% auto;
         }
 
         .leaderboard-bg { 
@@ -462,8 +463,8 @@ const SlimeHeader = () => {
 
         .leaderboard-slime-top {
           background-image: url(/graphics/slime-curtain-top.png);
-          background-position: bottom left;
-          background-size: 240%;
+          background-position: top left;
+          background-size:  auto 100%;
           background-repeat: repeat-x;
           grid-column: 1 / 3;
         }
@@ -471,7 +472,7 @@ const SlimeHeader = () => {
         .leaderboard-slime-bottom {
           background-image: url(/graphics/slime-curtain-bottom.png);
           background-position: top left;
-          background-size: 240%;
+          background-size: auto 100%;
           background-repeat: repeat-x;
           grid-column: 1 / 3;
         }
@@ -483,9 +484,9 @@ const SlimeHeader = () => {
           color: #AFFF83;
           background-color: #397320;
           background-image: url(/graphics/slime-curtain-top.png), url(/graphics/slime-curtain-bottom.png), url(/graphics/slime-curtain-left.png), url(/graphics/slime-curtain-right.png);
-          background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+          background-repeat: repeat-x, repeat-x, repeat-y, no-repeat;
           background-position: bottom left, top left, top right, top left;
-          background-size: 240%, 240%, 4%, 4%;
+          background-size: auto 18pt, auto 18pt, 18pt auto, 11pt auto;
         }
 
         .slime-days-remaining h4 {
