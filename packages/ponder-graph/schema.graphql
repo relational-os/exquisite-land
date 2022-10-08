@@ -1,0 +1,22 @@
+type Tile @entity {
+  id: ID!
+  owner: Player!
+  svg: String
+  x: Int!
+  y: Int!
+  status: TileStatus!
+  createdAtExquisite: Int!
+  filledAt: Int
+  updatedAtExquisite: Int!
+}
+
+type Player @entity {
+  id: ID!
+  address: String!
+  tiles: [Tile!]! @derivedFrom(field: "owner")
+}
+
+enum TileStatus {
+  LOCKED
+  UNLOCKED
+}
