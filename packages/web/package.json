@@ -3,7 +3,7 @@
   "version": "0.3.2",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3032",
     "build": "next build",
     "start": "next"
   },
@@ -47,7 +47,8 @@
     "swr": "^1.0.1",
     "ts-node": "^10.3.0",
     "use-debounce": "^7.0.0",
-    "wagmi": "^0.6.6",
+    "wagmi": "^0.7.2",
+    "yarn": "^1.22.19",
     "zustand": "^3.5.10"
   },
   "devDependencies": {
