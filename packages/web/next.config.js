@@ -1,6 +1,7 @@
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  typescript: {ignoreBuildErrors: true},
   webpack: function (config, { dev, isServer }) {
     config.module.rules.push({
       test: /\.svg$/,
