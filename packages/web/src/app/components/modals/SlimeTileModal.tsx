@@ -48,7 +48,7 @@ const TileModal = ({
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const {data} = useFetchSlimePools();
+  const {data} = useFetchSlimePools({address});
   const tileSlimePoolIndex = data?.slimePools?.findIndex((pool: SlimeEvent) => pool.id == tile?.id);
   const tileSlimePool = data?.slimePools?.[tileSlimePoolIndex];
 
