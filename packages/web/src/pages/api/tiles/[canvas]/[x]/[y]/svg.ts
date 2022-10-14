@@ -3,6 +3,7 @@ import { gql, request } from 'graphql-request';
 import { generateTokenID } from '@app/features/TileUtils';
 import { GRAPH_URL } from '@app/features/AddressBook';
 
+// @ts-ignore
 const api: NextApiHandler = async (req, res) => {
   const tokenId = generateTokenID(
     parseInt(req.query.x as string),

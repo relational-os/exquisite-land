@@ -1,4 +1,4 @@
-import SlimeCanvas from '@app/components/canvas/SlimeCanvasOutdated';
+import SlimeCanvas from '@app/components/canvas/SlimeCanvas';
 import React from 'react';
 
 const SlimePage = () => {

@@ -12,7 +12,7 @@ import {
   TransformComponent,
   TransformWrapper
 } from 'react-zoom-pan-pinch';
-import TileModal from '../modals/SlimeTileModal';
+import TileModal from '../modals/TileModal';
 import { useUpdate } from 'react-use';
 
 Modal.setAppElement('#__next');

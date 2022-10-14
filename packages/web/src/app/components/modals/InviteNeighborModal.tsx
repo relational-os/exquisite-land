@@ -67,6 +67,7 @@ const InviteNeighborModal = ({ x, y }: { x: number; y: number }) => {
       account,
       getJsonRpcProvider
     );
+    // @ts-ignore
     let signature = await getSignatureForTypedData(provider, dataToSign).catch(
       () => {}
     );

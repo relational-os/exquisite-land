@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useFetchTile } from '@app/features/Graph';
 import useTilesInWallet from '@app/features/useTilesInWallet';
 import { useWallet } from '@gimmixorg/use-wallet';
@@ -9,8 +9,12 @@ import {
 import { LAND_GRANTER_CONTRACT_ADDRESS } from '@app/features/AddressBook';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import CachedENSName from '../CachedENSName';
+import useTileLoadingStore from '@app/features/useTileLoadingStore';
+import { useAccount } from 'wagmi';
+import { useFetchSlimePools } from '@app/features/Canvas2Graph';
+import { SlimeEvent } from './SlimeCanvas';
 
-const CanvasTile = ({
+const SlimeCanvasTile = ({
   x,
   y,
   openEditor,
@@ -28,11 +32,20 @@ const CanvasTile = ({
   const { tile } = useFetchTile(x, y);
 
   const { account } = useWallet();
+  const { address } = useAccount();
+  const { data, refresh } = useFetchSlimePools({address});
+  
 
+  const hasUserSlimed = useMemo(() => {
+    let res = Boolean(data?.slimeEvents?.find((event: SlimeEvent) => event?.slimePool?.id == tile?.id));
+    return res
+  }, [data, tile])
+  // console.log({hasUserSlimed})
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
+  const { tileTimer: tileLoadingExpiration } = useTileLoadingStore(x, y, () => {refresh();});
 
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
@@ -40,6 +53,9 @@ const CanvasTile = ({
   const inviteState = useOpenNeighborStore(
     (state) => state.openNeighbors.find((t) => t.x == x && t.y == y)?.status
   );
+  const tileSliming = tileLoadingExpiration && !hasUserSlimed;
+  const tileRepeatSliming = tileLoadingExpiration && hasUserSlimed;
+  const tileSlimed = !tileLoadingExpiration && hasUserSlimed;
 
   const onClick = () => {
     if (pendingSvg && openTileModal) openTileModal();
@@ -132,6 +148,8 @@ const CanvasTile = ({
       <style jsx>{`
         .tile {
           position: relative;
+          border: ${tileSliming || tileRepeatSliming ? '6px solid #7cc45d' : 'unset'};
+          background-color: ${tileSlimed? 'rgba(124, 196, 93, 0.8)' : 'unset'};
           cursor: grab;
         }
 
@@ -253,4 +271,4 @@ const CanvasTile = ({
   );
 };
 
-export default React.memo(CanvasTile);
+export default React.memo(SlimeCanvasTile);

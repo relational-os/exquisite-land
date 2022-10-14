@@ -66,6 +66,7 @@ const useEditor = () => {
       account,
       getJsonRpcProvider
     );
+    // @ts-ignore
     const signature = await getSignatureForTypedData(provider, dataToSign);
     return { dataToSign, signature };
   };

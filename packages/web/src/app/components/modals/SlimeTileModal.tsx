@@ -19,15 +19,26 @@ import {
 
 import SlimePoolsABI from '@sdk/abis/SlimePools.abi.json';
 import MinimalForwarderABI from '@sdk/abis/MinimalForwarder.abi.json';
+import useTileLoadingStore from '@app/features/useTileLoadingStore';
+import { useFetchSlimePools } from '@app/features/Canvas2Graph';
 
 import CachedENSName from '../CachedENSName';
 import Button from '../Button';
 
-const SUBMITTING_LOADING_MESSAGE = 'Submitting...';
+const SUBMITTING_LOADING_MESSAGE = 'Sliming...';
 
 import { ForwardRequest } from '@app/utils/signer';
+import { SlimeEvent } from '../canvas/SlimeCanvas';
 
-const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () => void }) => {
+const TileModal = ({
+  x,
+  y,
+  closeModal
+}: {
+  x: number;
+  y: number;
+  closeModal: () => void;
+}) => {
   const { tile } = useFetchTile(x, y);
   const [slimeAmount, setSlimeAmount] = useState(0);
   const svgContainer = useRef<HTMLDivElement | null>(null);
@@ -35,7 +46,13 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
   const provider = useProvider();
   const { data: signer } = useSigner();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
+  const {data} = useFetchSlimePools();
+  const tileSlimePoolIndex = data?.slimePools?.findIndex((pool: SlimeEvent) => pool.id == tile?.id);
+  const tileSlimePool = data?.slimePools?.[tileSlimePoolIndex];
+
+  const tileLoadingStore = useTileLoadingStore();
   const forwarderInstance = useContract({
     addressOrName: MINIMAL_FORWARDER_ADDRESS,
     contractInterface: MinimalForwarderABI,
@@ -50,8 +67,10 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
 
   const { data: slimeBalance } = useBalance({
     addressOrName: address,
-    token: SLIME_CONTRACT_ADDRESS,
-  })
+    token: SLIME_CONTRACT_ADDRESS
+  });
+
+  const insufficientSlime = Number(slimeBalance?.value.toString()) < Number(slimeAmount);
 
   useEffect(() => {
     if (svgContainer.current) {
@@ -122,11 +141,19 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
       headers: { 'Content-Type': 'application/json' }
     });
 
-    console.log({ response });
+    if (response.status === 200) {
+      tileLoadingStore.addTileTimer(x, y);
 
-    // todo: add response status handling
+      // using loaderstate
+      setLoading(false);
+      closeModal();
 
-    closeModal();
+      return;
+    } else {
+      setErrorMessage('slime no flow');
+      // console.log('response', response);
+    }
+
     setLoading(false);
   };
 
@@ -162,12 +189,18 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
           </div>
           <div className="right">
             <div className="slime-meta">
-              <h3>[15,10]</h3>
-              <span>Rank #5 with x slime pooled</span>
+              <h3>[{tile.x}, {tile.y}]</h3>
+              {tileSlimePool && (
+                <span>Rank #{tileSlimePoolIndex+1} with {tileSlimePool?.totalSlime} slime pooled</span>
+              )}
             </div>
 
             <div className="slime-content">
               <span>How much slime to pool?</span>
+              {insufficientSlime && 
+              (
+                <span className="insufficient-slime">not enough slime!</span>
+              )}
               <span className="slime-content-pool-control">
                 <input
                   value={slimeAmount}
@@ -176,12 +209,26 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
                   }}
                   placeholder="00"
                 ></input>
-                <button onClick={(e) => {setSlimeAmount(Number(slimeBalance?.value?.toString())  || 0)}} className="slime-content-button-max">MAX</button>
+                <button
+                  onClick={(e) => {
+                    setSlimeAmount(
+                      Number(slimeBalance?.value?.toString()) || 0
+                    );
+                  }}
+                  className="slime-content-button-max"
+                >
+                  MAX
+                </button>
               </span>
-              <Button className="slime-it" onClick={slimeTile} disabled={!slimeAmount}>
-                {loading ? SUBMITTING_LOADING_MESSAGE : "slime it!"}
+              <Button
+                className="slime-it"
+                onClick={slimeTile}
+                disabled={!slimeAmount || insufficientSlime}
+              >
+                {loading ? SUBMITTING_LOADING_MESSAGE : 'slime it!'}
               </Button>
-              <span>slime balance: §{slimeBalance?.value.toString()}</span>
+              {errorMessage && <span className="">{errorMessage}</span>}
+              <span className={!address ? "transparent-balance" : ""}>slime balance: §{slimeBalance?.value.toString()}</span>
             </div>
           </div>
         </>
@@ -209,6 +256,10 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
           margin: 1rem 0;
           font-size: 24px;
           font-family: inherit;
+        }
+
+        .insufficient-slime {
+          color: red;
         }
 
         .slime-content-button-max {
@@ -320,6 +371,10 @@ const TileModal = ({ x, y, closeModal }: { x: number; y: number, closeModal: () 
 
         .spacer {
           flex: 1;
+        }
+
+        .transparent-balance {
+          opacity: 0;
         }
 
         h3 {

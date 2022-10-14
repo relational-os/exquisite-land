@@ -1,11 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ConnectWalletButton from './ConnectWalletButton';
 import DiscordMessagesModal from './modals/DiscordMessagesModal';
 import TransactionHistoryModal from './modals/TransactionHistoryModal';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
+import { useAccount } from 'wagmi';
 import { useFetchSlimePools } from '@app/features/Canvas2Graph';
 
+import useTile from '@app/features/useTile';
+import { SlimePool } from '@app/components/canvas/SlimeCanvas';
+
+interface LeaderboardRowProps {
+  slimePool: SlimePool;
+  rank: number;
+}
+
+const LeaderboardRow = ({ slimePool, rank }: LeaderboardRowProps) => {
+  const { tile } = useTile(Number(slimePool?.id));
+
+  return tile && slimePool ? (
+    <tr>
+      <td>
+        {rank}.
+      </td>
+      <td className="leaderboard-pool-coords">
+        [{tile.x}, {tile.y}]
+      </td>
+      <td className="leaderboard-pool-total">§{slimePool.totalSlime}</td>
+    </tr>
+  ) : (
+    <tr />
+  );
+};
 const SlimeHeader = () => {
   const { account } = useWallet();
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -16,8 +42,8 @@ const SlimeHeader = () => {
     (state) => state.transactions.length
   );
 
-  const { data } = useFetchSlimePools();
-  console.log({data})
+  const { address } = useAccount();
+  const { data } = useFetchSlimePools({ address });
 
   return (
     <div className="header">
@@ -30,7 +56,8 @@ const SlimeHeader = () => {
       <button
         className="leaderboard-button"
         onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
-      >Leaderboard
+      >
+        Leaderboard
       </button>
 
       <button
@@ -198,43 +225,26 @@ const SlimeHeader = () => {
       </div>
 
       <div className="leaderboard">
-        <div className="cell leaderboard-slime-top"> test</div>
-        <div className="cell col-3"> </div>        
-        <div className="cell leaderboard-bg">
-          <button
-              className="close jaunt"
-              onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
-            >
-              X
-          </button>
-          <h3>SLIME POOLS</h3>
-          <div className="slime-days-remaining"><h4>6 days remaining!</h4></div>
-          <div>
-              <span className="leaderboard-tileList">
-                <img src="/graphics/coin-gorblin.gif" />
-                <span className="leaderboard-tileList-title">Leaderboard</span>
-                <img src="/graphics/coin-gorblin.gif" />
-              </span>
-              <table>
-                {
-                  data?.map((pool: any) => (<>
-                    <tr>
-                      <td className="leaderboard-pool-id">
-                        {pool.id}. 
-                      </td>
-                      {/* <td className="leaderboard-pool-coords">
-                        [{data.x}, {data.y}]
-                      </td> */}
-                      <td className="leaderboard-pool-total">
-                      §{pool.totalSlime}
-                      </td>
-                    </tr>
-                  </>))
-                }
-              </table>
-          </div>
+        <button
+          className="close jaunt"
+          onClick={() => setLeaderboardOpen(!isLeaderboardOpen)}
+        >
+          X
+        </button>
+        <h3>SLIME POOLS</h3>
+        <span className="slime-days-remaining">6 days remaining!</span>
+        <div>
+          <span className="leaderboard-tileList">
+            <img src="/graphics/coin-gorblin.gif" />
+            <span className="leaderboard-tileList-title">Leaderboard</span>
+            <img src="/graphics/coin-gorblin.gif" />
+          </span>
+          <table>
+            {data?.slimePools?.map((pool: SlimePool, index: number) => (
+              <LeaderboardRow slimePool={pool} rank={index + 1}/>
+            ))}
+          </table>
         </div>
-        <div className="cell leaderboard-slime-bottom"> </div>
       </div>
 
       <style jsx>{`

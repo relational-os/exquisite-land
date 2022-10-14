@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Editor from '../editor/Editor';
 import { useFetchCanvas } from '@app/features/Graph';
-import { getSlimePools } from '@app/features/Canvas2Graph';
 import Modal from 'react-modal';
 import { useWallet } from '@gimmixorg/use-wallet';
 import InviteNeighborModal from '../modals/InviteNeighborModal';
@@ -17,6 +16,19 @@ import { useUpdate } from 'react-use';
 import SlimeCanvasTile from './SlimeCanvasTile';
 
 Modal.setAppElement('#__next');
+
+export interface SlimePool {
+  id: string;
+  totalSlime: number;
+}
+
+export interface SlimeEvent {
+  id: string,
+  slimeAmount: string,
+  slimePool: Partial<SlimePool>,
+  address: string,
+  createdAt: string
+}
 
 // Hardcoded value for mobile devides
 const MOBILE_WIDTH_CUTOFF = 500;
@@ -58,8 +70,6 @@ const Canvas = () => {
   useOpenNeighborsForWallet();
 
   const wrapperRef = useRef<ReactZoomPanPinchRef>(null);
-
-
 
   const closeEditorModal = () => {
     setIsEditorModalOpen(false);
