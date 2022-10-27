@@ -47,6 +47,10 @@ const SlimeCanvasTile = ({
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
   const { tileTimer: tileLoadingExpiration } = useTileLoadingStore(x, y, () => {refreshEvents();});
 
+  useEffect(() => {
+    refreshEvents();
+  }, [address]);
+
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)
   );
