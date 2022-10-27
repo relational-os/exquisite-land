@@ -11,8 +11,8 @@ import useTransactionsStore from '@app/features/useTransactionsStore';
 import CachedENSName from '../CachedENSName';
 import useTileLoadingStore from '@app/features/useTileLoadingStore';
 import { useAccount } from 'wagmi';
-import { useFetchSlimePools } from '@app/features/Canvas2Graph';
 import { SlimeEvent } from './SlimeCanvas';
+import { useFetchSlimeEvents } from '@app/features/use-fetch-slime-events';
 
 const SlimeCanvasTile = ({
   x,
@@ -33,19 +33,19 @@ const SlimeCanvasTile = ({
 
   const { account } = useWallet();
   const { address } = useAccount();
-  const { data, refresh } = useFetchSlimePools({address});
+  const { data: eventData, refresh: refreshEvents } = useFetchSlimeEvents({address});
   
 
   const hasUserSlimed = useMemo(() => {
-    let res = Boolean(data?.slimeEvents?.find((event: SlimeEvent) => event?.slimePool?.id == tile?.id));
+    if (!address) return false;
+    let res = Boolean(eventData?.slimeEvents?.find((event: SlimeEvent) => event?.slimePool?.id == tile?.id));
     return res
-  }, [data, tile])
-  // console.log({hasUserSlimed})
+  }, [eventData, tile, address])
   const { tiles: tilesOwned } = useTilesInWallet(account);
   const [isOwned, setOwned] = useState(false);
   const [pendingSvg, setPendingSvg] = useState<string | null>(null);
   const [isCoinGenerated, setIsCoinGenerated] = useState(false);
-  const { tileTimer: tileLoadingExpiration } = useTileLoadingStore(x, y, () => {refresh();});
+  const { tileTimer: tileLoadingExpiration } = useTileLoadingStore(x, y, () => {refreshEvents();});
 
   const isInvitable = useOpenNeighborStore(
     (state) => !!state.openNeighbors.find((t) => t.x == x && t.y == y)

@@ -5,7 +5,7 @@ import TransactionHistoryModal from './modals/TransactionHistoryModal';
 import useTransactionsStore from '@app/features/useTransactionsStore';
 import { useWallet } from '@gimmixorg/use-wallet';
 import { useAccount } from 'wagmi';
-import { useFetchSlimePools } from '@app/features/Canvas2Graph';
+import { useFetchSlimePools } from '@app/features/use-fetch-slime-pools';
 
 import useTile from '@app/features/useTile';
 import { SlimePool } from '@app/components/canvas/SlimeCanvas';
@@ -43,7 +43,7 @@ const SlimeHeader = () => {
   );
 
   const { address } = useAccount();
-  const { data } = useFetchSlimePools({ address });
+  const { data: poolsData } = useFetchSlimePools();
 
   return (
     <div className="header">
@@ -240,7 +240,7 @@ const SlimeHeader = () => {
             <img src="/graphics/coin-gorblin.gif" />
           </span>
           <table>
-            {data?.slimePools?.map((pool: SlimePool, index: number) => (
+            {poolsData?.slimePools?.map((pool: SlimePool, index: number) => (
               <LeaderboardRow slimePool={pool} rank={index + 1}/>
             ))}
           </table>
