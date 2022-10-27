@@ -1,0 +1,25 @@
+{
+  "name": "@exquisiteland/subgraph",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "16",
+    "pnpm": "6"
+  },
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ relational-os/xqst-canvas-2",
+    "deploy-canary": "graph deploy --node https://api.thegraph.com/deploy/ relational-os/exquisite-land-canary",
+    "create-local": "graph create --node http://localhost:8020/ relational-os/exquisite-land",
+    "remove-local": "graph remove --node http://localhost:8020/ relational-os/exquisite-land",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 relational-os/exquisite-land"
+  },
+  "dependencies": {
+    "@exquisiteland/contracts": "^0.3.2",
+    "@graphprotocol/graph-cli": "0.21.1",
+    "@graphprotocol/graph-ts": "0.20.0",
+    "pnpm": "^6.0.0"
+  },
+  "version": "0.3.2"
+}

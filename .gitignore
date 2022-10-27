@@ -3,3 +3,6 @@ node_modules
 package-lock.json
 packages/web/out
 packages/discord/data/*
+packages/contracts-terramasu/scripts/.env.80001
+packages/contracts-terramasu/.env.80001
+packages/web/src/pnpm-lock.yaml

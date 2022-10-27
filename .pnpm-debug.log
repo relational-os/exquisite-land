@@ -1,0 +1,12 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "code": "ERR_PNPM_NO_SCRIPT",
+    "err": {
+      "name": "pnpm",
+      "message": "Missing script: dev",
+    }
+  }
+}

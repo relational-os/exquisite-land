@@ -18,9 +18,19 @@ export const FORWARDER_CONTRACT_ADDRESS = isProd
   ? AddressBook.forwarder
   : AddressBookDev.forwarder;
 
+export const CANVAS_2_CONTRACT_ADDRESS = "0x175ebe527ff41e4f47693c9d45144ebc112ca14e";
+
+export const SLIME_CONTRACT_ADDRESS = "0xb318eb640cb1817982992b3ddab36ceb2e156b0f";
+
+export const SLIME_POOL_CONTRACT_ADDRESS = "0x5c895105db2f76feb7edf8c888098fab19c00ce1";
+
+export const MINIMAL_FORWARDER_ADDRESS = '0xbee6ab81d0fb9fcf8d98fb1d765c909b9855077d';
+
 export const GRAPH_URL = isProd
   ? 'https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land'
   : 'https://api.thegraph.com/subgraphs/name/relational-os/exquisite-land-canary';
+
+export const CANVAS_2_GRAPH_URL = "https://api.thegraph.com/subgraphs/name/relational-os/xqst-canvas-2";
 
 export const DISCORD_CHANNELS = {
   'terra-masu': '888518144346427392',
@@ -44,6 +54,8 @@ export const DISCORD_WEBHOOKS = {
   }
 };
 
+
+// TODO: update
 export const ADMIN_ADDRESSES = [
   '0xd286064cc27514b914bab0f2fad2e1a89a91f314',
   '0xf73fe15cfb88ea3c7f301f16ade3c02564aca407',

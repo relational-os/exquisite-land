@@ -1,5 +1,5 @@
 import { request, gql } from 'graphql-request';
-import useSWR, { SWRConfiguration } from 'swr';
+import useSWR, { SWRConfiguration } from 'swr'; 
 import { GRAPH_URL } from './AddressBook';
 
 let query = gql`
@@ -32,7 +32,7 @@ export const useFetchTile = (
   const tile = data?.tiles.find((tile: any) => {
     return tile.x == x && tile.y == y;
   });
-  //   console.log("tile", tile);
+    // console.log("tile", tile);
   return { tile, error, refresh: mutate };
 };
 
