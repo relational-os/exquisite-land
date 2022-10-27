@@ -4,7 +4,7 @@ import { CANVAS_2_GRAPH_URL } from './AddressBook';
 
 // TODO: pagination
 const PoolsQuery = gql`
-  query slimePoolsQuery() {
+   {
     slimePools(first:100, orderBy: totalSlime, orderDirection: desc) {
       id
       totalSlime
